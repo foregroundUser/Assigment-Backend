@@ -2,6 +2,7 @@ const admin = require('firebase-admin');
 const RepairRequest = require('../models/RepairRequest');
 const bucket = admin.storage().bucket();
 const Feedback = require('../models/Feedback');
+
 async function requestRepair(req, res) {
     const {uid, issueName, problemType, description, price} = req.body;
     const files = req.files || [];
@@ -61,7 +62,6 @@ async function handleStandard(req, res) {
         res
     });
 }
-
 
 async function createRequest({uid, issueName, problemType, isOther, description, price, files, res}) {
     try {
@@ -146,9 +146,7 @@ async function getUserHistory(req, res) {
 
         const history = snap.docs
             .map(d => d.data())
-            .sort((a, b) => {
-                return b.createdAt.toMillis() - a.createdAt.toMillis();
-            });
+            .sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
 
         return res.json(history);
     } catch (err) {
@@ -157,6 +155,24 @@ async function getUserHistory(req, res) {
     }
 }
 
+async function getMyMails(req, res) {
+    const { uid } = req.params;
+    try {
+        const snap = await admin.firestore()
+            .collection('RepairRequests')
+            .where('uid', '==', uid)
+            .where('problemType', '==', 'other')
+            .where('status', '==', 'PRICE_SENT')
+            .orderBy('createdAt', 'desc')
+            .get();
+
+        const mails = snap.docs.map(doc => doc.data());
+        return res.status(200).json(mails);
+    } catch (err) {
+        console.error('MyMails error:', err);
+        return res.status(500).json({ error: 'Admindan xabarlarni olishda xatolik yuz berdi.' });
+    }
+}
 
 async function submitFeedback(req, res) {
     const {uid, requestId, rating, comment} = req.body;
@@ -189,29 +205,68 @@ async function submitFeedback(req, res) {
     return res.status(201).json(fb.toJSON());
 }
 
-async function deleteRequest(req, res) {
-    const {id} = req.params;
-    const {uid} = req.body;
+async function confirmOtherRequest(req, res) {
+    const { id } = req.params;
+    const { uid } = req.body;
+
+    if (!uid) {
+        return res.status(400).json({ error: 'uid talab qilinadi.' });
+    }
 
     const docRef = admin.firestore().collection('RepairRequests').doc(id);
     const doc = await docRef.get();
+
     if (!doc.exists) {
-        return res.status(404).json({error: 'So‘rov topilmadi.'});
+        return res.status(404).json({ error: 'So‘rov topilmadi.' });
     }
+
     const data = doc.data();
 
     if (data.uid !== uid) {
-        return res.status(403).json({error: 'Bu so‘rov sizga tegishli emas.'});
+        return res.status(403).json({ error: 'Bu so‘rov sizga tegishli emas.' });
     }
 
-    if (data.status !== 'PENDING') {
-        return res.status(400).json({error: 'Faqat PENDING holatidagi so‘rovni o‘chirishingiz mumkin.'});
+    if (data.problemType !== 'other' || data.status !== 'PRICE_SENT') {
+        return res.status(400).json({ error: 'Faqat narx yuborilgan other turdagi so‘rovni tasdiqlash mumkin.' });
     }
 
-    await docRef.delete();
-    return res.json({success: true});
+    await docRef.update({ status: 'CONFIRMED' });
+    return res.status(200).json({ success: true, message: 'Narx tasdiqlandi.' });
 }
 
+async function deleteRequest(req, res) {
+    const { id } = req.params;
+    const { uid } = req.body;
+
+    if (!uid || !id) {
+        return res.status(400).json({ error: 'uid va id kerak.' });
+    }
+
+    try {
+        const docRef = admin.firestore().collection('RepairRequests').doc(id);
+        const doc = await docRef.get();
+
+        if (!doc.exists) {
+            return res.status(404).json({ error: 'So‘rov topilmadi.' });
+        }
+
+        const data = doc.data();
+
+        if (data.uid !== uid) {
+            return res.status(403).json({ error: 'Bu so‘rov sizga tegishli emas.' });
+        }
+
+        if (data.status !== 'PENDING') {
+            return res.status(400).json({ error: 'Faqat PENDING holatidagi so‘rovni o‘chirishingiz mumkin.' });
+        }
+
+        await docRef.delete();
+        return res.status(200).json({ success: true });
+    } catch (err) {
+        console.error('Delete error:', err);
+        return res.status(500).json({ error: 'So‘rovni o‘chirishda ichki xatolik yuz berdi.' });
+    }
+}
 
 module.exports = {
     requestRepair,
@@ -219,5 +274,7 @@ module.exports = {
     getUserProfile,
     getUserHistory,
     submitFeedback,
-    deleteRequest
+    confirmOtherRequest,
+    deleteRequest,
+    getMyMails
 };
