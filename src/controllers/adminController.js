@@ -2,11 +2,19 @@ const admin = require('firebase-admin');
 
 async function listUsers(req, res) {
     try {
-        const snap = await admin.firestore().collection('Users').get();
-        const users = snap.docs.map(d => d.data());
+        const snap = await admin.firestore()
+            .collection('Users')
+            .where('isAdmin', '==', false)
+            .get();
+
+        const users = snap.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
         return res.json(users);
     } catch (err) {
-        console.error('Error fetching users:', err);
+        console.error('Error fetching non-admin users:', err);
         return res.status(503).json({ error: 'Xizmat vaqtiinchalik mavjud emas.' });
     }
 }

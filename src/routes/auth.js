@@ -159,28 +159,53 @@ router.put('/users/:uid', updateUser);
  *         description: Email not found
  */
 router.post('/forgot-password', forgotPassword);
-
 /**
  * @swagger
  * /isAdmin:
  *   get:
- *     tags: [auth]
- *     summary: Check if a user is admin
+ *     tags:
+ *       - Auth
+ *     summary: Check if a user is an admin
+ *     description: Verifies if the user associated with the provided UID has admin privileges.
  *     parameters:
  *       - in: query
  *         name: uid
  *         required: true
+ *         description: Firebase UID of the user
  *         schema:
  *           type: string
  *           example: "NaUF20wrgJdz3qBgSc2g2cvf5P32"
  *     responses:
  *       200:
- *         description: Admin status
+ *         description: Successful check
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 isAdmin:
+ *                   type: boolean
+ *                   example: true
  *       400:
- *         description: UID required
+ *         description: Missing UID in query
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "UID is required"
  *       404:
- *         description: User not found
+ *         description: User not found or not authorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "User not found"
  */
 router.get('/isAdmin', checkIsAdmin);
-
 module.exports = router;

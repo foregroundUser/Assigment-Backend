@@ -4,6 +4,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Dern Support</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"/>
     <style>
         * {
             margin: 0;
@@ -292,13 +293,86 @@
             transform: rotate(45deg);
         }
 
+        #our_services {
+            padding: 3rem 1rem;
+            text-align: center;
+        }
+
+        .service-card {
+            display: flex;
+            flex-wrap: wrap;
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 14px rgba(0, 0, 0, 0.06);
+            max-width: 90%;
+            margin: 0 auto;
+        }
+
+        .service-text {
+            flex: 1;
+            padding: 1.5rem;
+            background: #f9fafb;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 280px;
+        }
+
+        .service-text h3 {
+            font-size: 1.6rem;
+            color: #fbbf24;
+            margin-bottom: 0.8rem;
+            text-align: left;
+        }
+
+        .service-text p {
+            font-size: 0.95rem;
+            color: #1f2937;
+            line-height: 1.6;
+            text-align: left;
+        }
+
+        .service-image {
+            flex: 1;
+            background-color: #fbbf24;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 280px;
+            padding: 1rem;
+        }
+
+        .service-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .service-card {
+                flex-direction: column;
+            }
+
+            .service-text, .service-image {
+                min-width: 100%;
+            }
+
+            .service-text h3, .service-text p {
+                text-align: center;
+            }
+        }
+
+
     </style>
 </head>
 <body>
 
 <header>
     <img src="images/logo.png" alt="Dern Support Logo" style="object-fit: cover; object-position: center;"/>
-    <button class="get-started-btn" onclick="document.getElementById('stats').scrollIntoView({behavior: 'smooth'})">Get
+    <button class="get-started-btn">Get
         Started
     </button>
 </header>
@@ -358,6 +432,24 @@
         </div>
     </div>
 </section>
+<section id="our_services" class="services-section">
+    <div class="service-card">
+        <div class="service-text">
+            <h3>Software Issues</h3>
+            <p>
+                At Dern-Support, we provide comprehensive support for printers, computers, and Wi-Fi networks.
+                Our services include diagnosing and fixing software issues, setting up and configuring software,
+                and ensuring seamless connectivity. We pride ourselves on efficient problem-solving and personalized
+                assistance.
+            </p>
+        </div>
+        <div class="service-image">
+            <img src="https://dern-support-frontend.vercel.app/assets/3-CyCpy-jJ.jpg" alt="Software Issues">
+        </div>
+    </div>
+
+</section>
+
 <section id="faq" style="background-color: #f4f5f7; padding: 2.5rem 1rem;">
     <h2 class="section-title">FAQ</h2>
     <div style="margin: 0 auto 1rem; width: 70px; height: 4px; background-color: #222; border-radius: 10px;"></div>
@@ -368,23 +460,29 @@
     <div class="faq-container">
         <div class="faq-item">
             <button class="faq-question">What types of support does Dern-Support offer?<span>+</span></button>
-            <div class="faq-answer">We offer computer repair, virus removal, data recovery, and more tailored support services.</div>
+            <div class="faq-answer">We offer computer repair, virus removal, data recovery, and more tailored support
+                services.
+            </div>
         </div>
         <div class="faq-item">
             <button class="faq-question">How do I submit a support request?<span>+</span></button>
             <div class="faq-answer">You can use our contact form or call our hotline to request assistance.</div>
         </div>
         <div class="faq-item">
-            <button class="faq-question">What should I do if I need additional services beyond the original request?<span>+</span></button>
+            <button class="faq-question">What should I do if I need additional services beyond the original
+                request?<span>+</span></button>
             <div class="faq-answer">Contact our support team and we will update your service plan accordingly.</div>
         </div>
         <div class="faq-item">
             <button class="faq-question">Can I get remote support for my computer issues?<span>+</span></button>
-            <div class="faq-answer">Yes, we offer secure remote sessions to fix issues without visiting our office.</div>
+            <div class="faq-answer">Yes, we offer secure remote sessions to fix issues without visiting our office.
+            </div>
         </div>
         <div class="faq-item">
             <button class="faq-question">How can I manage my customer account with Dern-Support?<span>+</span></button>
-            <div class="faq-answer">You can log in to your client dashboard to manage your profile, billing, and tickets.</div>
+            <div class="faq-answer">You can log in to your client dashboard to manage your profile, billing, and
+                tickets.
+            </div>
         </div>
     </div>
 </section>
@@ -398,20 +496,103 @@
 </footer>
 
 <script>
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('show');
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    async function checkUserRole() {
+        const uid = localStorage.getItem('uid');
+        if (!uid) return;
+        requestAnimationFrame(() => {
+            const loadingScreen = document.createElement('div');
+            loadingScreen.style.position = 'fixed';
+            loadingScreen.style.top = '0';
+            loadingScreen.style.left = '0';
+            loadingScreen.style.width = '100vw';
+            loadingScreen.style.height = '100vh';
+            loadingScreen.style.background = 'rgba(0, 0, 0, 0.75)';
+            loadingScreen.style.display = 'flex';
+            loadingScreen.style.flexDirection = 'column';
+            loadingScreen.style.justifyContent = 'center';
+            loadingScreen.style.alignItems = 'center';
+            loadingScreen.style.zIndex = '9999';
+
+            const spinner = document.createElement('div');
+            spinner.style.border = '6px solid #f3f3f3';
+            spinner.style.borderTop = '6px solid #FFB703';
+            spinner.style.borderRadius = '50%';
+            spinner.style.width = '60px';
+            spinner.style.height = '60px';
+            spinner.style.animation = 'spin 1s linear infinite';
+            spinner.style.marginBottom = '20px';
+
+            const loadingText = document.createElement('p');
+            loadingText.innerText = 'Checking access...';
+            loadingText.style.color = '#fff';
+            loadingText.style.fontSize = '1.2rem';
+            loadingText.style.fontFamily = 'Poppins, sans-serif';
+
+            loadingScreen.appendChild(spinner);
+            loadingScreen.appendChild(loadingText);
+            document.body.appendChild(loadingScreen);
+
+            if (!document.getElementById('spin-style')) {
+                const styleSheet = document.createElement("style");
+                styleSheet.id = "spin-style";
+                styleSheet.type = "text/css";
+                styleSheet.innerText = `
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                `;
+                document.head.appendChild(styleSheet);
             }
         });
-    }, {threshold: 0.2});
+        try {
+            await sleep(1000);
+            const res = await fetch(`http://localhost:4000/isAdmin?uid=${uid}`);
+            const data = await res.json();
+            document.body.querySelectorAll('#spin-style, div[style*="z-index: 9999"]').forEach(el => el.remove());
 
-    document.querySelectorAll('section').forEach(sec => observer.observe(sec));
-    document.querySelectorAll('.faq-question').forEach(button => {
-        button.addEventListener('click', () => {
-            const item = button.parentElement;
-            item.classList.toggle('open');
+            if (data.isAdmin) {
+                window.location.href = '../dern-support-frontend/admin/dashboard.html';
+            } else {
+                window.location.href = '../dern-support-frontend/user/home.html';
+            }
+        } catch (err) {
+            console.error('Xatolik:', err);
+            alert("Foydalanuvchi holati aniqlanmadi.");
+            document.body.querySelectorAll('#spin-style, div[style*="z-index: 9999"]').forEach(el => el.remove());
+        }
+    }
+
+    window.onload = checkUserRole;
+    window.addEventListener('DOMContentLoaded', () => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                }
+            });
+        }, {threshold: 0.2});
+
+        document.querySelectorAll('section').forEach(sec => observer.observe(sec));
+
+        document.querySelectorAll('.faq-question').forEach(button => {
+            button.addEventListener('click', () => {
+                const item = button.parentElement;
+                item.classList.toggle('open');
+            });
         });
+
+        const btn = document.querySelector(".get-started-btn");
+        if (btn) {
+            btn.addEventListener("click", () => {
+                window.location.href = "auth/login/login.html";
+            });
+        }
+
+        setTimeout(checkUserRole, 100);
     });
 </script>
 

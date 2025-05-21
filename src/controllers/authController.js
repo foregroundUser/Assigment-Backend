@@ -8,24 +8,24 @@ const SEND_RESET_EMAIL_URL =
     `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${FIREBASE_API_KEY}`;
 
 async function checkIsAdmin(req, res) {
-    const {uid} = req.body;
+    const { uid } = req.query; // <-- Faqat GET uchun: querydan oladi
+
     if (!uid) {
-        return res.status(400).json({error: 'UID kiritilishi shart.'});
+        return res.status(400).json({ error: 'UID kiritilishi shart.' });
     }
 
     try {
         const doc = await admin.firestore().collection('Users').doc(uid).get();
         if (!doc.exists) {
-            return res.status(404).json({error: 'Foydalanuvchi topilmadi.'});
+            return res.status(404).json({ error: 'Foydalanuvchi topilmadi.' });
         }
-        const {isAdmin = false} = doc.data();
-        return res.json({isAdmin});
+        const { isAdmin = false } = doc.data();
+        return res.status(200).json({ isAdmin });
     } catch (err) {
         console.error('checkIsAdmin error:', err);
-        return res.status(500).json({error: 'Server xatosi.'});
+        return res.status(500).json({ error: 'Server xatosi.' });
     }
 }
-
 async function forgotPassword(req, res) {
     const {email} = req.body;
     if (!email) {

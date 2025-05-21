@@ -4,8 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2f5fe288-b22e-4e9f-a6f3-f64c1f7385b9" name="Changes" comment="swagger added">
-      <change afterPath="$PROJECT_DIR$/firebase-secret.json .json" afterDir="false" />
+    <list default="true" id="2f5fe288-b22e-4e9f-a6f3-f64c1f7385b9" name="Changes" comment="auth ui done">
+      <change afterPath="$PROJECT_DIR$/dern-support-frontend/admin/dashboard.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dern-support-frontend/auth/forget-password/forget-password.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dern-support-frontend/auth/login/login.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dern-support-frontend/auth/register/register.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dern-support-frontend/auth/register/register.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dern-support-frontend/images/logo_small.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dern-support-frontend/user/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dern-support-frontend/css/style.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dern-support-frontend/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/dern-support-frontend/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controllers/adminController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/adminController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controllers/authController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/authController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/auth.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,9 +27,10 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JavaScript File" />
-        <option value="HTML File" />
+        <option value="HTTP Request" />
         <option value="CSS File" />
+        <option value="HTML File" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -55,21 +68,25 @@
     "ignore.virus.scanning.warn.message": "true",
     "javascript.nodejs.core.library.configured.version": "22.15.0",
     "javascript.nodejs.core.library.typings.version": "22.15.18",
-    "last_opened_file_path": "C:/Users/azamo/WebstormProjects/Assigment-Backend",
+    "last_opened_file_path": "C:/Users/azamo/WebstormProjects/Assigment-Backend/dern-support-frontend/images",
     "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2024.3.2.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\azamo\WebstormProjects\Assigment-Backend\dern-support-frontend\images" />
       <recent name="C:\Users\azamo\WebstormProjects\Assigment-Backend" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\azamo\WebstormProjects\Assigment-Backend\dern-support-frontend\auth\login" />
     </key>
   </component>
   <component name="RunManager">
@@ -100,7 +117,7 @@
       <workItem from="1747367808238" duration="9831000" />
       <workItem from="1747387319857" duration="13341000" />
       <workItem from="1747461102020" duration="231000" />
-      <workItem from="1747761063019" duration="16238000" />
+      <workItem from="1747761063019" duration="23573000" />
     </task>
     <task id="LOCAL-00001" summary="Backend ready for beta">
       <option name="closed" value="true" />
@@ -126,7 +143,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747802485137</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="swagger added &amp;&amp;">
+      <option name="closed" value="true" />
+      <created>1747803046045</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1747803046045</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -135,7 +160,9 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Backend ready for beta" />
     <MESSAGE value="swagger added" />
-    <option name="LAST_COMMIT_MESSAGE" value="swagger added" />
+    <MESSAGE value="swagger added &amp;&amp;" />
+    <MESSAGE value="auth ui done" />
+    <option name="LAST_COMMIT_MESSAGE" value="auth ui done" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -144,12 +171,6 @@
           <url>file://$PROJECT_DIR$/src/controllers/adminController.js</url>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/dern-support-frontend/index.html</url>
-          <line>408</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
