@@ -5,19 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2f5fe288-b22e-4e9f-a6f3-f64c1f7385b9" name="Changes" comment="auth ui done">
-      <change afterPath="$PROJECT_DIR$/dern-support-frontend/admin/dashboard.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dern-support-frontend/auth/forget-password/forget-password.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dern-support-frontend/auth/login/login.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dern-support-frontend/auth/register/register.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dern-support-frontend/auth/register/register.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dern-support-frontend/images/logo_small.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dern-support-frontend/user/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dern-support-frontend/css/style.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dern-support-frontend/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/dern-support-frontend/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/adminController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/adminController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/authController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/authController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/auth.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/firebase-secret.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,7 +59,7 @@
     "ignore.virus.scanning.warn.message": "true",
     "javascript.nodejs.core.library.configured.version": "22.15.0",
     "javascript.nodejs.core.library.typings.version": "22.15.18",
-    "last_opened_file_path": "C:/Users/azamo/WebstormProjects/Assigment-Backend/dern-support-frontend/images",
+    "last_opened_file_path": "C:/Users/azamo/WebstormProjects/Assigment-Backend",
     "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -82,8 +73,8 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\azamo\WebstormProjects\Assigment-Backend\dern-support-frontend\images" />
       <recent name="C:\Users\azamo\WebstormProjects\Assigment-Backend" />
+      <recent name="C:\Users\azamo\WebstormProjects\Assigment-Backend\dern-support-frontend\images" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\azamo\WebstormProjects\Assigment-Backend\dern-support-frontend\auth\login" />
@@ -117,7 +108,7 @@
       <workItem from="1747367808238" duration="9831000" />
       <workItem from="1747387319857" duration="13341000" />
       <workItem from="1747461102020" duration="231000" />
-      <workItem from="1747761063019" duration="23573000" />
+      <workItem from="1747761063019" duration="24737000" />
     </task>
     <task id="LOCAL-00001" summary="Backend ready for beta">
       <option name="closed" value="true" />
@@ -151,7 +142,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747803046045</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="auth ui done">
+      <option name="closed" value="true" />
+      <created>1747816188574</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1747816188574</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
