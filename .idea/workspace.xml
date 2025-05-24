@@ -4,33 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2f5fe288-b22e-4e9f-a6f3-f64c1f7385b9" name="Changes" comment="auth ui done">
-      <change afterPath="$PROJECT_DIR$/dern-support-frontend/images/img.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dern-support-frontend/images/img_1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dern-support-frontend/images/img_2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dern-support-frontend/images/img_3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dern-support-frontend/images/img_4.png" afterDir="false" />
+    <list default="true" id="2f5fe288-b22e-4e9f-a6f3-f64c1f7385b9" name="Changes" comment="user page done main page updated">
       <change afterPath="$PROJECT_DIR$/serviceAccountKey.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/middlewares/authMiddleware.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/middlewares/upload.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dern-support-frontend/admin/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/dern-support-frontend/admin/dashboard.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dern-support-frontend/auth/login/login.js" beforeDir="false" afterPath="$PROJECT_DIR$/dern-support-frontend/auth/login/login.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dern-support-frontend/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/dern-support-frontend/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dern-support-frontend/user/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/dern-support-frontend/user/home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/controllers/adminController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/adminController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/authController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/authController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/userController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/userController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/RepairRequest.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/RepairRequest.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/User.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/User.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/routes/admin.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/admin.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/auth.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/user.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/swagger.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/swagger.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -134,7 +113,9 @@
       <workItem from="1747831099708" duration="1279000" />
       <workItem from="1747909107265" duration="26987000" />
       <workItem from="1747984307720" duration="8326000" />
-      <workItem from="1747997990771" duration="34195000" />
+      <workItem from="1747997990771" duration="35200000" />
+      <workItem from="1748104663387" duration="1791000" />
+      <workItem from="1748118503794" duration="6052000" />
     </task>
     <task id="LOCAL-00001" summary="Backend ready for beta">
       <option name="closed" value="true" />
@@ -184,7 +165,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747819191314</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="user page done main page updated">
+      <option name="closed" value="true" />
+      <created>1748098404580</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1748098404580</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -195,7 +184,8 @@
     <MESSAGE value="swagger added" />
     <MESSAGE value="swagger added &amp;&amp;" />
     <MESSAGE value="auth ui done" />
-    <option name="LAST_COMMIT_MESSAGE" value="auth ui done" />
+    <MESSAGE value="user page done main page updated" />
+    <option name="LAST_COMMIT_MESSAGE" value="user page done main page updated" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -208,19 +198,16 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/controllers/userController.js</url>
           <line>46</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/controllers/userController.js</url>
           <line>245</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/dern-support-frontend/index.html</url>
           <line>932</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="8" />
         </line-breakpoint>
       </breakpoints>

@@ -7,7 +7,7 @@ const {
     deleteUser,
     notifyOtherRequestByEmail,
     updateRequest,
-    listAllRequests
+    listAllRequests, getAllFeedbackStats, getAllFeedbacks
 } = require('../controllers/adminController');
 
 /**
@@ -220,4 +220,6 @@ router.patch('/request/:id', authenticate, requireAdmin, updateRequest);
  */
 router.get('/requests', authenticate, requireAdmin, listAllRequests);
 
+router.get("/feedbacks", authenticate, requireAdmin, getAllFeedbacks);
+router.get("/feedbacksStats", authenticate, requireAdmin, getAllFeedbackStats);
 module.exports = router;

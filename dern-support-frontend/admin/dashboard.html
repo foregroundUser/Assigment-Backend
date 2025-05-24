@@ -4,25 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dern Support - Admin Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
             --sidebar-width: 280px;
-            --primary-color: #dc2626;
-            --primary-dark: #b91c1c;
-            --secondary-color: #FFB703;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --warning-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --danger-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+
+            --primary-color: #667eea;
+            --primary-dark: #5a67d8;
+            --secondary-color: #f093fb;
+            --success-color: #4facfe;
+            --warning-color: #43e97b;
+            --danger-color: #fa709a;
+
             --sidebar-bg: #ffffff;
-            --sidebar-hover: #f1f5f9;
-            --sidebar-active: #dc2626;
+            --sidebar-hover: #f8fafc;
+            --sidebar-active: var(--primary-color);
             --sidebar-border: #e2e8f0;
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
             --border-color: #e2e8f0;
-            --bg-light: #f8fafc;
-            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --bg-light: #f7fafc;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
 
         * {
@@ -36,9 +50,28 @@
             background: var(--bg-light);
             color: var(--text-primary);
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        /* Toast Notification Styles */
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Toast Notification System */
         .toast-container {
             position: fixed;
             top: 20px;
@@ -49,19 +82,18 @@
 
         .toast-notification {
             background: white;
-            border-radius: 12px;
-            padding: 16px 20px;
+            border-radius: 16px;
+            padding: 20px;
             margin-bottom: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-xl);
             border-left: 4px solid;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
             transform: translateX(100%);
             opacity: 0;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            max-width: 100%;
-            word-wrap: break-word;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
         }
 
         .toast-notification.show {
@@ -71,46 +103,50 @@
 
         .toast-notification.success {
             border-left-color: #10b981;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%);
         }
 
         .toast-notification.error {
             border-left-color: #ef4444;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%);
         }
 
         .toast-notification.warning {
             border-left-color: #f59e0b;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%);
         }
 
         .toast-notification.info {
             border-left-color: #3b82f6;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.05) 100%);
         }
 
         .toast-icon {
-            width: 24px;
-            height: 24px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 14px;
             color: white;
             flex-shrink: 0;
         }
 
         .toast-notification.success .toast-icon {
-            background: #10b981;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         }
 
         .toast-notification.error .toast-icon {
-            background: #ef4444;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
         }
 
         .toast-notification.warning .toast-icon {
-            background: #f59e0b;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
         }
 
         .toast-notification.info .toast-icon {
-            background: #3b82f6;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
         }
 
         .toast-content {
@@ -119,13 +155,13 @@
 
         .toast-title {
             font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 2px;
+            font-size: 15px;
+            margin-bottom: 4px;
             color: var(--text-primary);
         }
 
         .toast-message {
-            font-size: 13px;
+            font-size: 14px;
             color: var(--text-secondary);
             line-height: 1.4;
         }
@@ -135,48 +171,15 @@
             border: none;
             color: var(--text-secondary);
             cursor: pointer;
-            padding: 4px;
-            border-radius: 4px;
+            padding: 8px;
+            border-radius: 8px;
             transition: all 0.2s ease;
             flex-shrink: 0;
         }
 
         .toast-close:hover {
-            background: #f3f4f6;
+            background: rgba(0, 0, 0, 0.05);
             color: var(--text-primary);
-        }
-
-        .toast-progress {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            height: 3px;
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 0 0 12px 12px;
-            overflow: hidden;
-        }
-
-        .toast-progress-bar {
-            height: 100%;
-            background: currentColor;
-            transition: width linear;
-            border-radius: 0 0 12px 12px;
-        }
-
-        .toast-notification.success .toast-progress-bar {
-            background: #10b981;
-        }
-
-        .toast-notification.error .toast-progress-bar {
-            background: #ef4444;
-        }
-
-        .toast-notification.warning .toast-progress-bar {
-            background: #f59e0b;
-        }
-
-        .toast-notification.info .toast-progress-bar {
-            background: #3b82f6;
         }
 
         /* Sidebar Styles */
@@ -193,7 +196,7 @@
             display: flex;
             flex-direction: column;
             border-right: 1px solid var(--sidebar-border);
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-lg);
             overflow: hidden;
             transform: translateX(0);
         }
@@ -203,27 +206,29 @@
         }
 
         .sidebar-header {
-            padding: 1.5rem 1rem;
+            padding: 2rem 1.5rem;
             border-bottom: 1px solid var(--sidebar-border);
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            min-height: 80px;
+            gap: 1rem;
+            min-height: 90px;
             position: relative;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
         }
 
         .sidebar-logo {
-            width: 32px;
-            height: 32px;
-            background: var(--primary-color);
-            border-radius: 8px;
+            width: 48px;
+            height: 48px;
+            background: var(--primary-gradient);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            font-size: 14px;
+            font-weight: 800;
+            font-size: 20px;
             flex-shrink: 0;
             color: white;
+            box-shadow: var(--shadow-md);
         }
 
         .sidebar-title {
@@ -234,58 +239,63 @@
         }
 
         .sidebar-title h2 {
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 18px;
+            font-weight: 700;
             margin: 0;
             color: var(--text-primary);
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .sidebar-title p {
-            font-size: 12px;
+            font-size: 13px;
             color: var(--text-secondary);
             margin: 0;
+            font-weight: 500;
         }
 
         .sidebar-toggle {
-            width: 40px;
-            height: 40px;
-            background: var(--primary-color);
+            width: 44px;
+            height: 44px;
+            background: var(--primary-gradient);
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             color: white;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 18px;
             transition: all 0.3s ease;
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-md);
         }
 
         .sidebar-toggle:hover {
-            background: var(--primary-dark);
             transform: scale(1.05);
+            box-shadow: var(--shadow-lg);
         }
 
         .sidebar-content {
             flex: 1;
-            padding: 1rem 0;
+            padding: 1.5rem 0;
             overflow-y: auto;
             overflow-x: hidden;
         }
 
         .sidebar-group {
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
         }
 
         .sidebar-group-label {
-            padding: 0 1rem;
-            font-size: 11px;
-            font-weight: 600;
+            padding: 0 1.5rem;
+            font-size: 12px;
+            font-weight: 700;
             color: var(--text-secondary);
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.5rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
             white-space: nowrap;
             overflow: hidden;
         }
@@ -298,81 +308,106 @@
 
         .sidebar-menu-item {
             position: relative;
-            margin: 0 0.5rem;
+            margin: 0 1rem;
         }
 
         .sidebar-menu-button {
-            width: calc(100% - 1rem);
+            width: calc(100% - 2rem);
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
             background: none;
             border: none;
             color: var(--text-secondary);
             text-decoration: none;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             position: relative;
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
+            margin: 0.25rem 0;
         }
 
         .sidebar-menu-button:hover {
             background: var(--sidebar-hover);
             color: var(--text-primary);
+            transform: translateX(4px);
         }
 
         .sidebar-menu-button.active {
-            background: var(--sidebar-active);
+            background: var(--primary-gradient);
             color: white;
+            box-shadow: var(--shadow-md);
+            transform: translateX(4px);
+        }
+
+        .sidebar-menu-button.active::before {
+            content: '';
+            position: absolute;
+            left: -1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 24px;
+            background: white;
+            border-radius: 2px;
         }
 
         .sidebar-menu-button i {
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            font-size: 16px;
+            font-size: 18px;
         }
 
         .sidebar-menu-text {
             white-space: nowrap;
             overflow: hidden;
+            font-weight: 600;
         }
 
         /* Profile Section */
         .sidebar-footer {
-            padding: 1rem;
+            padding: 1.5rem;
             border-top: 1px solid var(--sidebar-border);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.03) 0%, rgba(118, 75, 162, 0.03) 100%);
         }
 
         .profile-section {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem;
-            border-radius: 8px;
-            transition: all 0.2s ease;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
             cursor: pointer;
             overflow: hidden;
             position: relative;
+            background: white;
+            border: 1px solid var(--sidebar-border);
+            box-shadow: var(--shadow-sm);
         }
 
         .profile-section:hover {
             background: var(--sidebar-hover);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
         }
 
         .profile-avatar {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid var(--primary-color);
+            border: 3px solid transparent;
+            background: var(--primary-gradient);
+            background-clip: padding-box;
             flex-shrink: 0;
         }
 
@@ -382,7 +417,7 @@
         }
 
         .profile-name {
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 600;
             color: var(--text-primary);
             margin: 0;
@@ -392,7 +427,7 @@
         }
 
         .profile-email {
-            font-size: 12px;
+            font-size: 13px;
             color: var(--text-secondary);
             margin: 0;
             white-space: nowrap;
@@ -403,20 +438,20 @@
         .logout-btn {
             position: absolute;
             top: 50%;
-            right: 0.75rem;
+            right: 1rem;
             transform: translateY(-50%);
-            background: #dc2626;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
             border: none;
             color: white;
-            width: 24px;
-            height: 24px;
-            border-radius: 4px;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 12px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             opacity: 0;
         }
 
@@ -425,8 +460,8 @@
         }
 
         .logout-btn:hover {
-            background: #b91c1c;
             transform: translateY(-50%) scale(1.1);
+            box-shadow: var(--shadow-md);
         }
 
         /* Main Content */
@@ -445,18 +480,43 @@
         .main-header {
             background: white;
             border-bottom: 1px solid var(--border-color);
-            padding: 1rem 2rem;
+            padding: 1.5rem 2rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 1rem;
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-sm);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .header-left {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 1.5rem;
+        }
+
+        .header-title {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-title p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin: 0;
         }
 
         .auth-section {
@@ -466,166 +526,330 @@
         }
 
         .auth-status {
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 500;
+            padding: 0.75rem 1.25rem;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
         }
 
         .auth-status.connected {
-            background: #dcfce7;
-            color: #166534;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%);
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.2);
         }
 
         .auth-status.disconnected {
-            background: #fee2e2;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%);
             color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, 0.2);
         }
 
         .main-body {
             flex: 1;
             padding: 2rem;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.02) 0%, rgba(118, 75, 162, 0.02) 100%);
         }
 
         /* Welcome Banner */
         .welcome-banner {
-            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            background: var(--primary-gradient);
             color: white;
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 3rem;
             margin-bottom: 2rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: var(--shadow-lg);
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.1;
+        }
+
+        .banner-content {
+            position: relative;
+            z-index: 1;
         }
 
         .banner-content h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
+            font-size: 3rem;
+            font-weight: 800;
             margin-bottom: 1rem;
+            line-height: 1.2;
         }
 
         .banner-content p {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             opacity: 0.9;
-            margin-bottom: 1.5rem;
-            max-width: 500px;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            line-height: 1.6;
         }
 
         .banner-icon {
-            width: 120px;
-            height: 120px;
+            width: 140px;
+            height: 140px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3rem;
+            font-size: 4rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .quick-action-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quick-action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .quick-action-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-color);
+        }
+
+        .quick-action-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .quick-action-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 1.5rem auto;
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .quick-action-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .quick-action-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.4;
         }
 
         /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
 
         .stat-card {
             background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: var(--shadow);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
             border: 1px solid var(--border-color);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .stat-card.users::before {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+
+        .stat-card.requests::before {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        }
+
+        .stat-card.pending::before {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .stat-card.completed::before {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .stat-card.revenue::before {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
         }
 
         .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
         }
 
         .stat-content {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 1.5rem;
         }
 
         .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 24px;
+            flex-shrink: 0;
         }
 
         .stat-icon.users {
-            background: #dbeafe;
-            color: #2563eb;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(29, 78, 216, 0.05) 100%);
+            color: #1d4ed8;
         }
 
         .stat-icon.requests {
-            background: #fef3c7;
-            color: #d97706;
-        }
-
-        .stat-icon.pending {
-            background: #fee2e2;
-            color: #dc2626;
-        }
-
-        .stat-icon.completed {
-            background: #dcfce7;
-            color: #16a34a;
-        }
-
-        .stat-icon.revenue {
-            background: #f3e8ff;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(124, 58, 237, 0.05) 100%);
             color: #7c3aed;
         }
 
+        .stat-icon.pending {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%);
+            color: #d97706;
+        }
+
+        .stat-icon.completed {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%);
+            color: #059669;
+        }
+
+        .stat-icon.revenue {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%);
+        }
+
         .stat-info h3 {
-            font-size: 2rem;
-            font-weight: 700;
+            font-size: 2.2rem;
+            font-weight: 800;
             margin: 0;
             color: var(--text-primary);
+            line-height: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .stat-info p {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-secondary);
-            margin: 0;
+            margin: 0.5rem 0 0 0;
+            font-weight: 500;
+            line-height: 1.3;
         }
+
+        /*
+        .stat-trend {
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-top: 0.5rem;
+        }
+
+        .stat-trend.up {
+            color: #059669;
+        }
+
+        .stat-trend.down {
+            color: #dc2626;
+        }
+        */
 
         /* Content Sections */
         .content-section {
             background: white;
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 2rem;
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-md);
             border: 1px solid var(--border-color);
             margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .content-section:hover {
+            box-shadow: var(--shadow-lg);
         }
 
         .section-header {
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .section-header h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-size: 1.75rem;
+            font-weight: 700;
             margin-bottom: 0.5rem;
+            color: var(--text-primary);
         }
 
         .section-header p {
             color: var(--text-secondary);
             margin: 0;
+            font-size: 15px;
         }
 
         /* Tables */
@@ -633,154 +857,204 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 1rem;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
         }
 
         .data-table th,
         .data-table td {
-            padding: 0.75rem;
+            padding: 1rem;
             text-align: left;
             border-bottom: 1px solid var(--border-color);
         }
 
         .data-table th {
-            background: var(--bg-light);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
             font-weight: 600;
             color: var(--text-primary);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .data-table tr:hover {
             background: var(--bg-light);
         }
 
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
         /* Buttons */
         .btn-primary {
-            background: var(--primary-color);
+            background: var(--primary-gradient);
             border: none;
             color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 500;
+            padding: 0.875rem 1.75rem;
+            border-radius: 12px;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+            font-size: 14px;
+            box-shadow: var(--shadow-md);
         }
 
         .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
             box-shadow: var(--shadow-lg);
         }
 
         .btn-secondary {
-            background: #6b7280;
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
             border: none;
             color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            font-size: 14px;
+            font-size: 13px;
+            box-shadow: var(--shadow-sm);
         }
 
         .btn-secondary:hover {
-            background: #4b5563;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
         }
 
         .btn-success {
-            background: #16a34a;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             border: none;
             color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 14px;
+            transition: all 0.3s ease;
+            font-size: 13px;
+            box-shadow: var(--shadow-sm);
         }
 
         .btn-success:hover {
-            background: #15803d;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
         }
 
         .btn-danger {
-            background: #dc2626;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
             border: none;
             color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 14px;
+            transition: all 0.3s ease;
+            font-size: 13px;
+            box-shadow: var(--shadow-sm);
         }
 
         .btn-danger:hover {
-            background: #b91c1c;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
         }
 
         /* Status Badges */
         .badge-status {
             display: inline-flex;
             align-items: center;
-            gap: 0.25rem;
-            padding: 0.25rem 0.75rem;
+            gap: 0.375rem;
+            padding: 0.5rem 1rem;
             border-radius: 20px;
             font-size: 12px;
-            font-weight: 500;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.025em;
+            letter-spacing: 0.05em;
         }
 
         .badge-pending {
-            background: #fef3c7;
-            color: #92400e;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%);
+            color: #d97706;
+            border: 1px solid rgba(245, 158, 11, 0.2);
         }
 
         .badge-progress {
-            background: #dbeafe;
-            color: #1e40af;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.05) 100%);
+            color: #2563eb;
+            border: 1px solid rgba(59, 130, 246, 0.2);
         }
 
         .badge-resolved {
-            background: #dcfce7;
-            color: #166534;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%);
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.2);
         }
 
         .badge-confirmed {
-            background: #e0f2fe;
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(8, 145, 178, 0.05) 100%);
             color: #0891b2;
+            border: 1px solid rgba(6, 182, 212, 0.2);
         }
 
         .badge-cancelled {
-            background: #fee2e2;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%);
             color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, 0.2);
         }
 
         .badge-admin {
-            background: #f3e8ff;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(124, 58, 237, 0.05) 100%);
             color: #7c3aed;
+            border: 1px solid rgba(139, 92, 246, 0.2);
         }
 
         .badge-user {
-            background: #f1f5f9;
-            color: #475569;
+            background: linear-gradient(135deg, rgba(107, 114, 128, 0.1) 0%, rgba(75, 85, 99, 0.05) 100%);
+            color: #4b5563;
+            border: 1px solid rgba(107, 114, 128, 0.2);
         }
 
         /* Page System */
         .page {
             display: none;
+            animation: fadeIn 0.3s ease-out;
         }
 
         .page.active {
             display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .page-header {
@@ -788,17 +1062,24 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .page-title h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-size: 2rem;
+            font-weight: 700;
             margin: 0;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .page-title p {
             color: var(--text-secondary);
-            margin: 0;
+            margin: 0.5rem 0 0 0;
+            font-size: 15px;
         }
 
         /* Loading Animation */
@@ -806,13 +1087,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 3rem;
+            padding: 4rem;
         }
 
         .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f4f6;
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(102, 126, 234, 0.1);
             border-top: 4px solid var(--primary-color);
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -832,91 +1113,185 @@
 
         .empty-state i {
             font-size: 4rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
+            margin-bottom: 1.5rem;
+            opacity: 0.3;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .empty-state h3 {
             font-size: 1.5rem;
             margin-bottom: 0.5rem;
             color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .empty-state p {
+            font-size: 15px;
+            line-height: 1.6;
         }
 
         /* Alert */
         .alert {
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
             margin: 1rem 0;
+            border: 1px solid;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
 
         .alert-danger {
-            background: #fee2e2;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%);
             color: #dc2626;
-            border: 1px solid #fecaca;
+            border-color: rgba(239, 68, 68, 0.2);
         }
 
         .alert-info {
-            background: #dbeafe;
-            color: #1e40af;
-            border: 1px solid #bfdbfe;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.05) 100%);
+            color: #2563eb;
+            border-color: rgba(59, 130, 246, 0.2);
         }
 
         .alert-warning {
-            background: #fef3c7;
-            color: #92400e;
-            border: 1px solid #fde68a;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%);
+            color: #d97706;
+            border-color: rgba(245, 158, 11, 0.2);
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%);
+            color: #059669;
+            border-color: rgba(16, 185, 129, 0.2);
         }
 
         .d-none {
             display: none !important;
         }
 
-        /* Quick Actions */
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        /* Search and Filter */
+        .search-filter-section {
+            display: flex;
             gap: 1rem;
             margin-bottom: 2rem;
+            flex-wrap: wrap;
         }
 
-        .quick-action-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: var(--shadow);
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 3rem;
             border: 1px solid var(--border-color);
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .quick-action-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--primary-color);
-        }
-
-        .quick-action-icon {
-            width: 48px;
-            height: 48px;
             border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .filter-select {
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Feedback Cards */
+        .feedback-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .feedback-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .feedback-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .feedback-user {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .feedback-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
-            margin: 0 auto 1rem auto;
-            background: var(--primary-color);
             color: white;
-        }
-
-        .quick-action-title {
-            font-size: 14px;
             font-weight: 600;
-            margin-bottom: 0.5rem;
         }
 
-        .quick-action-desc {
-            font-size: 12px;
+        .feedback-rating {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .star {
+            color: #fbbf24;
+            font-size: 16px;
+        }
+
+        .star.empty {
+            color: #e5e7eb;
+        }
+
+        .feedback-content {
+            color: var(--text-primary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .feedback-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
             color: var(--text-secondary);
         }
 
@@ -938,6 +1313,7 @@
                 flex-direction: column;
                 text-align: center;
                 gap: 2rem;
+                padding: 2rem;
             }
 
             .banner-content h1 {
@@ -948,10 +1324,20 @@
                 grid-template-columns: 1fr;
             }
 
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
             .page-header {
                 flex-direction: column;
                 gap: 1rem;
                 align-items: flex-start;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
             }
 
             .toast-container {
@@ -961,17 +1347,67 @@
                 max-width: none;
             }
 
-            .toast-notification {
-                max-width: 100%;
-            }
-
             .data-table {
-                font-size: 14px;
+                font-size: 13px;
             }
 
             .data-table th,
             .data-table td {
-                padding: 0.5rem;
+                padding: 0.75rem 0.5rem;
+            }
+
+            .main-header {
+                padding: 1rem;
+            }
+
+            .main-body {
+                padding: 1rem;
+            }
+
+            .search-filter-section {
+                flex-direction: column;
+            }
+
+            .search-box {
+                min-width: auto;
+            }
+
+            .stat-info h3 {
+                font-size: 1.8rem;
+                white-space: nowrap;
+            }
+
+            .stat-info p {
+                font-size: 12px;
+            }
+
+            /* .stat-trend {
+                font-size: 10px;
+            } */
+        }
+
+        @media (max-width: 480px) {
+            .banner-content h1 {
+                font-size: 1.75rem;
+            }
+
+            .banner-content p {
+                font-size: 1rem;
+            }
+
+            .stat-card {
+                padding: 1.5rem;
+            }
+
+            .stat-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .stat-info h3 {
+                font-size: 1.6rem;
+                white-space: nowrap;
             }
         }
     </style>
@@ -984,20 +1420,20 @@
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
-        <div class="sidebar-logo">A</div>
+        <div class="sidebar-logo">D</div>
         <div class="sidebar-title">
             <h2>Dern Support</h2>
-            <p>Admin Panel</p>
+            <p>Admin Dashboard</p>
         </div>
     </div>
 
     <div class="sidebar-content">
         <div class="sidebar-group">
-            <div class="sidebar-group-label">Navigation</div>
+            <div class="sidebar-group-label">Asosiy Bo'lim</div>
             <ul class="sidebar-menu">
                 <li class="sidebar-menu-item">
                     <button class="sidebar-menu-button active" data-page="dashboard">
-                        <i class="fas fa-tachometer-alt"></i>
+                        <i class="fas fa-chart-line"></i>
                         <span class="sidebar-menu-text">Dashboard</span>
                     </button>
                 </li>
@@ -1017,18 +1453,6 @@
                     <button class="sidebar-menu-button" data-page="feedback">
                         <i class="fas fa-star"></i>
                         <span class="sidebar-menu-text">Feedback</span>
-                    </button>
-                </li>
-                <li class="sidebar-menu-item">
-                    <button class="sidebar-menu-button" data-page="analytics">
-                        <i class="fas fa-chart-bar"></i>
-                        <span class="sidebar-menu-text">Analitika</span>
-                    </button>
-                </li>
-                <li class="sidebar-menu-item">
-                    <button class="sidebar-menu-button" data-page="settings">
-                        <i class="fas fa-cog"></i>
-                        <span class="sidebar-menu-text">Sozlamalar</span>
                     </button>
                 </li>
             </ul>
@@ -1056,7 +1480,10 @@
             <button class="sidebar-toggle" onclick="toggleSidebar()">
                 <i class="fas fa-bars"></i>
             </button>
-            <h1>Admin Dashboard</h1>
+            <div class="header-title">
+                <h1>Admin Dashboard</h1>
+                <p>Tizimni boshqarish va nazorat paneli</p>
+            </div>
         </div>
         <div class="auth-section">
             <div class="auth-status" id="authStatus">
@@ -1072,7 +1499,7 @@
             <div class="page-header">
                 <div class="page-title">
                     <h2>Dashboard</h2>
-                    <p>Tizim umumiy ko'rinishi</p>
+                    <p>Tizim umumiy ko'rinishi va statistikalar</p>
                 </div>
             </div>
 
@@ -1080,7 +1507,7 @@
             <div class="welcome-banner">
                 <div class="banner-content">
                     <h1 id="welcomeText">Xush kelibsiz, Admin!</h1>
-                    <p>Tizimni boshqarish va nazorat qilish uchun admin paneli. Bu yerda barcha ma'lumotlar va statistikalarni ko'rishingiz mumkin.</p>
+                    <p>Tizimni boshqarish va nazorat qilish uchun zamonaviy admin paneli. Bu yerda barcha ma'lumotlar, statistikalar va tizim holatini real vaqtda kuzatishingiz mumkin.</p>
                 </div>
                 <div class="banner-icon">
                     👨‍💼
@@ -1094,7 +1521,7 @@
                         <i class="fas fa-users"></i>
                     </div>
                     <div class="quick-action-title">Foydalanuvchilar</div>
-                    <div class="quick-action-desc">Barcha foydalanuvchilarni boshqarish</div>
+                    <div class="quick-action-desc">Barcha foydalanuvchilarni boshqarish va nazorat qilish</div>
                 </div>
                 <div class="quick-action-card" onclick="switchPage('requests')">
                     <div class="quick-action-icon">
@@ -1110,18 +1537,11 @@
                     <div class="quick-action-title">Feedback</div>
                     <div class="quick-action-desc">Mijozlar fikr-mulohazalari</div>
                 </div>
-                <div class="quick-action-card" onclick="switchPage('analytics')">
-                    <div class="quick-action-icon">
-                        <i class="fas fa-chart-bar"></i>
-                    </div>
-                    <div class="quick-action-title">Analitika</div>
-                    <div class="quick-action-desc">Tizim statistikalari</div>
-                </div>
             </div>
 
             <!-- Stats Grid -->
             <div class="stats-grid" id="statsGrid">
-                <div class="stat-card">
+                <div class="stat-card users">
                     <div class="stat-content">
                         <div class="stat-icon users">
                             <i class="fas fa-users"></i>
@@ -1132,7 +1552,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card requests">
                     <div class="stat-content">
                         <div class="stat-icon requests">
                             <i class="fas fa-file-text"></i>
@@ -1143,7 +1563,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card pending">
                     <div class="stat-content">
                         <div class="stat-icon pending">
                             <i class="fas fa-clock"></i>
@@ -1154,7 +1574,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card completed">
                     <div class="stat-content">
                         <div class="stat-icon completed">
                             <i class="fas fa-check-double"></i>
@@ -1165,7 +1585,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card revenue">
                     <div class="stat-content">
                         <div class="stat-icon revenue">
                             <i class="fas fa-dollar-sign"></i>
@@ -1183,7 +1603,7 @@
                 <div class="section-header">
                     <div>
                         <h2>So'nggi so'rovlar</h2>
-                        <p>Eng yangi kelgan so'rovlar</p>
+                        <p>Eng yangi kelgan so'rovlar ro'yxati</p>
                     </div>
                     <button class="btn-primary" onclick="switchPage('requests')">
                         <i class="fas fa-eye"></i>
@@ -1206,7 +1626,7 @@
             <div class="page-header">
                 <div class="page-title">
                     <h2>Foydalanuvchilar</h2>
-                    <p>Barcha tizim foydalanuvchilarini boshqarish</p>
+                    <p>Barcha tizim foydalanuvchilarini boshqarish va nazorat qilish</p>
                 </div>
                 <button class="btn-primary" onclick="openAddUserModal()">
                     <i class="fas fa-plus"></i>
@@ -1230,8 +1650,31 @@
             <div class="page-header">
                 <div class="page-title">
                     <h2>So'rovlar</h2>
-                    <p>Barcha foydalanuvchi so'rovlarini boshqarish</p>
+                    <p>Barcha foydalanuvchi so'rovlarini boshqarish va nazorat qilish</p>
                 </div>
+            </div>
+
+            <div class="search-filter-section">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="requestSearch" placeholder="So'rov qidirish..." onkeyup="filterRequests()">
+                </div>
+                <select class="filter-select" id="requestStatusFilter" onchange="filterRequests()">
+                    <option value="all">Barcha holatlar</option>
+                    <option value="PENDING">Kutilmoqda</option>
+                    <option value="WAITING">Kutilmoqda</option>
+                    <option value="IN_PROGRESS">Jarayonda</option>
+                    <option value="CONFIRMED">Tasdiqlangan</option>
+                    <option value="DONE">Tugallangan</option>
+                    <option value="CANCELLED">Bekor qilingan</option>
+                </select>
+                <select class="filter-select" id="requestTypeFilter" onchange="filterRequests()">
+                    <option value="all">Barcha turlar</option>
+                    <option value="other">Other</option>
+                    <option value="hardware">Hardware</option>
+                    <option value="software">Software</option>
+                    <option value="network">Network</option>
+                </select>
             </div>
 
             <div class="content-section">
@@ -1250,7 +1693,7 @@
             <div class="page-header">
                 <div class="page-title">
                     <h2>Feedback</h2>
-                    <p>Mijozlar fikr-mulohazalari</p>
+                    <p>Mijozlar fikr-mulohazalari va baholash</p>
                 </div>
             </div>
 
@@ -1261,98 +1704,6 @@
 
                 <div id="feedbackContainer">
                     <!-- Feedback will be loaded here -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Analytics Page -->
-        <div id="page-analytics" class="page">
-            <div class="page-header">
-                <div class="page-title">
-                    <h2>Analitika</h2>
-                    <p>Tizim statistikalari va hisobotlar</p>
-                </div>
-            </div>
-
-            <div class="content-section">
-                <div class="section-header">
-                    <div>
-                        <h2>Tizim statistikalari</h2>
-                        <p>Umumiy ko'rsatkichlar</p>
-                    </div>
-                </div>
-
-                <div id="analyticsContainer">
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-content">
-                                <div class="stat-icon users">
-                                    <i class="fas fa-user-plus"></i>
-                                </div>
-                                <div class="stat-info">
-                                    <h3 id="newUsersToday">0</h3>
-                                    <p>Bugun yangi foydalanuvchilar</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-content">
-                                <div class="stat-icon requests">
-                                    <i class="fas fa-plus-circle"></i>
-                                </div>
-                                <div class="stat-info">
-                                    <h3 id="newRequestsToday">0</h3>
-                                    <p>Bugun yangi so'rovlar</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-content">
-                                <div class="stat-icon completed">
-                                    <i class="fas fa-check-circle"></i>
-                                </div>
-                                <div class="stat-info">
-                                    <h3 id="completedToday">0</h3>
-                                    <p>Bugun tugallangan</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-content">
-                                <div class="stat-icon revenue">
-                                    <i class="fas fa-chart-line"></i>
-                                </div>
-                                <div class="stat-info">
-                                    <h3 id="revenueToday">$0</h3>
-                                    <p>Bugungi daromad</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Settings Page -->
-        <div id="page-settings" class="page">
-            <div class="page-header">
-                <div class="page-title">
-                    <h2>Sozlamalar</h2>
-                    <p>Tizim sozlamalari</p>
-                </div>
-            </div>
-
-            <div class="content-section">
-                <div class="section-header">
-                    <div>
-                        <h2>Tizim sozlamalari</h2>
-                        <p>Asosiy tizim parametrlari</p>
-                    </div>
-                </div>
-
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i>
-                    Sozlamalar sahifasi ishlab chiqilmoqda...
                 </div>
             </div>
         </div>
@@ -1500,7 +1851,7 @@
                 success: title || 'Muvaffaqiyat!',
                 error: title || 'Xatolik!',
                 warning: title || 'Ogohlantirish!',
-                info: 'Ma\'lumot'
+                info: title || 'Ma\'lumot'
             };
 
             toast.innerHTML = `
@@ -1514,21 +1865,7 @@
                 <button class="toast-close" onclick="toastManager.remove(this.parentElement)">
                     <i class="fas fa-times"></i>
                 </button>
-                ${duration > 0 ? `
-                    <div class="toast-progress">
-                        <div class="toast-progress-bar" style="width: 100%; transition-duration: ${duration}ms;"></div>
-                    </div>
-                ` : ''}
             `;
-
-            if (duration > 0) {
-                setTimeout(() => {
-                    const progressBar = toast.querySelector('.toast-progress-bar');
-                    if (progressBar) {
-                        progressBar.style.width = '0%';
-                    }
-                }, 100);
-            }
 
             return toast;
         }
@@ -1691,12 +2028,6 @@
                 case 'feedback':
                     loadFeedbacks();
                     break;
-                case 'analytics':
-                    loadAnalytics();
-                    break;
-                case 'settings':
-                    // Settings page
-                    break;
             }
         }
     }
@@ -1738,7 +2069,7 @@
         document.getElementById('totalRequests').textContent = totalRequests;
         document.getElementById('pendingRequests').textContent = pendingRequests;
         document.getElementById('completedRequests').textContent = completedRequests;
-        document.getElementById('totalRevenue').textContent = `$${totalRevenue.toFixed(2)}`;
+        document.getElementById('totalRevenue').textContent = `$${Math.round(totalRevenue)}`;
     }
 
     function loadRecentRequests(requests) {
@@ -1770,28 +2101,50 @@
                     </tr>
                 </thead>
                 <tbody>
-                    ${requests.map(req => `
-                        <tr>
-                            <td>#${req.id.slice(-6)}</td>
-                            <td>${req.uid || 'Noma\'lum'}</td>
-                            <td>${req.issueName || 'Noma\'lum'}</td>
-                            <td>${req.problemType || '—'}</td>
-                            <td>${getStatusBadge(req.status)}</td>
-                            <td>${req.price ? `$${req.price}` : '—'}</td>
-                            <td>${formatDate(req.createdAt)}</td>
-                            <td>
-                                <button class="btn-secondary" onclick="openSendMailModal('${req.id}')">
+                    ${requests.map(req => {
+            let actionButtons = '';
+
+            // Message button: faqat WAITING holatdagi OTHER turdagi requestlar uchun
+            if (req.status === 'WAITING' && req.problemType === 'other') {
+                actionButtons += `
+                                <button class="btn-icon btn-secondary" onclick="openSendMailModal('${req.id}')" title="Xabar yuborish">
                                     <i class="fas fa-envelope"></i>
                                 </button>
-                                <button class="btn-success" onclick="updateRequestStatus('${req.id}', 'DONE')">
+                            `;
+            }
+
+            // Progress button: WAITING (other bo'lmagan) va CONFIRMED (other) uchun
+            if ((req.status === 'WAITING' && req.problemType !== 'other') ||
+                (req.status === 'CONFIRMED' && req.problemType === 'other')) {
+                actionButtons += `
+                                <button class="btn-icon btn-success" onclick="updateRequestStatus('${req.id}', 'IN_PROGRESS')" title="Jarayonga o'tkazish">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                            `;
+            }
+
+            // Done button: faqat IN_PROGRESS holatdagi requestlar uchun
+            if (req.status === 'IN_PROGRESS') {
+                actionButtons += `
+                                <button class="btn-icon btn-success" onclick="updateRequestStatus('${req.id}', 'DONE')" title="Tugallash">
                                     <i class="fas fa-check"></i>
                                 </button>
-                                <button class="btn-danger" onclick="updateRequestStatus('${req.id}', 'CANCELLED')">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    `).join('')}
+                            `;
+            }
+
+            return `
+                            <tr>
+                                <td>#${req.id.slice(-6)}</td>
+                                <td>${req.uid || 'Noma\'lum'}</td>
+                                <td>${req.issueName || 'Noma\'lum'}</td>
+                                <td>${req.problemType || '—'}</td>
+                                <td>${getStatusBadge(req.status)}</td>
+                                <td>${req.price ? `$${req.price}` : '—'}</td>
+                                <td>${formatDate(req.createdAt)}</td>
+                                <td>${actionButtons || '—'}</td>
+                            </tr>
+                        `;
+        }).join('')}
                 </tbody>
             </table>
         `;
@@ -1825,41 +2178,7 @@
                 return;
             }
 
-            const tableHTML = `
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>UID</th>
-                            <th>Foydalanuvchi nomi</th>
-                            <th>Email</th>
-                            <th>Rol</th>
-                            <th>Ro'yxatdan o'tgan</th>
-                            <th>Amallar</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${users.map(user => `
-                            <tr>
-                                <td>${user.uid || 'Noma\'lum'}</td>
-                                <td>${user.username || 'Noma\'lum'}</td>
-                                <td>${user.email || 'Noma\'lum'}</td>
-                                <td>${user.isAdmin ? '<span class="badge-admin">Admin</span>' : '<span class="badge-user">Foydalanuvchi</span>'}</td>
-                                <td>${formatDate(user.createdAt)}</td>
-                                <td>
-                                    <button class="btn-secondary" onclick="editUser('${user.uid}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn-danger" onclick="deleteUser('${user.uid}')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            `;
-
-            container.innerHTML = tableHTML;
+            displayUsers(users);
 
         } catch (err) {
             console.error('Error loading users:', err);
@@ -1874,6 +2193,53 @@
         } finally {
             if (spinner) spinner.style.display = 'none';
         }
+    }
+
+    function displayUsers(users) {
+        const container = document.getElementById('usersContainer');
+
+        const tableHTML = `
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>UID</th>
+                        <th>Foydalanuvchi</th>
+                        <th>Email</th>
+                        <th>Rol</th>
+                        <th>Ro'yxatdan o'tgan</th>
+                        <th>Amallar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${users.map(user => `
+                        <tr>
+                            <td>#${(user.uid || '').slice(-6)}</td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 16px;">
+                                        ${(user.username || 'U').charAt(0).toUpperCase()}
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 600; color: var(--text-primary);">${user.username || 'Noma\'lum'}</div>
+                                        <div style="font-size: 13px; color: var(--text-secondary);">#${(user.uid || '').slice(-6)}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>${user.email || 'Noma\'lum'}</td>
+                            <td>${user.isAdmin ? '<span class="badge-admin"><i class="fas fa-shield-alt"></i> Admin</span>' : '<span class="badge-user"><i class="fas fa-user"></i> Foydalanuvchi</span>'}</td>
+                            <td>${formatDate(user.createdAt)}</td>
+                            <td>
+                                <button class="btn-icon btn-danger" onclick="deleteUser('${user.uid}')" title="O'chirish">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+
+        container.innerHTML = tableHTML;
     }
 
     // Load requests
@@ -1902,55 +2268,7 @@
                 return;
             }
 
-            const tableHTML = `
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Foydalanuvchi</th>
-                            <th>Muammo</th>
-                            <th>Tavsif</th>
-                            <th>Turi</th>
-                            <th>Status</th>
-                            <th>Narx</th>
-                            <th>Joylashuv</th>
-                            <th>Sana</th>
-                            <th>Amallar</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${requests.map(req => `
-                            <tr>
-                                <td>#${req.id.slice(-6)}</td>
-                                <td>${req.uid || 'Noma\'lum'}</td>
-                                <td>${req.issueName || 'Noma\'lum'}</td>
-                                <td title="${req.description || ''}">${(req.description || '').substring(0, 50)}${(req.description || '').length > 50 ? '...' : ''}</td>
-                                <td>${req.problemType || '—'}</td>
-                                <td>${getStatusBadge(req.status)}</td>
-                                <td>${req.price ? `$${req.price}` : '—'}</td>
-                                <td>${req.location || '—'}</td>
-                                <td>${formatDate(req.createdAt)}</td>
-                                <td>
-                                    <button class="btn-secondary" onclick="openSendMailModal('${req.id}')" title="Xabar yuborish">
-                                        <i class="fas fa-envelope"></i>
-                                    </button>
-                                    <button class="btn-success" onclick="updateRequestStatus('${req.id}', 'IN_PROGRESS')" title="Jarayonga o'tkazish">
-                                        <i class="fas fa-play"></i>
-                                    </button>
-                                    <button class="btn-success" onclick="updateRequestStatus('${req.id}', 'DONE')" title="Tugallash">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                    <button class="btn-danger" onclick="updateRequestStatus('${req.id}', 'CANCELLED')" title="Bekor qilish">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            `;
-
-            container.innerHTML = tableHTML;
+            displayRequests(requests);
 
         } catch (err) {
             console.error('Error loading requests:', err);
@@ -1967,6 +2285,107 @@
         }
     }
 
+    function displayRequests(requests) {
+        const container = document.getElementById('requestsContainer');
+
+        const tableHTML = `
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Foydalanuvchi</th>
+                        <th>Muammo</th>
+                        <th>Tavsif</th>
+                        <th>Turi</th>
+                        <th>Status</th>
+                        <th>Narx</th>
+                        <th>Joylashuv</th>
+                        <th>Sana</th>
+                        <th>Amallar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${requests.map(req => {
+            let actionButtons = '';
+
+            // Message button: faqat WAITING holatdagi OTHER turdagi requestlar uchun
+            if (req.status === 'WAITING' && req.problemType === 'other') {
+                actionButtons += `
+                                <button class="btn-icon btn-secondary" onclick="openSendMailModal('${req.id}')" title="Xabar yuborish">
+                                    <i class="fas fa-envelope"></i>
+                                </button>
+                            `;
+            }
+
+            // Progress button: faqat WAITING (other bo'lmagan) va CONFIRMED (other) uchun
+            if ((req.status === 'WAITING' && req.problemType !== 'other') ||
+                (req.status === 'CONFIRMED' && req.problemType === 'other')) {
+                actionButtons += `
+                                <button class="btn-icon btn-success" onclick="updateRequestStatus('${req.id}', 'IN_PROGRESS')" title="Jarayonga o'tkazish">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                            `;
+            }
+
+            // Done button: faqat IN_PROGRESS holatdagi requestlar uchun
+            if (req.status === 'IN_PROGRESS') {
+                actionButtons += `
+                                <button class="btn-icon btn-success" onclick="updateRequestStatus('${req.id}', 'DONE')" title="Tugallash">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            `;
+            }
+
+            // Cancel button: barcha aktiv requestlar uchun (DONE va CANCELLED dan tashqari)
+            if (req.status !== 'DONE' && req.status !== 'CANCELLED') {
+                actionButtons += `
+                                <button class="btn-icon btn-danger" onclick="updateRequestStatus('${req.id}', 'CANCELLED')" title="Bekor qilish">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            `;
+            }
+
+            return `
+                            <tr>
+                                <td>#${req.id.slice(-6)}</td>
+                                <td>${req.uid || 'Noma\'lum'}</td>
+                                <td>${req.issueName || 'Noma\'lum'}</td>
+                                <td title="${req.description || ''}">${(req.description || '').substring(0, 50)}${(req.description || '').length > 50 ? '...' : ''}</td>
+                                <td>${req.problemType || '—'}</td>
+                                <td>${getStatusBadge(req.status)}</td>
+                                <td>${req.price ? `$${req.price}` : '—'}</td>
+                                <td>${req.location || '—'}</td>
+                                <td>${formatDate(req.createdAt)}</td>
+                                <td>${actionButtons || '—'}</td>
+                            </tr>
+                        `;
+        }).join('')}
+                </tbody>
+            </table>
+        `;
+
+        container.innerHTML = tableHTML;
+    }
+
+    function filterRequests() {
+        const searchTerm = document.getElementById('requestSearch').value.toLowerCase();
+        const statusFilter = document.getElementById('requestStatusFilter').value;
+        const typeFilter = document.getElementById('requestTypeFilter').value;
+
+        const filteredRequests = currentRequests.filter(request => {
+            const matchesSearch = (request.issueName || '').toLowerCase().includes(searchTerm) ||
+                (request.uid || '').toLowerCase().includes(searchTerm) ||
+                request.id.toLowerCase().includes(searchTerm);
+
+            const matchesStatus = statusFilter === 'all' || request.status === statusFilter;
+            const matchesType = typeFilter === 'all' || request.problemType === typeFilter;
+
+            return matchesSearch && matchesStatus && matchesType;
+        });
+
+        displayRequests(filteredRequests);
+    }
+
     // Load feedbacks
     async function loadFeedbacks() {
         const spinner = document.getElementById('feedbackSpinner');
@@ -1975,98 +2394,133 @@
         if (spinner) spinner.style.display = 'flex';
 
         try {
-            const response = await apiRequest('/admin/feedback');
+            const [feedbacksRes, statsRes] = await Promise.all([
+                apiRequest('/admin/feedbacks'),
+                apiRequest('/admin/feedbacksStats')
+            ]);
 
-            if (!response.ok) throw new Error('Failed to load feedbacks');
+            if (!feedbacksRes.ok || !statsRes.ok) throw new Error('Failed to load feedbacks');
 
-            const data = await response.json();
-            const feedbacks = Array.isArray(data.feedbacks) ? data.feedbacks : [];
+            const feedbacksData = await feedbacksRes.json();
+            const statsData = await statsRes.json();
+
+            const feedbacks = feedbacksData.feedbacks || [];
+            const stats = statsData.stats || [];
+
             currentFeedbacks = feedbacks;
 
             if (!feedbacks || feedbacks.length === 0) {
                 container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-star"></i>
-                        <h3>Hozircha feedback yo'q</h3>
-                        <p>Mijozlar feedback qoldirgan vaqtda bu yerda ko'rsatiladi</p>
-                    </div>
-                `;
+                <div class="empty-state">
+                    <i class="fas fa-star"></i>
+                    <h3>Hozircha feedback yo'q</h3>
+                    <p>Mijozlar feedback qoldirgan vaqtda bu yerda ko'rsatiladi</p>
+                </div>
+            `;
                 return;
             }
 
-            const tableHTML = `
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Foydalanuvchi</th>
-                            <th>So'rov ID</th>
-                            <th>Reyting</th>
-                            <th>Izoh</th>
-                            <th>Sana</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${feedbacks.map(feedback => `
-                            <tr>
-                                <td>${feedback.uid || 'Noma\'lum'}</td>
-                                <td>#${(feedback.requestId || '').slice(-6)}</td>
-                                <td>${generateStars(feedback.rating || 0)}</td>
-                                <td title="${feedback.comment || ''}">${(feedback.comment || '').substring(0, 100)}${(feedback.comment || '').length > 100 ? '...' : ''}</td>
-                                <td>${formatDate(feedback.createdAt)}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            `;
-
-            container.innerHTML = tableHTML;
+            displayFeedbacks(feedbacks, stats);
 
         } catch (err) {
             console.error('Error loading feedbacks:', err);
             container.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <h3>Feedbacklarni yuklashda xatolik</h3>
-                    <p>Iltimos, qaytadan urinib ko'ring</p>
-                </div>
-            `;
+            <div class="empty-state">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Feedbacklarni yuklashda xatolik</h3>
+                <p>Iltimos, qaytadan urinib ko'ring</p>
+            </div>
+        `;
             toastManager.error('Feedbacklarni yuklashda xatolik yuz berdi');
         } finally {
             if (spinner) spinner.style.display = 'none';
         }
     }
 
-    // Load analytics
-    function loadAnalytics() {
-        const today = new Date();
-        const todayStr = today.toISOString().split('T')[0];
+    function displayFeedbacks(feedbacks, stats) {
+        const container = document.getElementById('feedbackContainer');
 
-        const newUsersToday = currentUsers.filter(user => {
-            const userDate = new Date(user.createdAt).toISOString().split('T')[0];
-            return userDate === todayStr;
-        }).length;
+        // Simple statistics
+        const totalFeedbacks = feedbacks.length;
+        const overallAverage = feedbacks.reduce((sum, f) => sum + f.rating, 0) / totalFeedbacks;
+        const positiveCount = feedbacks.filter(f => f.rating >= 4).length;
 
-        const newRequestsToday = currentRequests.filter(req => {
-            const reqDate = new Date(req.createdAt).toISOString().split('T')[0];
-            return reqDate === todayStr;
-        }).length;
+        // Simple stats section
+        const statsHTML = `
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="stat-card">
+                <div class="stat-content">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(29, 78, 216, 0.05) 100%); color: #1d4ed8;">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>${totalFeedbacks}</h3>
+                        <p>Jami feedbacklar</p>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-content">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); color: #d97706;">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>${overallAverage.toFixed(1)}</h3>
+                        <p>O'rtacha reyting</p>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-content">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%); color: #059669;">
+                        <i class="fas fa-thumbs-up"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>${positiveCount}</h3>
+                        <p>Ijobiy feedbacklar</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
 
-        const completedToday = currentRequests.filter(req => {
-            const reqDate = new Date(req.updatedAt || req.createdAt).toISOString().split('T')[0];
-            return reqDate === todayStr && req.status === 'DONE';
-        }).length;
+        // Simple feedback list
+        const feedbacksHTML = `
+        <div class="content-section">
+            <h3 style="margin-bottom: 1.5rem; color: var(--text-primary);">Barcha feedbacklar</h3>
+            <div style="display: grid; gap: 1rem;">
+                ${feedbacks.map(feedback => `
+                    <div class="feedback-card">
+                        <div class="feedback-header">
+                            <div class="feedback-user">
+                                <div class="feedback-avatar">
+                                    ${(feedback.uid || 'U').slice(-1).toUpperCase()}
+                                </div>
+                                <div>
+                                    <div style="font-weight: 600;">Foydalanuvchi</div>
+                                    <div style="font-size: 13px; color: var(--text-secondary);">#${(feedback.uid || '').slice(-6)}</div>
+                                </div>
+                            </div>
+                            <div class="feedback-rating">
+                                ${Array.from({length: 5}, (_, i) =>
+            `<i class="fas fa-star ${i < feedback.rating ? 'star' : 'star empty'}"></i>`
+        ).join('')}
+                            </div>
+                        </div>
+                        <div class="feedback-content">
+                            ${feedback.comment || 'Izoh qoldirilmagan'}
+                        </div>
+                        <div class="feedback-meta">
+                            <span>So'rov ID: #${(feedback.requestId || '').slice(-6)}</span>
+                            <span>${formatDate(feedback.createdAt)}</span>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
 
-        const revenueToday = currentRequests
-            .filter(req => {
-                const reqDate = new Date(req.updatedAt || req.createdAt).toISOString().split('T')[0];
-                return reqDate === todayStr && req.status === 'DONE' && req.price;
-            })
-            .reduce((sum, req) => sum + (parseFloat(req.price) || 0), 0);
-
-        document.getElementById('newUsersToday').textContent = newUsersToday;
-        document.getElementById('newRequestsToday').textContent = newRequestsToday;
-        document.getElementById('completedToday').textContent = completedToday;
-        document.getElementById('revenueToday').textContent = `$${revenueToday.toFixed(2)}`;
+        container.innerHTML = statsHTML + feedbacksHTML;
     }
 
     // Fetch admin profile
@@ -2186,24 +2640,23 @@
             clearError();
 
             const requestId = document.getElementById('mailRequestId').value;
-            const mailText = document.getElementById('mailText').value.trim();
+            const adminMessage = document.getElementById('mailText').value.trim();
             const price = document.getElementById('mailPrice').value;
 
-            if (!mailText) {
+            if (!adminMessage) {
                 return showError('Xabar matnini kiriting.');
             }
 
             try {
                 const body = {
-                    id: requestId,
-                    mailText: mailText
+                    adminMessage: adminMessage
                 };
 
                 if (price) {
                     body.price = parseFloat(price);
                 }
 
-                const response = await apiRequest('/admin/send-mail', {
+                const response = await apiRequest(`/admin/notify-other/${requestId}`, {
                     method: 'POST',
                     body: JSON.stringify(body)
                 });
@@ -2213,6 +2666,8 @@
                     modal.hide();
                     form.reset();
                     toastManager.success('Xabar muvaffaqiyatli yuborildi!');
+                    loadRequests();
+                    loadDashboardData();
                 } else {
                     const errorData = await response.json();
                     throw new Error(errorData.error || 'Xabar yuborishda xatolik');
@@ -2271,8 +2726,8 @@
     // Action functions
     async function updateRequestStatus(requestId, newStatus) {
         try {
-            const response = await apiRequest(`/admin/requests/${requestId}/status`, {
-                method: 'PUT',
+            const response = await apiRequest(`/admin/request/${requestId}`, {
+                method: 'PATCH',
                 body: JSON.stringify({ status: newStatus })
             });
 
@@ -2293,7 +2748,7 @@
         if (!confirm('Haqiqatan ham bu foydalanuvchini o\'chirmoqchimisiz?')) return;
 
         try {
-            const response = await apiRequest(`/admin/users/${uid}`, {
+            const response = await apiRequest(`/admin/user?uid=${uid}`, {
                 method: 'DELETE'
             });
 
@@ -2308,10 +2763,6 @@
             console.error('Error deleting user:', err);
             toastManager.error('Foydalanuvchini o\'chirishda xatolik yuz berdi');
         }
-    }
-
-    function editUser(uid) {
-        toastManager.info('Foydalanuvchini tahrirlash funksiyasi ishlab chiqilmoqda...');
     }
 
     // Utility functions
@@ -2332,18 +2783,6 @@
             default:
                 return `<span class="badge-pending">${status}</span>`;
         }
-    }
-
-    function generateStars(rating) {
-        let stars = '';
-        for (let i = 1; i <= 5; i++) {
-            if (i <= rating) {
-                stars += '<i class="fas fa-star" style="color: #fbbf24;"></i>';
-            } else {
-                stars += '<i class="fas fa-star" style="color: #d1d5db;"></i>';
-            }
-        }
-        return stars;
     }
 
     function formatDate(dateString) {
