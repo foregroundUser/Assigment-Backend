@@ -2,9 +2,3506 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dern Support Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --sidebar-width: 280px;
+            --sidebar-collapsed-width: 80px;
+            --primary-color: #3b82f6;
+            --primary-dark: #2563eb;
+            --sidebar-bg: #ffffff;
+            --sidebar-hover: #f1f5f9;
+            --sidebar-active: #3b82f6;
+            --sidebar-border: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --bg-light: #f8fafc;
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Toast Notification Styles */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+        }
+
+        .toast-notification {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 100%;
+            word-wrap: break-word;
+        }
+
+        .toast-notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .toast-notification.success {
+            border-left-color: #10b981;
+        }
+
+        .toast-notification.error {
+            border-left-color: #ef4444;
+        }
+
+        .toast-notification.warning {
+            border-left-color: #f59e0b;
+        }
+
+        .toast-notification.info {
+            border-left-color: #3b82f6;
+        }
+
+        .toast-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .toast-notification.success .toast-icon {
+            background: #10b981;
+        }
+
+        .toast-notification.error .toast-icon {
+            background: #ef4444;
+        }
+
+        .toast-notification.warning .toast-icon {
+            background: #f59e0b;
+        }
+
+        .toast-notification.info .toast-icon {
+            background: #3b82f6;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 2px;
+            color: var(--text-primary);
+        }
+
+        .toast-message {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .toast-close:hover {
+            background: #f3f4f6;
+            color: var(--text-primary);
+        }
+
+        .toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 12px 12px;
+            overflow: hidden;
+        }
+
+        .toast-progress-bar {
+            height: 100%;
+            background: currentColor;
+            transition: width linear;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .toast-notification.success .toast-progress-bar {
+            background: #10b981;
+        }
+
+        .toast-notification.error .toast-progress-bar {
+            background: #ef4444;
+        }
+
+        .toast-notification.warning .toast-progress-bar {
+            background: #f59e0b;
+        }
+
+        .toast-notification.info .toast-progress-bar {
+            background: #3b82f6;
+        }
+
+        /* Updated Sidebar Styles - Hide/Show instead of collapse */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--sidebar-bg);
+            color: var(--text-primary);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--sidebar-border);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transform: translateX(0);
+        }
+
+        body.sidebar-hidden .sidebar {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-header {
+            padding: 1.5rem 1rem;
+            border-bottom: 1px solid var(--sidebar-border);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-height: 80px;
+            position: relative;
+        }
+
+        .sidebar-logo {
+            width: 32px;
+            height: 32px;
+            background: var(--primary-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+            color: white;
+        }
+
+        .sidebar-title {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .sidebar-title h2 {
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-primary);
+        }
+
+        .sidebar-title p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        /* Updated sidebar toggle - moved to header */
+        .sidebar-toggle {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .sidebar-toggle:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .sidebar-content {
+            flex: 1;
+            padding: 1rem 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .sidebar-group {
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-group-label {
+            padding: 0 1rem;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu-item {
+            position: relative;
+            margin: 0 0.5rem;
+        }
+
+        .sidebar-menu-button {
+            width: calc(100% - 1rem);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .sidebar-menu-button:hover {
+            background: var(--sidebar-hover);
+            color: var(--text-primary);
+        }
+
+        .sidebar-menu-button.active {
+            background: var(--sidebar-active);
+            color: white;
+        }
+
+        .sidebar-menu-button i {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 16px;
+        }
+
+        .sidebar-menu-text {
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        /* Profile Section */
+        .sidebar-footer {
+            padding: 1rem;
+            border-top: 1px solid var(--sidebar-border);
+        }
+
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .profile-section:hover {
+            background: var(--sidebar-hover);
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-color);
+            flex-shrink: 0;
+        }
+
+        .profile-info {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .profile-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .profile-email {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Logout button in profile section */
+        .logout-btn {
+            position: absolute;
+            top: 50%;
+            right: 0.75rem;
+            transform: translateY(-50%);
+            background: #dc2626;
+            border: none;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            opacity: 0;
+        }
+
+        .profile-section:hover .logout-btn {
+            opacity: 1;
+        }
+
+        .logout-btn:hover {
+            background: #b91c1c;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body.sidebar-hidden .main-content {
+            margin-left: 0;
+        }
+
+        .main-header {
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            box-shadow: var(--shadow);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .auth-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .auth-status {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .auth-status.connected {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .auth-status.disconnected {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .main-body {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        /* Welcome Banner */
+        .welcome-banner {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .banner-content h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .banner-content p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            max-width: 500px;
+        }
+
+        .banner-icon {
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .stat-icon.pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .stat-icon.progress {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .stat-icon.completed {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .stat-icon.confirmed {
+            background: #e0f2fe;
+            color: #0891b2;
+        }
+
+        .stat-icon.total {
+            background: #f3e8ff;
+            color: #7c3aed;
+        }
+
+        .stat-info h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--text-primary);
+        }
+
+        .stat-info p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        /* Enhanced Request Cards */
+        .requests-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .section-header {
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .filter-tab {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .filter-tab.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .filter-tab:hover:not(.active) {
+            background: var(--sidebar-hover);
+        }
+
+        .request-card {
+            display: flex;
+            gap: 1rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            transition: all 0.2s ease;
+            background: white;
+            position: relative;
+        }
+
+        .request-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color);
+        }
+
+        .request-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .request-content {
+            flex: 1;
+        }
+
+        .request-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .request-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+            flex: 1;
+        }
+
+        /* Status Badges */
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .badge-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-progress {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-resolved {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-confirmed {
+            background: #e0f2fe;
+            color: #0891b2;
+        }
+
+        .badge-cancelled {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .request-description {
+            color: var(--text-secondary);
+            margin: 0.5rem 0;
+            font-size: 14px;
+        }
+
+        .request-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 0.75rem;
+        }
+
+        .request-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .price {
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        .request-admin-note {
+            background: #f3f4f6;
+            border-left: 4px solid #3b82f6;
+            border-radius: 0.375rem;
+            padding: 0.75rem;
+            margin: 0.75rem 0;
+        }
+
+        .request-admin-note strong {
+            display: block;
+            margin-bottom: 0.25rem;
+            color: #1e3a8a;
+        }
+
+        .request-actions {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-action {
+            padding: 0.25rem 0.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-confirm {
+            background: #16a34a;
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            background: #15803d;
+        }
+
+        .btn-cancel {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background: #b91c1c;
+        }
+
+        /* Confirmed Items Section */
+        .confirmed-section {
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #0891b2;
+        }
+
+        .confirmed-section h3 {
+            color: #0891b2;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .confirmed-item {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid #0891b2;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .confirmed-item:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Feedback Section */
+        .feedback-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        .feedback-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .feedback-rating {
+            display: flex;
+            gap: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .star {
+            color: #fbbf24;
+            font-size: 16px;
+        }
+
+        .star.empty {
+            color: #d1d5db;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Page System */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .page-title p {
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        /* Loading Animation */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        /* Progress Bar */
+        .progress {
+            height: 8px;
+            background-color: #f3f4f6;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .alert-danger {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+
+        .d-none {
+            display: none !important;
+        }
+
+        /* Rating Input Styles */
+        .rating-input {
+            display: flex;
+            gap: 0.25rem;
+            margin: 0.5rem 0;
+        }
+
+        .rating-input .fas.fa-star {
+            font-size: 24px;
+            color: #d1d5db;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .rating-input .fas.fa-star:hover {
+            color: #fbbf24;
+        }
+
+        /* Enhanced Profile Styles */
+        .profile-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .profile-avatar-section {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .profile-avatar-large {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary-color);
+            flex-shrink: 0;
+        }
+
+        .profile-main-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .profile-display-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-primary);
+        }
+
+        .profile-email-display {
+            color: var(--text-secondary);
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .profile-details {
+            background: var(--bg-light);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .profile-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .profile-detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .profile-detail-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin: 0;
+        }
+
+        .profile-detail-value {
+            font-size: 14px;
+            color: var(--text-primary);
+            margin: 0;
+            font-weight: 500;
+        }
+
+        /* Enhanced inbox styles */
+        .request-admin-note {
+            background: #f8fafc;
+            border-left: 4px solid var(--primary-color);
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .request-admin-note strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .btn-action.ms-2 {
+            margin-left: 0.5rem;
+        }
+
+        /* Activity Timeline */
+        .activity-timeline {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+
+        .timeline-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .timeline-icon.success {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .timeline-icon.info {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .timeline-icon.warning {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .timeline-content h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0 0 0.25rem 0;
+        }
+
+        .timeline-content p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .timeline-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .quick-action-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .quick-action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color);
+        }
+
+        .quick-action-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin: 0 auto 1rem auto;
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .quick-action-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .quick-action-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive profile */
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .profile-avatar-section {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .profile-detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .welcome-banner {
+                flex-direction: column;
+                text-align: center;
+                gap: 2rem;
+            }
+
+            .banner-content h1 {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .request-card {
+                flex-direction: column;
+            }
+
+            .request-image {
+                width: 100%;
+                height: 200px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .toast-container {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+
+            .toast-notification {
+                max-width: 100%;
+            }
+        }
+    </style>
 </head>
-<body>
-Hello User
+<body class="">
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="sidebar-logo">D</div>
+        <div class="sidebar-title">
+            <h2>Dern Support</h2>
+            <p>User Portal</p>
+        </div>
+    </div>
+
+    <div class="sidebar-content">
+        <div class="sidebar-group">
+            <div class="sidebar-group-label">Navigation</div>
+            <ul class="sidebar-menu">
+                <li class="sidebar-menu-item">
+                    <button class="sidebar-menu-button active" data-page="dashboard">
+                        <i class="fas fa-home"></i>
+                        <span class="sidebar-menu-text">Dashboard</span>
+                    </button>
+                </li>
+                <li class="sidebar-menu-item">
+                    <button class="sidebar-menu-button" data-page="inbox">
+                        <i class="fas fa-inbox"></i>
+                        <span class="sidebar-menu-text">Inbox</span>
+                    </button>
+                </li>
+                <li class="sidebar-menu-item">
+                    <button class="sidebar-menu-button" data-page="requests">
+                        <i class="fas fa-file-text"></i>
+                        <span class="sidebar-menu-text">So'rovlar</span>
+                    </button>
+                </li>
+                <li class="sidebar-menu-item">
+                    <button class="sidebar-menu-button" data-page="feedback">
+                        <i class="fas fa-star"></i>
+                        <span class="sidebar-menu-text">Feedback</span>
+                    </button>
+                </li>
+                <li class="sidebar-menu-item">
+                    <button class="sidebar-menu-button" data-page="profile">
+                        <i class="fas fa-user"></i>
+                        <span class="sidebar-menu-text">Profile</span>
+                    </button>
+                </li>
+                <li class="sidebar-menu-item">
+                    <button class="sidebar-menu-button" data-page="history">
+                        <i class="fas fa-history"></i>
+                        <span class="sidebar-menu-text">Tarix</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="sidebar-footer">
+        <div class="profile-section">
+            <img src="https://www.mona.uwi.edu/modlang/sites/default/files/modlang/male-avatar-placeholder.png" alt="Profile" class="profile-avatar" id="profileAvatar">
+            <div class="profile-info">
+                <p class="profile-name" id="profileName">Loading...</p>
+                <p class="profile-email" id="profileEmail">user@example.com</p>
+            </div>
+            <button class="logout-btn" onclick="handleLogout()" title="Chiqish">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <div class="main-header">
+        <div class="header-left">
+            <!-- Sidebar Toggle Button moved to header -->
+            <button class="sidebar-toggle" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1>Dern Support Dashboard</h1>
+        </div>
+        <div class="auth-section">
+            <div class="auth-status" id="authStatus">
+                <i class="fas fa-wifi"></i>
+                Ulanmoqda...
+            </div>
+        </div>
+    </div>
+
+    <div class="main-body">
+        <!-- Dashboard Page -->
+        <div id="page-dashboard" class="page active">
+            <div class="page-header">
+                <div class="page-title">
+                    <h2>Dashboard</h2>
+                    <p>Asosiy ma'lumotlar paneli</p>
+                </div>
+                <button class="btn-primary" onclick="openNewRequestModal()">
+                    <i class="fas fa-plus"></i>
+                    Yangi so'rov qo'shish
+                </button>
+            </div>
+
+            <!-- Welcome Banner -->
+            <div class="welcome-banner">
+                <div class="banner-content">
+                    <h1 id="welcomeText">Salom!</h1>
+                    <p>Bugungi kundagi so'rovlaringizga tezkor javob oling. Texnik xizmat ko'rsatish jamoasi sizni kutmoqda!</p>
+                    <button class="btn-primary" onclick="openFeedbackModal()">
+                        <i class="fas fa-comment"></i>
+                        Fikr bildirish
+                    </button>
+                </div>
+                <div class="banner-icon">
+                    🛠️
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <div class="quick-action-card" onclick="openNewRequestModal()">
+                    <div class="quick-action-icon">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="quick-action-title">Yangi so'rov</div>
+                    <div class="quick-action-desc">Texnik yordam so'rovi qo'shish</div>
+                </div>
+                <div class="quick-action-card" onclick="switchPage('inbox')">
+                    <div class="quick-action-icon">
+                        <i class="fas fa-inbox"></i>
+                    </div>
+                    <div class="quick-action-title">Inbox</div>
+                    <div class="quick-action-desc">Admin xabarlarini ko'rish</div>
+                </div>
+                <div class="quick-action-card" onclick="openFeedbackModal()">
+                    <div class="quick-action-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="quick-action-title">Feedback</div>
+                    <div class="quick-action-desc">Xizmat sifatini baholash</div>
+                </div>
+                <div class="quick-action-card" onclick="switchPage('profile')">
+                    <div class="quick-action-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="quick-action-title">Profil</div>
+                    <div class="quick-action-desc">Shaxsiy ma'lumotlar</div>
+                </div>
+            </div>
+
+            <!-- Confirmed Items Section -->
+            <div class="confirmed-section" id="confirmedSection" style="display: none;">
+                <h3>
+                    <i class="fas fa-check-circle"></i>
+                    Tasdiqlangan so'rovlar
+                </h3>
+                <div id="confirmedItems">
+                    <!-- Confirmed items will be rendered here -->
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-icon pending">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="pendingCount">0</h3>
+                            <p>Kutilmoqda</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-icon progress">
+                            <i class="fas fa-spinner"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="progressCount">0</h3>
+                            <p>Jarayonda</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-icon confirmed">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="confirmedCount">0</h3>
+                            <p>Tasdiqlangan</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-icon completed">
+                            <i class="fas fa-check-double"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="completedCount">0</h3>
+                            <p>Tugallandi</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-icon total">
+                            <i class="fas fa-calendar"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalCount">0</h3>
+                            <p>Jami</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Requests -->
+            <div class="requests-section">
+                <div class="section-header">
+                    <div>
+                        <h2>So'nggi so'rovlar</h2>
+                        <p>Sizning eng yangi texnik yordam so'rovlaringiz</p>
+                    </div>
+                </div>
+
+                <div class="loading-spinner" id="loadingSpinner" style="display: none;">
+                    <div class="spinner"></div>
+                </div>
+
+                <div class="mail-box" id="requestsContainer">
+                    <!-- Requests will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Inbox Page -->
+        <div id="page-inbox" class="page">
+            <div class="requests-section">
+                <div class="section-header">
+                    <div>
+                        <h2>Inbox</h2>
+                        <p>Admin xabarlari va bildirishnomalar</p>
+                    </div>
+                </div>
+
+                <div class="loading-spinner" id="inboxSpinner" style="display: none;">
+                    <div class="spinner"></div>
+                </div>
+
+                <div id="inboxContainer">
+                    <!-- Inbox messages will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Requests Page -->
+        <div id="page-requests" class="page">
+            <div class="page-header">
+                <div class="page-title">
+                    <h2>Barcha So'rovlar</h2>
+                    <p>Sizning barcha so'rovlaringiz bu yerda ko'rsatiladi</p>
+                </div>
+                <button class="btn-primary" onclick="openNewRequestModal()">
+                    <i class="fas fa-plus"></i>
+                    Yangi so'rov qo'shish
+                </button>
+            </div>
+            <div class="requests-section">
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-filter="all">Barchasi</button>
+                    <button class="filter-tab" data-filter="PENDING">Kutilmoqda</button>
+                    <button class="filter-tab" data-filter="IN_PROGRESS">Jarayonda</button>
+                    <button class="filter-tab" data-filter="CONFIRMED">Tasdiqlangan</button>
+                    <button class="filter-tab" data-filter="DONE">Tugallangan</button>
+                </div>
+
+                <div class="loading-spinner" id="allRequestsSpinner" style="display: none;">
+                    <div class="spinner"></div>
+                </div>
+                <div id="allRequestsContainer">
+                    <!-- All requests will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- New Feedback Page -->
+        <div id="page-feedback" class="page">
+            <div class="page-header">
+                <div class="page-title">
+                    <h2>Feedback</h2>
+                    <p>Sizning fikr-mulohazalaringiz</p>
+                </div>
+                <button class="btn-primary" onclick="openFeedbackModal()">
+                    <i class="fas fa-plus"></i>
+                    Yangi feedback
+                </button>
+            </div>
+            <div class="feedback-section">
+                <div class="loading-spinner" id="feedbackSpinner" style="display: none;">
+                    <div class="spinner"></div>
+                </div>
+                <div id="feedbackContainer">
+                    <!-- Feedback will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Page -->
+        <div id="page-profile" class="page">
+            <div class="requests-section">
+                <div class="section-header">
+                    <div>
+                        <h2>Profile</h2>
+                        <p>Sizning profil ma'lumotlaringiz</p>
+                    </div>
+                </div>
+                <div id="profileContainer">
+                    <!-- Profile info will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- History Page -->
+        <div id="page-history" class="page">
+            <div class="requests-section">
+                <div class="section-header">
+                    <div>
+                        <h2>Tarix</h2>
+                        <p>Sizning tarixiy so'rovlaringiz</p>
+                    </div>
+                </div>
+
+                <div class="loading-spinner" id="historySpinner" style="display: none;">
+                    <div class="spinner"></div>
+                </div>
+
+                <div id="historyContainer">
+                    <!-- History will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap Modal for New Request -->
+<div class="modal fade" id="newRequestModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Yangi so'rov qo'shish</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="newRequestForm">
+                <div id="formFeedback" class="alert alert-danger d-none"></div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Muammo nomi *</label>
+                        <input type="text" class="form-control" name="issueName" id="req_issueName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Muammo haqida *</label>
+                        <textarea class="form-control" name="description" id="req_description" rows="3" required></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label">Muammo turi *</label>
+                            <select class="form-select" name="problemType" id="req_type" required>
+                                <option value="">Tanlang</option>
+                                <option value="hardware">Hardware</option>
+                                <option value="software">Software</option>
+                                <option value="network">Network</option>
+                                <option value="other">Boshqa</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6" id="priceContainer" style="display: none;">
+                            <label class="form-label">Narx *</label>
+                            <select class="form-select" name="price" id="req_price"></select>
+                            <small id="req_price_help" class="text-muted mt-1"></small>
+                        </div>
+                    </div>
+                    <div class="mb-3 mt-3">
+                        <label class="form-label">Filial *</label>
+                        <select class="form-select" name="location" id="req_location" required>
+                            <option value="">Tanlang</option>
+                            <option value="sergeli">Toshkent Sergeli</option>
+                            <option value="chilonzor">Chilonzor</option>
+                            <option value="yunosobod">Yunusobod</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label">Rasm 1 *</label>
+                            <input type="file" class="form-control" name="images" id="req_image1" accept="image/*" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Rasm 2 *</label>
+                            <input type="file" class="form-control" name="images" id="req_image2" accept="image/*" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary">Yuborish</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Enhanced Feedback Modal -->
+<div class="modal fade" id="feedbackModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Fikr bildirish</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="feedbackForm">
+                <div id="feedbackFeedback" class="alert alert-danger d-none"></div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">So'rov tanlang</label>
+                        <select class="form-select" id="feedbackRequestId">
+                            <option value="">So'rov tanlang</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Reyting *</label>
+                        <div class="rating-input" id="ratingInput">
+                            <i class="fas fa-star" data-rating="1"></i>
+                            <i class="fas fa-star" data-rating="2"></i>
+                            <i class="fas fa-star" data-rating="3"></i>
+                            <i class="fas fa-star" data-rating="4"></i>
+                            <i class="fas fa-star" data-rating="5"></i>
+                        </div>
+                        <input type="hidden" id="selectedRating" value="0">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Sizning fikringiz *</label>
+                        <textarea class="form-control" name="comment" id="feedbackComment" rows="4" placeholder="Xizmatimiz haqida fikringizni bildiring..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary">Yuborish</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Profilni tahrirlash</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="editProfileForm">
+                <div id="editProfileFeedback" class="alert alert-danger d-none"></div>
+                <div class="modal-body">
+                    <div class="mb-3 text-center">
+                        <img src="https://www.mona.uwi.edu/modlang/sites/default/files/modlang/male-avatar-placeholder.png" alt="Profile Preview" class="profile-avatar-large mb-3" id="currentProfileImagePreview">
+                        <div>
+                            <label class="form-label">Profil rasmi</label>
+                            <input type="file" class="form-control" id="editProfileImage" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Foydalanuvchi nomi *</label>
+                        <input type="text" class="form-control" id="editUsername" required>
+                    </div>
+
+                    <!-- Progress Bar qo'shish -->
+                    <div class="progress mt-3" id="profileUploadProgress" style="display: none;">
+                        <div class="progress-bar" role="progressbar" style="width: 0%" id="profileProgressBar">0%</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary" id="profileSaveBtn">
+                        <span class="btn-text">Saqlash</span>
+                        <span class="btn-spinner d-none">
+                            <i class="fas fa-spinner fa-spin"></i> Yuklanmoqda...
+                        </span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Logout Confirmation Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chiqish</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Haqiqatan ham tizimdan chiqmoqchimisiz?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                <button type="button" class="btn btn-danger" onclick="confirmLogout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Chiqish
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Global variables
+    let currentRequests = [];
+    let currentMails = [];
+    let currentFeedbacks = [];
+    let currentUser = null;
+    let API_BASE_URL = 'http://localhost:4000';
+
+    // Toast Notification System
+    class ToastManager {
+        constructor() {
+            this.container = document.getElementById('toastContainer');
+            this.toasts = [];
+        }
+
+        show(message, type = 'info', title = '', duration = 5000) {
+            const toast = this.createToast(message, type, title, duration);
+            this.container.appendChild(toast);
+            this.toasts.push(toast);
+
+            // Trigger animation
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+
+            // Auto remove
+            if (duration > 0) {
+                setTimeout(() => {
+                    this.remove(toast);
+                }, duration);
+            }
+
+            return toast;
+        }
+
+        createToast(message, type, title, duration) {
+            const toast = document.createElement('div');
+            toast.className = `toast-notification ${type}`;
+
+            const icons = {
+                success: 'fas fa-check',
+                error: 'fas fa-times',
+                warning: 'fas fa-exclamation',
+                info: 'fas fa-info'
+            };
+
+            const titles = {
+                success: title || 'Muvaffaqiyat!',
+                error: title || 'Xatolik!',
+                warning: title || 'Ogohlantirish!',
+                info: 'Ma\'lumot'
+            };
+
+            toast.innerHTML = `
+                <div class="toast-icon">
+                    <i class="${icons[type]}"></i>
+                </div>
+                <div class="toast-content">
+                    <div class="toast-title">${titles[type]}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close" onclick="toastManager.remove(this.parentElement)">
+                    <i class="fas fa-times"></i>
+                </button>
+                ${duration > 0 ? `
+                    <div class="toast-progress">
+                        <div class="toast-progress-bar" style="width: 100%; transition-duration: ${duration}ms;"></div>
+                    </div>
+                ` : ''}
+            `;
+
+            // Start progress animation
+            if (duration > 0) {
+                setTimeout(() => {
+                    const progressBar = toast.querySelector('.toast-progress-bar');
+                    if (progressBar) {
+                        progressBar.style.width = '0%';
+                    }
+                }, 100);
+            }
+
+            return toast;
+        }
+
+        remove(toast) {
+            if (toast && toast.parentElement) {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        toast.parentElement.removeChild(toast);
+                    }
+                    this.toasts = this.toasts.filter(t => t !== toast);
+                }, 300);
+            }
+        }
+
+        success(message, title = '', duration = 5000) {
+            return this.show(message, 'success', title, duration);
+        }
+
+        error(message, title = '', duration = 7000) {
+            return this.show(message, 'error', title, duration);
+        }
+
+        warning(message, title = '', duration = 6000) {
+            return this.show(message, 'warning', title, duration);
+        }
+
+        info(message, title = '', duration = 5000) {
+            return this.show(message, 'info', title, duration);
+        }
+    }
+
+    // Initialize toast manager
+    const toastManager = new ToastManager();
+
+    // Initialize app
+    document.addEventListener('DOMContentLoaded', () => {
+        initNavigation();
+        initNewRequestModal();
+        initFeedbackModal();
+        initEditProfileModal();
+        loadSidebarState();
+        initApp();
+    });
+
+    function initApp() {
+        testConnection();
+        fetchUserProfile();
+        loadRequests();
+        // loadRecentActivity();
+    }
+
+    // API helper function
+    async function apiRequest(endpoint, options = {}) {
+        const token = localStorage.getItem('token');
+        const defaultOptions = {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        };
+
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+            ...defaultOptions,
+            ...options
+        });
+
+        return response;
+    }
+
+    async function testConnection() {
+        const uid = localStorage.getItem('uid');
+        const token = localStorage.getItem('token');
+        const authStatus = document.getElementById('authStatus');
+
+        if (!uid || !token) {
+            authStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Token/UID mavjud emas';
+            authStatus.className = 'auth-status disconnected';
+            toastManager.error('Token yoki UID mavjud emas', 'Autentifikatsiya xatosi');
+            return false;
+        }
+
+        try {
+            authStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Tekshirilmoqda...';
+            authStatus.className = 'auth-status';
+
+            const response = await apiRequest(`/user/profile/${uid}`);
+
+            if (response.ok) {
+                authStatus.innerHTML = '<i class="fas fa-check-circle"></i> Ulangan';
+                authStatus.className = 'auth-status connected';
+                toastManager.success('Tizimga muvaffaqiyatli ulandingiz');
+                return true;
+            } else {
+                throw new Error('Authentication failed');
+            }
+        } catch (err) {
+            console.error('Connection test failed:', err);
+            authStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Ulanmagan';
+            authStatus.className = 'auth-status disconnected';
+            toastManager.error('Serverga ulanishda xatolik yuz berdi');
+            return false;
+        }
+    }
+
+    // Enhanced sidebar toggle - Hide/Show
+    function toggleSidebar() {
+        document.body.classList.toggle('sidebar-hidden');
+
+        // Save state to localStorage
+        localStorage.setItem('sidebarHidden', document.body.classList.contains('sidebar-hidden'));
+    }
+
+    // Load sidebar state on page load
+    function loadSidebarState() {
+        // Check if user has previously set a preference
+        const sidebarPreference = localStorage.getItem('sidebarHidden');
+
+        // If no preference exists, default to open (don't add sidebar-hidden class)
+        // If preference exists and is 'true', hide the sidebar
+        if (sidebarPreference === 'true') {
+            document.body.classList.add('sidebar-hidden');
+        }
+        // If sidebarPreference is 'false' or null, sidebar stays open (default)
+    }
+
+    // Navigation system
+    function initNavigation() {
+        const navButtons = document.querySelectorAll('.sidebar-menu-button[data-page]');
+        const pages = document.querySelectorAll('.page');
+
+        navButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const pageId = this.dataset.page;
+                switchPage(pageId);
+            });
+        });
+
+        window.switchPage = function(pageId) {
+            // Update active nav
+            navButtons.forEach(btn => btn.classList.remove('active'));
+            const targetButton = document.querySelector(`[data-page="${pageId}"]`);
+            if (targetButton) {
+                targetButton.classList.add('active');
+            }
+
+            // Show page
+            pages.forEach(page => page.classList.remove('active'));
+            document.getElementById(`page-${pageId}`).classList.add('active');
+
+            // Load page-specific data
+            switch(pageId) {
+                case 'dashboard':
+                    loadRequests();
+                    // loadRecentActivity();
+                    break;
+                case 'inbox':
+                    loadInbox();
+                    break;
+                case 'requests':
+                    loadAllRequests();
+                    initRequestFilters();
+                    break;
+                case 'feedback':
+                    loadFeedbacks();
+                    break;
+                case 'profile':
+                    loadProfile();
+                    break;
+                case 'history':
+                    loadHistory();
+                    break;
+            }
+        }
+    }
+
+    // Initialize request filters
+    function initRequestFilters() {
+        const filterTabs = document.querySelectorAll('.filter-tab');
+        filterTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                filterTabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                const filter = this.dataset.filter;
+                filterRequests(filter);
+            });
+        });
+    }
+
+    function filterRequests(filter) {
+        const container = document.getElementById('allRequestsContainer');
+        let requests;
+
+        if (filter === 'all') {
+            requests = currentRequests;
+        } else if (filter === 'PENDING') {
+            // PENDING va WAITING statuslarni birga ko'rsatish
+            requests = currentRequests.filter(req => req.status === 'PENDING' || req.status === 'WAITING');
+        } else {
+            requests = currentRequests.filter(req => req.status === filter);
+        }
+
+        if (requests.length === 0) {
+            container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-file-text"></i>
+                        <h3>Bu kategoriyada so'rovlar mavjud emas</h3>
+                        <p>Boshqa kategoriyalarni ko'rib chiqing</p>
+                    </div>
+                `;
+            return;
+        }
+
+        // Create mail map for filtered requests
+        const mailMap = {};
+        currentMails.forEach(m => mailMap[m.id] = m.mailText || '—');
+
+        renderLatestRequests(requests, mailMap, 'allRequestsContainer');
+    }
+
+    // Load requests for dashboard
+    async function loadRequests() {
+        const uid = localStorage.getItem('uid');
+        const spinner = document.getElementById('loadingSpinner');
+
+        if (spinner) spinner.style.display = 'flex';
+
+        try {
+            const [reqRes, mailRes] = await Promise.all([
+                apiRequest(`/user/requests/${uid}`),
+                apiRequest(`/user/mymails/${uid}`)
+            ]);
+
+            if (!reqRes.ok) throw new Error(`Request load failed: ${reqRes.status}`);
+            if (!mailRes.ok) throw new Error(`Mail load failed: ${mailRes.status}`);
+
+            const requests = await reqRes.json();
+            const mails = await mailRes.json();
+
+            currentRequests = requests;
+            currentMails = mails;
+
+            const mailMap = {};
+            mails.forEach(m => mailMap[m.id] = m.mailText || '—');
+
+            updateStats(requests);
+            renderConfirmedItems(requests);
+            renderLatestRequests(requests.slice(0, 8), mailMap);
+        } catch (err) {
+            console.error('Error loading data:', err);
+            toastManager.error('Ma\'lumotlarni olishda xatolik yuz berdi');
+        } finally {
+            if (spinner) spinner.style.display = 'none';
+        }
+    }
+
+    // Load recent activity
+    async function loadRecentActivity() {
+        const container = document.getElementById('activityContainer');
+
+        try {
+            // Generate sample activity data based on current requests
+            const activities = [];
+
+            if (currentRequests && currentRequests.length > 0) {
+                // Add recent request activities
+                currentRequests.slice(0, 5).forEach(req => {
+                    activities.push({
+                        type: 'request',
+                        title: `So'rov yaratildi: ${req.issueName}`,
+                        description: `${req.problemType} turi bo'yicha yangi so'rov`,
+                        time: req.createdAt,
+                        icon: 'fas fa-plus',
+                        iconClass: 'info'
+                    });
+                });
+
+                // Add status change activities
+                const completedRequests = currentRequests.filter(req => req.status === 'DONE');
+                completedRequests.slice(0, 3).forEach(req => {
+                    activities.push({
+                        type: 'completion',
+                        title: `So'rov tugallandi: ${req.issueName}`,
+                        description: 'Texnik yordam muvaffaqiyatli yakunlandi',
+                        time: req.updatedAt || req.createdAt,
+                        icon: 'fas fa-check',
+                        iconClass: 'success'
+                    });
+                });
+            }
+
+            // Add system activities
+            activities.push({
+                type: 'login',
+                title: 'Tizimga kirish',
+                description: 'Dashboard sahifasiga muvaffaqiyatli kirish',
+                time: new Date().toISOString(),
+                icon: 'fas fa-sign-in-alt',
+                iconClass: 'info'
+            });
+
+            // Sort by time (newest first)
+            activities.sort((a, b) => new Date(b.time) - new Date(a.time));
+
+            if (activities.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-clock"></i>
+                        <h3>Hozircha faollik mavjud emas</h3>
+                        <p>Sizning harakatlaringiz bu yerda ko'rsatiladi</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = activities.slice(0, 5).map(activity => `
+                <div class="timeline-item">
+                    <div class="timeline-icon ${activity.iconClass}">
+                        <i class="${activity.icon}"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <h4>${activity.title}</h4>
+                        <p>${activity.description}</p>
+                        <div class="timeline-time">${formatDate(activity.time)}</div>
+                    </div>
+                </div>
+            `).join('');
+
+        } catch (err) {
+            console.error('Error loading activity:', err);
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Faollikni yuklashda xatolik</h3>
+                    <p>Iltimos, qaytadan urinib ko'ring</p>
+                </div>
+            `;
+        }
+    }
+
+    // Load feedbacks
+    async function loadFeedbacks() {
+        const spinner = document.getElementById('feedbackSpinner');
+        const container = document.getElementById('feedbackContainer');
+
+        if (spinner) spinner.style.display = 'flex';
+
+        try {
+            const response = await apiRequest(`/user/feedback/user`);
+
+            if (!response.ok) throw new Error('Failed to load feedbacks');
+
+            const data = await response.json();
+            const feedbacks = Array.isArray(data.feedbacks) ? data.feedbacks : []; // fallback to empty array
+            currentFeedbacks = feedbacks;
+
+            if (!feedbacks || feedbacks.length === 0) {
+                container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-star"></i>
+                            <h3>Hozircha feedback mavjud emas</h3>
+                            <p>Birinchi feedback qoldiring</p>
+                        </div>
+                    `;
+                return;
+            }
+
+            container.innerHTML = feedbacks.map(feedback => {
+                const stars = Array.from({length: 5}, (_, i) =>
+                    `<i class="fas fa-star ${i < feedback.rating ? 'star' : 'star empty'}"></i>`
+                ).join('');
+
+                const request = currentRequests.find(r => r.id === feedback.requestId);
+                const requestTitle = request ? request.issueName : 'So\'rov topilmadi';
+
+                return `
+                        <div class="feedback-item">
+                            <div class="request-content">
+                                <h4>${requestTitle}</h4>
+                                <div class="feedback-rating">${stars}</div>
+                                <p class="request-description">${feedback.comment}</p>
+                                <div class="request-meta">
+                                    <span><i class="fas fa-calendar"></i> ${formatDate(feedback.createdAt)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+            }).join('');
+
+        } catch (err) {
+            console.error('Error loading feedbacks:', err);
+            container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Feedbacklarni yuklashda xatolik</h3>
+                        <p>Iltimos, qaytadan urinib ko'ring</p>
+                    </div>
+                `;
+            toastManager.error('Feedbacklarni yuklashda xatolik yuz berdi');
+        } finally {
+            if (spinner) spinner.style.display = 'none';
+        }
+    }
+
+    // Update statistics
+    function updateStats(requests) {
+        const stats = {
+            pending: 0,
+            progress: 0,
+            confirmed: 0,
+            completed: 0,
+            total: requests.length
+        };
+
+        requests.forEach(req => {
+            switch(req.status) {
+                case 'PENDING':
+                case 'WAITING':
+                    stats.pending++;
+                    break;
+                case 'IN_PROGRESS':
+                    stats.progress++;
+                    break;
+                case 'CONFIRMED':
+                    stats.confirmed++;
+                    break;
+                case 'DONE':
+                    stats.completed++;
+                    break;
+            }
+        });
+
+        document.getElementById('pendingCount').textContent = stats.pending;
+        document.getElementById('progressCount').textContent = stats.progress;
+        document.getElementById('confirmedCount').textContent = stats.confirmed;
+        document.getElementById('completedCount').textContent = stats.completed;
+        document.getElementById('totalCount').textContent = stats.total;
+    }
+
+    // Render confirmed items section
+    function renderConfirmedItems(requests) {
+        const confirmedSection = document.getElementById('confirmedSection');
+        const confirmedContainer = document.getElementById('confirmedItems');
+
+        const confirmedRequests = requests.filter(req => req.status === 'CONFIRMED');
+
+        if (confirmedRequests.length === 0) {
+            confirmedSection.style.display = 'none';
+            return;
+        }
+
+        confirmedSection.style.display = 'block';
+        confirmedContainer.innerHTML = confirmedRequests.map(req => {
+            const date = formatDate(req.createdAt);
+            const priceText = (req.price != null) ? `$${req.price}` : '—';
+
+            return `
+                    <div class="confirmed-item">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1"><strong>${req.issueName || '—'}</strong></h6>
+                                <p class="mb-1 text-muted small">${req.description || '—'}</p>
+                                <div class="d-flex gap-3 small text-muted">
+                                    <span><i class="fas fa-tag"></i> ${req.problemType || '—'}</span>
+                                    <span><i class="fas fa-dollar-sign"></i> <span class="price">${priceText}</span></span>
+                                    <span><i class="fas fa-calendar"></i> ${date}</span>
+                                </div>
+                            </div>
+                            <span class="badge-status badge-confirmed">Tasdiqlangan</span>
+                        </div>
+                    </div>
+                `;
+        }).join('');
+    }
+
+    // Enhanced render requests function
+    function renderLatestRequests(requests, mailMap, containerId = 'requestsContainer') {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        const filteredRequests = containerId === 'requestsContainer'
+            ? requests.filter(req => req.status !== 'CONFIRMED')
+            : requests;
+
+        if (!filteredRequests || filteredRequests.length === 0) {
+            container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-file-text"></i>
+                        <h3>Hozircha so'rovlar mavjud emas</h3>
+                        <p>Yangi so'rov qo'shish uchun yuqoridagi tugmani bosing</p>
+                    </div>
+                `;
+            return;
+        }
+
+        filteredRequests.forEach(r => {
+            const badgeInfo = getStatusBadge(r.status);
+            const date = formatDate(r.createdAt);
+            const imageUrl = (r.images && r.images.length) ? r.images[0] : 'https://via.placeholder.com/80?text=No+Image';
+            const mailText = mailMap[r.id] || '—';
+            const priceText = (r.price != null) ? `$${r.price}` : '—';
+
+            const card = document.createElement('div');
+            card.className = 'request-card';
+
+            let html = `
+                    <div class="request-content">
+                        <div class="request-header">
+                            <h3 class="request-title">${r.issueName || '—'}</h3>
+                            <span class="badge-status ${badgeInfo.class}">${badgeInfo.label}</span>
+                        </div>
+                        <p><strong>Muammo turi:</strong> ${r.problemType || '—'}</p>
+                        <p class="request-description">${r.description || '—'}</p>
+                `;
+
+            if (r.problemType === 'other' && r.status === 'PENDING') {
+                html += `
+                        <div class="alert alert-info" style="font-size:.9rem;">
+                            Ushbu so'rov admin tomonidan narxlantirilgan. Iltimos, inbox orqali tasdiqlang.
+                        </div>
+                        <div class="request-admin-note">
+                            <strong>Admin izohi:</strong>
+                            <p class="mb-0 small text-muted">${mailText}</p>
+                        </div>
+                    `;
+            }
+
+            html += `
+                        <div class="request-meta">
+                            <span><i class="fas fa-dollar-sign"></i> <span class="price">${priceText}</span></span>
+                            <span><i class="fas fa-calendar"></i> ${date}</span>
+                        </div>
+                    </div>
+                    <img src="${imageUrl}" alt="Request Image" class="request-image"
+                         onerror="this.src='https://via.placeholder.com/80?text=No+Image';">
+                `;
+
+            // Add action buttons for certain statuses
+            if (r.status === 'PENDING' && r.problemType === 'other') {
+                html += `
+                        <div class="request-actions">
+                            <button class="btn-action btn-confirm" onclick="confirmRequest('${r.id}')">
+                                <i class="fas fa-check"></i> Tasdiqlash
+                            </button>
+                        </div>
+                    `;
+            } else if (r.status === 'PENDING' || r.status === 'WAITING') {
+                html += `
+                        <div class="request-actions">
+                            <button class="btn-action btn-cancel" onclick="cancelRequest('${r.id}')">
+                                <i class="fas fa-times"></i> Bekor qilish
+                            </button>
+                        </div>
+                    `;
+            }
+
+            card.innerHTML = html;
+            container.appendChild(card);
+        });
+    }
+
+    // Get status badge
+    function getStatusBadge(status) {
+        switch (status) {
+            case 'WAITING':
+                return {class: 'badge-pending', label: 'Waiting'};
+            case 'PENDING':
+                return {class: 'badge-pending', label: 'Pending'};
+            case 'IN_PROGRESS':
+                return {class: 'badge-progress', label: 'In Progress'};
+            case 'CONFIRMED':
+                return {class: 'badge-confirmed', label: 'Confirmed'};
+            case 'CANCELLED':
+                return {class: 'badge-cancelled', label: 'Cancelled'};
+            case 'DONE':
+                return {class: 'badge-resolved', label: 'Completed'};
+            default:
+                return {class: 'badge-unknown', label: status};
+        }
+    }
+
+    // Load inbox - ENHANCED to show related problems and add confirmation
+    async function loadInbox() {
+        const uid = localStorage.getItem('uid');
+        const spinner = document.getElementById('inboxSpinner');
+        const container = document.getElementById('inboxContainer');
+
+        if (spinner) spinner.style.display = 'flex';
+
+        try {
+            const [mailRes, reqRes] = await Promise.all([
+                apiRequest(`/user/mymails/${uid}`),
+                apiRequest(`/user/requests/${uid}`)
+            ]);
+
+            if (!mailRes.ok) throw new Error('Failed to load inbox');
+            if (!reqRes.ok) throw new Error('Failed to load requests');
+
+            const mails = await mailRes.json();
+            const requests = await reqRes.json();
+
+            if (!mails || mails.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>Hozircha xabarlar yo'q</h3>
+                        <p>Yangi xabarlar kelganda bu yerda ko'rsatiladi</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = mails.map(mail => {
+                // Find related request
+                const relatedRequest = requests.find(req => req.id === mail.id);
+                const problemTitle = relatedRequest ? relatedRequest.issueName : 'Noma\'lum muammo';
+                const problemType = relatedRequest ? relatedRequest.problemType : '—';
+                const problemPrice = relatedRequest && relatedRequest.price ? `$${relatedRequest.price}` : 'Narx belgilanmagan';
+                const isOtherType = relatedRequest && relatedRequest.problemType === 'other' && relatedRequest.status === 'PENDING';
+
+                return `
+            <div class="request-card">
+                <div class="request-content">
+                    <div class="request-header">
+                        <h3 class="request-title">Admin xabari</h3>
+                        <span class="badge-status badge-pending">Yangi</span>
+                    </div>
+                    <p><strong>Bog'liq muammo:</strong> ${problemTitle}</p>
+                    <p><strong>Muammo turi:</strong> ${problemType}</p>
+                    <p><strong>Narx:</strong> <span class="price">${problemPrice}</span></p>
+                    <div class="request-admin-note">
+                        <strong>Admin izohi:</strong>
+                        <p class="mb-0">${mail.mailText || 'Xabar matni mavjud emas'}</p>
+                    </div>
+                    ${isOtherType ? `
+                        <div class="mt-3">
+                            <button class="btn-action btn-confirm" onclick="confirmRequestFromInbox('${mail.id}')">
+                                <i class="fas fa-check"></i> Tasdiqlash
+                            </button>
+                            <button class="btn-action btn-cancel ms-2" onclick="cancelRequestFromInbox('${mail.id}')">
+                                <i class="fas fa-times"></i> Rad etish
+                            </button>
+                        </div>
+                    ` : ''}
+                </div>
+                ${relatedRequest && relatedRequest.images && relatedRequest.images.length ?
+                    `<img src="${relatedRequest.images[0]}" alt="Request Image" class="request-image" onerror="this.src='https://via.placeholder.com/80?text=No+Image';">`
+                    : ''
+                }
+            </div>
+        `;
+            }).join('');
+
+        } catch (err) {
+            console.error('Error loading inbox:', err);
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Xabarlarni yuklashda xatolik</h3>
+                    <p>Iltimos, qaytadan urinib ko'ring</p>
+                </div>
+            `;
+            toastManager.error('Xabarlarni yuklashda xatolik yuz berdi');
+        } finally {
+            if (spinner) spinner.style.display = 'none';
+        }
+    }
+
+    // Load all requests - FIXED to include mail data
+    async function loadAllRequests() {
+        const uid = localStorage.getItem('uid');
+        const spinner = document.getElementById('allRequestsSpinner');
+        const container = document.getElementById('allRequestsContainer');
+
+        if (spinner) spinner.style.display = 'flex';
+
+        try {
+            // Load both requests and mails data
+            const [reqRes, mailRes] = await Promise.all([
+                apiRequest(`/user/requests/${uid}`),
+                apiRequest(`/user/mymails/${uid}`)
+            ]);
+
+            if (!reqRes.ok) throw new Error('Failed to load requests');
+            if (!mailRes.ok) throw new Error('Failed to load mails');
+
+            const requests = await reqRes.json();
+            const mails = await mailRes.json();
+
+            currentRequests = requests;
+            currentMails = mails;
+
+            if (!requests || requests.length === 0) {
+                container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-file-text"></i>
+                            <h3>Hozircha so'rovlar mavjud emas</h3>
+                            <p>Yangi so'rov qo'shish uchun yuqoridagi tugmani bosing</p>
+                        </div>
+                    `;
+                return;
+            }
+
+            // Create mail map for all requests
+            const mailMap = {};
+            mails.forEach(m => mailMap[m.id] = m.mailText || '—');
+
+            renderLatestRequests(requests, mailMap, 'allRequestsContainer');
+
+        } catch (err) {
+            console.error('Error loading all requests:', err);
+            container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>So'rovlarni yuklashda xatolik</h3>
+                        <p>Iltimos, qaytadan urinib ko'ring</p>
+                    </div>
+                `;
+            toastManager.error('So\'rovlarni yuklashda xatolik yuz berdi');
+        } finally {
+            if (spinner) spinner.style.display = 'none';
+        }
+    }
+
+    // Load profile using User model structure
+    async function loadProfile() {
+        const uid = localStorage.getItem('uid');
+        const container = document.getElementById('profileContainer');
+
+        try {
+            const response = await apiRequest(`/user/profile/${uid}`);
+
+            if (!response.ok) throw new Error('Failed to load profile');
+
+            const user = await response.json();
+            currentUser = user;
+
+            container.innerHTML = `
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="profile-avatar-section">
+                        <img src="${user.profileImage || 'https://www.mona.uwi.edu/modlang/sites/default/files/modlang/male-avatar-placeholder.png'}"
+                             alt="Profile" class="profile-avatar-large" id="currentProfileImage">
+                        <div class="profile-main-info">
+                            <h3 class="profile-display-name" id="currentDisplayName">${user.username || 'Foydalanuvchi'}</h3>
+                            <p class="profile-email-display">${user.email || 'user@example.com'}</p>
+                            <span class="badge-status ${user.isAdmin ? 'badge-confirmed' : 'badge-pending'}">
+                                ${user.isAdmin ? 'Admin' : 'Oddiy foydalanuvchi'}
+                            </span>
+                        </div>
+                    </div>
+                    <button class="btn-primary" onclick="openEditProfileModal()">
+                        <i class="fas fa-edit"></i>
+                        Profilni tahrirlash
+                    </button>
+                </div>
+
+                <div class="profile-details">
+                    <div class="profile-detail-grid">
+                        <div class="profile-detail-item">
+                            <label class="profile-detail-label">UID</label>
+                            <p class="profile-detail-value">${user.uid || 'Mavjud emas'}</p>
+                        </div>
+                        <div class="profile-detail-item">
+                            <label class="profile-detail-label">Ro'yxatdan o'tgan sana</label>
+                            <p class="profile-detail-value">${formatDate(user.createdAt)}</p>
+                        </div>
+                        <div class="profile-detail-item">
+                            <label class="profile-detail-label">So'nggi faollik</label>
+                            <p class="profile-detail-value">Bugun</p>
+                        </div>
+                        <div class="profile-detail-item">
+                            <label class="profile-detail-label">Status</label>
+                            <span class="badge-status badge-confirmed">Faol</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity Timeline moved to Profile -->
+            <div class="activity-timeline" style="margin-top: 2rem;">
+                <div class="section-header">
+                    <div>
+                        <h2>So'nggi faollik</h2>
+                        <p>Sizning oxirgi harakatlaringiz</p>
+                    </div>
+                </div>
+                <div id="profileActivityContainer">
+                    <!-- Activity timeline will be loaded here -->
+                </div>
+            </div>
+        `;
+
+            // Load recent activity for profile page
+            await loadRecentActivityForProfile();
+
+        } catch (err) {
+            console.error('Error loading profile:', err);
+            container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-user"></i>
+                <h3>Profil ma'lumotlari yuklanmadi</h3>
+                <p>Iltimos, qaytadan urinib ko'ring</p>
+            </div>
+        `;
+            toastManager.error('Profil ma\'lumotlarini yuklashda xatolik yuz berdi');
+        }
+    }
+
+    // Load recent activity for profile page
+    async function loadRecentActivityForProfile() {
+        const container = document.getElementById('profileActivityContainer');
+
+        try {
+            // Generate sample activity data based on current requests
+            const activities = [];
+
+            if (currentRequests && currentRequests.length > 0) {
+                // Add recent request activities
+                currentRequests.slice(0, 5).forEach(req => {
+                    activities.push({
+                        type: 'request',
+                        title: `So'rov yaratildi: ${req.issueName}`,
+                        description: `${req.problemType} turi bo'yicha yangi so'rov`,
+                        time: req.createdAt,
+                        icon: 'fas fa-plus',
+                        iconClass: 'info'
+                    });
+                });
+
+                // Add status change activities
+                const completedRequests = currentRequests.filter(req => req.status === 'DONE');
+                completedRequests.slice(0, 3).forEach(req => {
+                    activities.push({
+                        type: 'completion',
+                        title: `So'rov tugallandi: ${req.issueName}`,
+                        description: 'Texnik yordam muvaffaqiyatli yakunlandi',
+                        time: req.updatedAt || req.createdAt,
+                        icon: 'fas fa-check',
+                        iconClass: 'success'
+                    });
+                });
+            }
+
+            // Add system activities
+            activities.push({
+                type: 'login',
+                title: 'Tizimga kirish',
+                description: 'Dashboard sahifasiga muvaffaqiyatli kirish',
+                time: new Date().toISOString(),
+                icon: 'fas fa-sign-in-alt',
+                iconClass: 'info'
+            });
+
+            // Sort by time (newest first)
+            activities.sort((a, b) => new Date(b.time) - new Date(a.time));
+
+            if (activities.length === 0) {
+                container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-clock"></i>
+                    <h3>Hozircha faollik mavjud emas</h3>
+                    <p>Sizning harakatlaringiz bu yerda ko'rsatiladi</p>
+                </div>
+            `;
+                return;
+            }
+
+            container.innerHTML = activities.slice(0, 5).map(activity => `
+            <div class="timeline-item">
+                <div class="timeline-icon ${activity.iconClass}">
+                    <i class="${activity.icon}"></i>
+                </div>
+                <div class="timeline-content">
+                    <h4>${activity.title}</h4>
+                    <p>${activity.description}</p>
+                    <div class="timeline-time">${formatDate(activity.time)}</div>
+                </div>
+            </div>
+        `).join('');
+
+        } catch (err) {
+            console.error('Error loading activity for profile:', err);
+            container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Faollikni yuklashda xatolik</h3>
+                <p>Iltimos, qaytadan urinib ko'ring</p>
+            </div>
+        `;
+        }
+    }
+
+    // Fetch user profile for sidebar using User model
+    async function fetchUserProfile() {
+        const uid = localStorage.getItem('uid');
+
+        if (!uid) return;
+
+        try {
+            const response = await apiRequest(`/user/profile/${uid}`);
+
+            if (!response.ok) throw new Error("Foydalanuvchi ma'lumotlarini olishda xatolik");
+
+            const user = await response.json();
+            currentUser = user;
+
+            // Update welcome text
+            const welcomeText = document.getElementById('welcomeText');
+            if (welcomeText && user.username) {
+                welcomeText.textContent = `Salom, ${user.username}!`;
+            }
+
+            // Update sidebar profile
+            const profileImg = document.getElementById('profileAvatar');
+            const profileName = document.getElementById('profileName');
+            const profileEmail = document.getElementById('profileEmail');
+
+            if (profileImg && user.profileImage) {
+                profileImg.src = user.profileImage;
+            }
+
+            if (profileName && user.username) {
+                profileName.textContent = user.username;
+            }
+
+            if (profileEmail && user.email) {
+                profileEmail.textContent = user.email;
+            }
+
+        } catch (err) {
+            console.error("Foydalanuvchi ma'lumotlari topilmadi:", err);
+        }
+    }
+
+    // Modal functions
+    function openNewRequestModal() {
+        const modal = new bootstrap.Modal(document.getElementById('newRequestModal'));
+        modal.show();
+    }
+
+    function openFeedbackModal() {
+        // Load completed requests for feedback
+        loadCompletedRequestsForFeedback();
+        const modal = new bootstrap.Modal(document.getElementById('feedbackModal'));
+        modal.show();
+    }
+
+    // Open edit profile modal
+    function openEditProfileModal() {
+        const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+
+        // Pre-fill current values
+        document.getElementById('editUsername').value = currentUser?.username || '';
+        document.getElementById('currentProfileImagePreview').src = currentUser?.profileImage || 'https://www.mona.uwi.edu/modlang/sites/default/files/modlang/male-avatar-placeholder.png';
+
+        modal.show();
+    }
+
+    function handleLogout() {
+        const modal = new bootstrap.Modal(document.getElementById('logoutModal'));
+        modal.show();
+    }
+
+    function confirmLogout() {
+        try {
+            // Clear all stored data
+            localStorage.removeItem('token');
+            localStorage.removeItem('uid');
+            localStorage.removeItem('sidebarHidden');
+
+            // Clear current user data
+            currentUser = null;
+            currentRequests = [];
+            currentMails = [];
+            currentFeedbacks = [];
+
+            // Show success message
+            toastManager.success('Tizimdan muvaffaqiyatli chiqdingiz');
+
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('logoutModal'));
+            modal.hide();
+
+            // Redirect to login page after a short delay
+            setTimeout(() => {
+                window.location.href = '../index.html'; // Adjust path as needed
+            }, 1500);
+
+        } catch (err) {
+            console.error('Logout error:', err);
+            toastManager.error('Chiqishda xatolik yuz berdi');
+        }
+    }
+
+    // Load completed requests for feedback dropdown
+    async function loadCompletedRequestsForFeedback() {
+        const uid = localStorage.getItem('uid');
+        const select = document.getElementById('feedbackRequestId');
+
+        try {
+            const response = await apiRequest(`/user/requests/${uid}`);
+            if (response.ok) {
+                const requests = await response.json();
+                // Faqat DONE statusdagi so'rovlarni ko'rsatish
+                const completedRequests = requests.filter(req => req.status === 'DONE');
+
+                select.innerHTML = '<option value="">So\'rov tanlang</option>';
+                if (completedRequests.length === 0) {
+                    select.innerHTML = '<option value="">Tugallangan so\'rovlar mavjud emas</option>';
+                    return;
+                }
+
+                completedRequests.forEach(req => {
+                    select.innerHTML += `<option value="${req.id}">${req.issueName || 'Noma\'lum so\'rov'}</option>`;
+                });
+            }
+        } catch (err) {
+            console.error('Error loading completed requests:', err);
+            select.innerHTML = '<option value="">Xatolik yuz berdi</option>';
+        }
+    }
+
+    // Initialize new request modal
+    function initNewRequestModal() {
+        const form = document.getElementById('newRequestForm');
+        const feedback = document.getElementById('formFeedback');
+        const typeSelect = document.getElementById('req_type');
+        const priceContainer = document.getElementById('priceContainer');
+        const priceSelect = document.getElementById('req_price');
+        const priceHelp = document.getElementById('req_price_help');
+
+        const priceOptions = {
+            hardware: [
+                {value: '30', text: '$30 – Basic tekshirish'},
+                {value: '75', text: '$75 – Komponentni almashtirish'},
+                {value: '150', text: '$150 – To\'liq yangilash'}
+            ],
+            software: [
+                {value: '20', text: '$20 – Dasturiy diagnostika'},
+                {value: '60', text: '$60 – Yangilash & patch'},
+                {value: '120', text: '$120 – OS qayta o\'rnatish'}
+            ],
+            network: [
+                {value: '40', text: '$40 – Tarmoq tekshirish'},
+                {value: '90', text: '$90 – Router sozlash'},
+                {value: '180', text: '$180 – To\'liq tarmoq o\'rnatish'}
+            ]
+        };
+
+        function showError(msg) {
+            feedback.textContent = msg;
+            feedback.classList.remove('d-none');
+        }
+
+        function clearError() {
+            feedback.textContent = '';
+            feedback.classList.add('d-none');
+        }
+
+        // Add progress bar
+        const progressWrapper = document.createElement('div');
+        progressWrapper.className = 'progress mt-3';
+        progressWrapper.style.display = 'none';
+        progressWrapper.innerHTML = '<div class="progress-bar" role="progressbar" style="width:0%">0%</div>';
+        form.appendChild(progressWrapper);
+        const progressBar = progressWrapper.querySelector('.progress-bar');
+
+        typeSelect.addEventListener('change', function() {
+            const type = this.value;
+            if (type && type !== 'other') {
+                priceContainer.style.display = 'block';
+                priceSelect.innerHTML = '<option value="">Tanlang</option>';
+
+                if (priceOptions[type]) {
+                    priceOptions[type].forEach(option => {
+                        const opt = document.createElement('option');
+                        opt.value = option.value;
+                        opt.textContent = option.text;
+                        opt.title = option.text;
+                        priceSelect.appendChild(opt);
+                    });
+                }
+            } else {
+                priceContainer.style.display = 'none';
+            }
+            clearError();
+        });
+
+        priceSelect.addEventListener('change', function() {
+            priceHelp.textContent = this.selectedOptions[0]?.title || '';
+        });
+
+        // Form submission
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            clearError();
+
+            const issueName = document.getElementById('req_issueName').value.trim();
+            const description = document.getElementById('req_description').value.trim();
+            const problemType = typeSelect.value;
+            const price = priceSelect.value;
+            const location = document.getElementById('req_location').value;
+            const image1 = document.getElementById('req_image1').files[0];
+            const image2 = document.getElementById('req_image2').files[0];
+
+            // Validation
+            if (!issueName) return showError('Iltimos, muammo nomini kiriting.');
+            if (!description) return showError('Iltimos, muammo tavsifini kiriting.');
+            if (!problemType) return showError('Muammo turini tanlang.');
+            if (problemType !== 'other' && !price) return showError('Narxni tanlang.');
+            if (!location) return showError('Filialni tanlang.');
+            if (!image1 || !image2) return showError('2 ta rasm kerak.');
+
+            // Disable form
+            const formElements = form.querySelectorAll('input, select, button[type=submit]');
+            formElements.forEach(el => el.disabled = true);
+            progressWrapper.style.display = 'block';
+
+            try {
+                const formData = new FormData();
+                formData.append('issueName', issueName);
+                formData.append('problemType', problemType);
+                formData.append('description', description);
+                if (price) formData.append('price', price);
+                formData.append('location', location);
+                formData.append('images', image1);
+                formData.append('images', image2);
+
+                const token = localStorage.getItem('token');
+                const xhr = new XMLHttpRequest();
+
+                xhr.upload.addEventListener('progress', function(e) {
+                    if (e.lengthComputable) {
+                        const percent = Math.round((e.loaded / e.total) * 100);
+                        progressBar.style.width = percent + '%';
+                        progressBar.textContent = percent + '%';
+                    }
+                });
+
+                xhr.onload = function() {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('newRequestModal'));
+                        modal.hide();
+                        form.reset();
+                        priceContainer.style.display = 'none';
+                        loadRequests(); // Reload requests
+                        loadRecentActivity(); // Reload activity
+                        toastManager.success('So\'rov muvaffaqiyatli yuborildi va tez orada ko\'rib chiqiladi');
+                    } else {
+                        showError(`Yuborishda xatolik: ${xhr.status}`);
+                        toastManager.error('So\'rov yuborishda xatolik yuz berdi');
+                    }
+                };
+
+                xhr.onerror = function() {
+                    showError('Tarmoq xatosi yuz berdi.');
+                    toastManager.error('Tarmoq xatosi yuz berdi');
+                };
+
+                xhr.open('POST', `${API_BASE_URL}/user/request`);
+                xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+                xhr.send(formData);
+
+            } catch (err) {
+                console.error('Error submitting request:', err);
+                showError('So\'rov yuborishda xatolik yuz berdi.');
+                toastManager.error('So\'rov yuborishda xatolik yuz berdi');
+            } finally {
+                // Re-enable form
+                formElements.forEach(el => el.disabled = false);
+                setTimeout(() => {
+                    progressWrapper.style.display = 'none';
+                    progressBar.style.width = '0%';
+                    progressBar.textContent = '0%';
+                }, 1000);
+            }
+        });
+    }
+
+    // Enhanced feedback modal initialization
+    function initFeedbackModal() {
+        const form = document.getElementById('feedbackForm');
+        const feedback = document.getElementById('feedbackFeedback');
+        const ratingInput = document.getElementById('ratingInput');
+        const selectedRating = document.getElementById('selectedRating');
+
+        // Rating system
+        const stars = ratingInput.querySelectorAll('.fas.fa-star');
+        stars.forEach((star, index) => {
+            star.addEventListener('click', function() {
+                const rating = parseInt(this.dataset.rating);
+                selectedRating.value = rating;
+
+                stars.forEach((s, i) => {
+                    if (i < rating) {
+                        s.style.color = '#fbbf24';
+                    } else {
+                        s.style.color = '#d1d5db';
+                    }
+                });
+            });
+
+            star.addEventListener('mouseover', function() {
+                const rating = parseInt(this.dataset.rating);
+                stars.forEach((s, i) => {
+                    if (i < rating) {
+                        s.style.color = '#fbbf24';
+                    } else {
+                        s.style.color = '#d1d5db';
+                    }
+                });
+            });
+        });
+
+        ratingInput.addEventListener('mouseleave', function() {
+            const currentRating = parseInt(selectedRating.value);
+            stars.forEach((s, i) => {
+                if (i < currentRating) {
+                    s.style.color = '#fbbf24';
+                } else {
+                    s.style.color = '#d1d5db';
+                }
+            });
+        });
+
+        function showError(msg) {
+            feedback.textContent = msg;
+            feedback.classList.remove('d-none');
+        }
+
+        function clearError() {
+            feedback.textContent = '';
+            feedback.classList.add('d-none');
+        }
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            clearError();
+
+            const requestId = document.getElementById('feedbackRequestId').value;
+            const rating = parseInt(selectedRating.value);
+            const comment = document.getElementById('feedbackComment').value.trim();
+
+            if (!requestId) {
+                return showError('Iltimos, so\'rov tanlang.');
+            }
+
+            if (rating === 0) {
+                return showError('Iltimos, reyting bering.');
+            }
+
+            if (!comment) {
+                return showError('Iltimos, fikringizni yozing.');
+            }
+
+            try {
+                const uid = localStorage.getItem('uid');
+                const response = await apiRequest('/user/feedback', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        uid: uid,
+                        requestId: requestId,
+                        rating: rating,
+                        comment: comment
+                    })
+                });
+
+                if (response.ok) {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('feedbackModal'));
+                    modal.hide();
+                    form.reset();
+                    selectedRating.value = '0';
+                    stars.forEach(s => s.style.color = '#d1d5db');
+                    toastManager.success('Feedback muvaffaqiyatli yuborildi! Sizning fikr-mulohazangiz uchun rahmat.');
+
+                    // Reload feedbacks if on feedback page
+                    const activePage = document.querySelector('.page.active');
+                    if (activePage && activePage.id === 'page-feedback') {
+                        loadFeedbacks();
+                    }
+                } else {
+                    throw new Error('Failed to submit feedback');
+                }
+            } catch (err) {
+                console.error('Error submitting feedback:', err);
+                showError('Feedback yuborishda xatolik yuz berdi.');
+                toastManager.error('Feedback yuborishda xatolik yuz berdi');
+            }
+        });
+    }
+
+    // Initialize edit profile modal
+    function initEditProfileModal() {
+        const form = document.getElementById('editProfileForm');
+        const feedback = document.getElementById('editProfileFeedback');
+        const imageInput = document.getElementById('editProfileImage');
+        const imagePreview = document.getElementById('currentProfileImagePreview');
+        const saveBtn = document.getElementById('profileSaveBtn');
+        const btnText = saveBtn.querySelector('.btn-text');
+        const btnSpinner = saveBtn.querySelector('.btn-spinner');
+        const progressWrapper = document.getElementById('profileUploadProgress');
+        const progressBar = document.getElementById('profileProgressBar');
+
+        // Image preview
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function showError(msg) {
+            feedback.textContent = msg;
+            feedback.classList.remove('d-none');
+        }
+
+        function clearError() {
+            feedback.textContent = '';
+            feedback.classList.add('d-none');
+        }
+
+        function setLoading(loading) {
+            if (loading) {
+                saveBtn.disabled = true;
+                btnText.classList.add('d-none');
+                btnSpinner.classList.remove('d-none');
+                progressWrapper.style.display = 'block';
+
+                // Disable form inputs
+                form.querySelectorAll('input').forEach(input => input.disabled = true);
+            } else {
+                saveBtn.disabled = false;
+                btnText.classList.remove('d-none');
+                btnSpinner.classList.add('d-none');
+                progressWrapper.style.display = 'none';
+                progressBar.style.width = '0%';
+                progressBar.textContent = '0%';
+
+                // Re-enable form inputs
+                form.querySelectorAll('input').forEach(input => input.disabled = false);
+            }
+        }
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            clearError();
+
+            const username = document.getElementById('editUsername').value.trim();
+            const profileImage = imageInput.files[0];
+
+            if (!username) {
+                return showError('Iltimos, foydalanuvchi nomini kiriting.');
+            }
+
+            setLoading(true);
+
+            try {
+                const formData = new FormData();
+                formData.append('username', username);
+                if (profileImage) {
+                    formData.append('profileImage', profileImage);
+                }
+
+                const uid = localStorage.getItem('uid');
+                const token = localStorage.getItem('token');
+
+                // XMLHttpRequest for progress tracking
+                const xhr = new XMLHttpRequest();
+
+                // Upload progress
+                xhr.upload.addEventListener('progress', function(e) {
+                    if (e.lengthComputable) {
+                        const percent = Math.round((e.loaded / e.total) * 100);
+                        progressBar.style.width = percent + '%';
+                        progressBar.textContent = percent + '%';
+                    }
+                });
+
+                // Success handler
+                xhr.onload = async function() {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        try {
+                            const result = JSON.parse(xhr.responseText);
+
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('editProfileModal'));
+                            modal.hide();
+                            form.reset();
+
+                            toastManager.success('Profil muvaffaqiyatli yangilandi!');
+
+                            // Update current user data with the response
+                            if (result.updatedFields) {
+                                currentUser = { ...currentUser, ...result.updatedFields };
+                            }
+
+                            // Reload profile and sidebar
+                            await fetchUserProfile();
+
+                            // If we're on the profile page, reload it
+                            const activePage = document.querySelector('.page.active');
+                            if (activePage && activePage.id === 'page-profile') {
+                                loadProfile();
+                            }
+                        } catch (parseError) {
+                            console.error('Error parsing response:', parseError);
+                            showError('Javobni tahlil qilishda xatolik yuz berdi.');
+                        }
+                    } else {
+                        try {
+                            const errorData = JSON.parse(xhr.responseText);
+                            throw new Error(errorData.error || 'Failed to update profile');
+                        } catch (parseError) {
+                            throw new Error(`HTTP ${xhr.status}: ${xhr.statusText}`);
+                        }
+                    }
+                };
+
+                // Error handler
+                xhr.onerror = function() {
+                    showError('Tarmoq xatosi yuz berdi.');
+                    toastManager.error('Tarmoq xatosi yuz berdi');
+                };
+
+                // Timeout handler
+                xhr.ontimeout = function() {
+                    showError('So\'rov vaqti tugadi.');
+                    toastManager.error('So\'rov vaqti tugadi');
+                };
+
+                // Configure and send request
+                xhr.open('PUT', `${API_BASE_URL}/users/${uid}`);
+                xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+                xhr.timeout = 30000; // 30 seconds timeout
+                xhr.send(formData);
+
+            } catch (err) {
+                console.error('Error updating profile:', err);
+                showError(err.message || 'Profilni yangilashda xatolik yuz berdi.');
+                toastManager.error('Profilni yangilashda xatolik yuz berdi');
+                setLoading(false);
+            } finally {
+                // Reset loading state after a delay to show completion
+                setTimeout(() => {
+                    setLoading(false);
+                }, 500);
+            }
+        });
+    }
+
+    // Request action functions
+    async function confirmRequest(requestId) {
+        try {
+            const response = await apiRequest(`/user/confirm-request/${requestId}`, {
+                method: 'POST'
+            });
+
+            if (!response.ok) throw new Error('Failed to confirm request');
+
+            toastManager.success('So\'rov muvaffaqiyatli tasdiqlandi!');
+            loadRequests(); // Reload requests
+            loadRecentActivity(); // Reload activity
+        } catch (err) {
+            console.error('Error confirming request:', err);
+            toastManager.error('So\'rovni tasdiqlashda xatolik yuz berdi');
+        }
+    }
+
+    async function cancelRequest(requestId) {
+        if (!confirm('Haqiqatan ham bu so\'rovni bekor qilmoqchimisiz?')) return;
+
+        try {
+            const response = await apiRequest(`/user/cancel-request/${requestId}`, {
+                method: 'DELETE'
+            });
+
+            if (!response.ok) throw new Error('Failed to cancel request');
+
+            toastManager.success('So\'rov muvaffaqiyatli bekor qilindi!');
+            loadRequests(); // Reload requests
+            loadRecentActivity(); // Reload activity
+        } catch (err) {
+            console.error('Error canceling request:', err);
+            toastManager.error('So\'rovni bekor qilishda xatolik yuz berdi');
+        }
+    }
+
+    // Confirm request from inbox
+    async function confirmRequestFromInbox(requestId) {
+        try {
+            const response = await apiRequest(`/user/confirm-request/${requestId}`, {
+                method: 'POST'
+            });
+
+            if (!response.ok) throw new Error('Failed to confirm request');
+
+            toastManager.success('So\'rov muvaffaqiyatli tasdiqlandi!');
+            loadInbox(); // Reload inbox
+            loadRequests(); // Reload dashboard requests
+            loadRecentActivity(); // Reload activity
+        } catch (err) {
+            console.error('Error confirming request:', err);
+            toastManager.error('So\'rovni tasdiqlashda xatolik yuz berdi');
+        }
+    }
+
+    // Cancel request from inbox
+    async function cancelRequestFromInbox(requestId) {
+        if (!confirm('Haqiqatan ham bu so\'rovni rad etmoqchimisiz?')) return;
+
+        try {
+            const response = await apiRequest(`/user/cancel-request/${requestId}`, {
+                method: 'DELETE'
+            });
+
+            if (!response.ok) throw new Error('Failed to cancel request');
+
+            toastManager.success('So\'rov muvaffaqiyatli rad etildi!');
+            loadInbox(); // Reload inbox
+            loadRequests(); // Reload dashboard requests
+            loadRecentActivity(); // Reload activity
+        } catch (err) {
+            console.error('Error canceling request:', err);
+            toastManager.error('So\'rovni rad etishda xatolik yuz berdi');
+        }
+    }
+
+    // Utility functions
+    function showError(message) {
+        toastManager.error(message);
+    }
+
+    function showSuccess(message) {
+        toastManager.success(message);
+    }
+
+    // Mobile responsiveness
+    function handleResize() {
+        const sidebar = document.getElementById('sidebar');
+        if (window.innerWidth <= 768) {
+            sidebar.classList.add('hidden');
+        }
+    }
+
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Initial check
+
+    function formatDate(dateString) {
+        if (!dateString) return '—';
+        try {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return '—';
+            return date.toLocaleDateString('uz-UZ', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+        } catch (err) {
+            return '—';
+        }
+    }
+</script>
+
 </body>
 </html>

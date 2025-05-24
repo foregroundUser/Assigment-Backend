@@ -1,11 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Dern Support</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"/>
+    <title>Dern Support - Texnik Yordam Xizmati</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary-color: #FFB703;
+            --secondary-dark: #f29b04;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --bg-light: #f8fafc;
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -14,51 +28,84 @@
 
         html, body {
             scroll-behavior: smooth;
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #f3f4f6;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-primary);
+            line-height: 1.6;
         }
 
+        /* Header */
         header {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            height: 64px;
-            background: rgba(44, 47, 52, 0.85);
+            height: 80px;
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            padding: 0 1.5rem;
+            padding: 0 2rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
             z-index: 1000;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: var(--shadow);
+            border-bottom: 1px solid var(--border-color);
         }
 
-        header img {
-            height: 170px;
-            width: 170px;
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-section img {
+            height: 60px;
+            width: auto;
             max-height: 100%;
-            object-fit: fill;
+            object-fit: contain;
             display: block;
         }
 
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-primary);
+        }
+
+        .logo-text p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin: 0;
+        }
 
         .get-started-btn {
-            background-color: #FFB703;
-            color: #000;
+            background: var(--primary-color);
+            color: white;
             border: none;
-            padding: 0.6rem 1.4rem;
-            font-weight: bold;
-            font-size: 0.95rem;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            font-size: 14px;
             border-radius: 8px;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .get-started-btn:hover {
-            background-color: #f29b04;
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
         }
 
+        /* Hero Section */
         .hero {
             position: relative;
             height: 100vh;
@@ -72,6 +119,7 @@
             align-items: center;
             color: white;
             text-align: center;
+            overflow: hidden;
         }
 
         .hero::before {
@@ -81,34 +129,85 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.5); /* foreground dark layer */
+            background: rgba(0, 0, 0, 0.5);
             z-index: 0;
         }
 
         .hero-content {
             position: relative;
             z-index: 1;
-            max-width: 800px;
-            padding: 2rem;
+            max-width: 900px;
+            padding: 3rem;
             background: rgba(0, 0, 0, 0.25);
-            border-radius: 12px;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .hero p {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             line-height: 1.6;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+            margin-bottom: 2rem;
+            opacity: 0.95;
         }
 
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary-color);
+            border: none;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            font-size: 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            font-size: 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        /* Sections */
         section {
-            padding: 4rem 2rem;
+            padding: 5rem 2rem;
             text-align: center;
             opacity: 0;
             transform: translateY(30px);
@@ -121,119 +220,186 @@
         }
 
         .section-title {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-            color: #222;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            font-weight: 700;
         }
 
         .section-subtitle {
-            color: #555;
-            margin-bottom: 2rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
+        /* Stats Section */
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 1.5rem;
-            padding: 0 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .stat-box {
-            background-color: white;
-            padding: 2rem 1rem;
-            border-radius: 12px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .stat-box:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
-        }
-
-        .stat-box h3 {
-            font-size: 2rem;
-            color: #FFB703;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-box p {
-            color: #333;
-            font-weight: 500;
-        }
-
-        footer {
-            background-color: #2c2f34;
-            color: #eee;
-            padding: 2rem;
-            text-align: center;
-        }
-
-        footer p {
-            margin-bottom: 0.5rem;
-        }
-
-        footer a {
-            color: #FFB703;
-            text-decoration: none;
-            margin: 0 8px;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.2rem;
-            }
-
-            .hero p {
-                font-size: 1rem;
-            }
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            padding: 0 2rem;
-        }
-
-        .stat-box {
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
+            background: white;
+            padding: 2.5rem 1.5rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
             overflow: hidden;
         }
 
-        .stat-box:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
+        .stat-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
         }
 
-        .stat-box img {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-            border-radius: 12px 12px 0 0;
+        .stat-box:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-box .icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 24px;
+            color: white;
         }
 
         .stat-box h3 {
-            font-size: 1.5rem;
-            color: #FFB703;
-            margin: 1rem 0 0.5rem;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
         }
 
         .stat-box p {
-            padding: 0 1rem 1rem;
+            color: var(--text-secondary);
             font-weight: 500;
-            color: #333;
+            font-size: 1.1rem;
+        }
+
+        /* Services Section */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .service-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .service-content {
+            padding: 2rem;
             flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .service-content h3 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .service-content p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+
+        /* Featured Service */
+        .featured-service {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        .featured-content {
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .featured-content h3 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .featured-content p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .featured-image {
+            background: linear-gradient(135deg, var(--secondary-color), var(--secondary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .featured-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* FAQ Section */
+        #faq {
+            background: white;
+            padding: 5rem 2rem;
         }
 
         .faq-container {
@@ -243,17 +409,21 @@
         }
 
         .faq-item {
-            margin-bottom: 1.2rem;
-            background: #fff;
+            margin-bottom: 1.5rem;
+            background: var(--bg-light);
             border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border-color);
             overflow: hidden;
             transition: all 0.3s ease;
         }
 
+        .faq-item:hover {
+            box-shadow: var(--shadow);
+        }
+
         .faq-question {
             width: 100%;
-            padding: 1.3rem 1.5rem;
+            padding: 1.5rem 2rem;
             font-size: 1.1rem;
             font-weight: 600;
             background: none;
@@ -263,336 +433,579 @@
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
         }
 
         .faq-question:hover {
-            background-color: #f1f1f1;
+            background: white;
         }
 
-        .faq-question span {
-            font-size: 1.8rem;
+        .faq-question .icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: transform 0.3s ease;
+            font-size: 18px;
         }
 
         .faq-answer {
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.4s ease, padding 0.3s ease;
-            padding: 0 1.5rem;
+            padding: 0 2rem;
             font-size: 1rem;
-            color: #444;
+            color: var(--text-secondary);
+            background: white;
         }
 
         .faq-item.open .faq-answer {
             max-height: 300px;
-            padding: 1rem 1.5rem 1.5rem;
+            padding: 1.5rem 2rem 2rem;
         }
 
-        .faq-item.open .faq-question span {
+        .faq-item.open .faq-question .icon {
             transform: rotate(45deg);
         }
 
-        #our_services {
-            padding: 3rem 1rem;
+        /* Footer */
+        footer {
+            background: var(--text-primary);
+            color: white;
+            padding: 3rem 2rem 2rem;
             text-align: center;
         }
 
-        .service-card {
-            display: flex;
-            flex-wrap: wrap;
-            background: #fff;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 8px 14px rgba(0, 0, 0, 0.06);
-            max-width: 90%;
+        .footer-content {
+            max-width: 1200px;
             margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
         }
 
-        .service-text {
-            flex: 1;
-            padding: 1.5rem;
-            background: #f9fafb;
+        .footer-section h3 {
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-section p, .footer-section a {
+            color: #cbd5e1;
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            display: block;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--secondary-color);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 2rem;
+            color: #9ca3af;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
             display: flex;
             flex-direction: column;
             justify-content: center;
-            min-width: 280px;
-        }
-
-        .service-text h3 {
-            font-size: 1.6rem;
-            color: #fbbf24;
-            margin-bottom: 0.8rem;
-            text-align: left;
-        }
-
-        .service-text p {
-            font-size: 0.95rem;
-            color: #1f2937;
-            line-height: 1.6;
-            text-align: left;
-        }
-
-        .service-image {
-            flex: 1;
-            background-color: #fbbf24;
-            display: flex;
-            justify-content: center;
             align-items: center;
-            min-width: 280px;
-            padding: 1rem;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
         }
 
-        .service-image img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid var(--secondary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 2rem;
         }
 
-        /* Mobile */
+        .loading-text {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .service-card {
+            header {
+                padding: 0 1rem;
+            }
+
+            .logo-section img {
+                height: 40px;
+            }
+
+            .logo-text h2 {
+                font-size: 16px;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .hero-content {
+                padding: 2rem;
+            }
+
+            .hero-buttons {
                 flex-direction: column;
+                align-items: center;
             }
 
-            .service-text, .service-image {
-                min-width: 100%;
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
             }
 
-            .service-text h3, .service-text p {
-                text-align: center;
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .featured-service {
+                grid-template-columns: 1fr;
+            }
+
+            .featured-content {
+                padding: 2rem;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: left;
             }
         }
 
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
 
+            .hero-content {
+                padding: 1.5rem;
+            }
+
+            section {
+                padding: 3rem 1rem;
+            }
+
+            .faq-question {
+                padding: 1rem 1.5rem;
+                font-size: 1rem;
+            }
+
+            .faq-answer {
+                padding: 0 1.5rem;
+            }
+
+            .faq-item.open .faq-answer {
+                padding: 1rem 1.5rem 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <img src="images/logo.png" alt="Dern Support Logo" style="object-fit: cover; object-position: center;"/>
-    <button class="get-started-btn">Get
-        Started
+    <div class="logo-section">
+        <img src="images/logo.png" alt="Dern Support Logo"/>
+        <div class="logo-text">
+            <h2>Dern Support</h2>
+            <p>Texnik Yordam</p>
+        </div>
+    </div>
+    <button class="get-started-btn">
+        <i class="fas fa-rocket"></i>
+        Boshlash
     </button>
 </header>
 
 <div class="hero" id="hero-section">
     <div class="hero-content">
-        <h1>Welcome to Dern Support</h1>
-        <p>Your one-stop solution for computer repairs and technical support.</p>
+        <h1>Dern Support ga Xush Kelibsiz</h1>
+        <p>Kompyuter ta'mirlash va texnik yordam uchun eng yaxshi yechim. Bizning professional jamoamiz sizning barcha texnik muammolaringizni hal qilishga tayyor.</p>
+        <div class="hero-buttons">
+            <button class="btn-primary" onclick="startService()">
+                <i class="fas fa-play"></i>
+                Xizmatni Boshlash
+            </button>
+            <button class="btn-secondary" onclick="scrollToServices()">
+                <i class="fas fa-info-circle"></i>
+                Batafsil Ma'lumot
+            </button>
+        </div>
     </div>
 </div>
 
 <section id="stats">
-    <h2 class="section-title">OUR AWESOME STATS</h2>
-    <p class="section-subtitle">Real results backed by happy clients and great work.</p>
+    <h2 class="section-title">Bizning Yutuqlarimiz</h2>
+    <p class="section-subtitle">Haqiqiy natijalar va mamnun mijozlar bilan qo'llab-quvvatlanadi.</p>
     <div class="stats">
         <div class="stat-box">
+            <div class="icon">
+                <i class="fas fa-users"></i>
+            </div>
             <h3>1,200+</h3>
-            <p>Happy Clients</p>
+            <p>Mamnun Mijozlar</p>
         </div>
         <div class="stat-box">
+            <div class="icon">
+                <i class="fas fa-tasks"></i>
+            </div>
             <h3>450</h3>
-            <p>Projects Completed</p>
+            <p>Tugallangan Loyihalar</p>
         </div>
         <div class="stat-box">
+            <div class="icon">
+                <i class="fas fa-trophy"></i>
+            </div>
             <h3>30</h3>
-            <p>Awards Won</p>
+            <p>Yutilgan Mukofotlar</p>
         </div>
         <div class="stat-box">
+            <div class="icon">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
             <h3>10+</h3>
-            <p>Years of Experience</p>
+            <p>Yillik Tajriba</p>
         </div>
     </div>
 </section>
+
 <section id="services">
-    <h2 class="section-title">FEATURED SERVICES</h2>
+    <h2 class="section-title">Asosiy Xizmatlar</h2>
     <p class="section-subtitle">
-        Explore the range of services we offer to keep your computers running smoothly.
+        Kompyuterlaringizni muammosiz ishlashi uchun taklif etayotgan xizmatlar bilan tanishing.
     </p>
-    <div class="stats">
-        <div class="stat-box">
-            <img src="https://dern-support-frontend.vercel.app/assets/maintainence-C352HG1o.jpg" alt="Computer Repair"
-                 style="width:100%; border-radius: 10px 10px 0 0;"/>
-            <h3 style="margin-top: 1rem;">Computer Repair</h3>
-            <p>High-quality computer repair services to meet your needs. We ensure your technology is in safe hands.</p>
+    <div class="services-grid">
+        <div class="service-card">
+            <img src="images/img_1.png" alt="Kompyuter Ta'mirlash"/>
+            <div class="service-content">
+                <h3>Kompyuter Ta'mirlash</h3>
+                <p>Yuqori sifatli kompyuter ta'mirlash xizmatlari. Sizning texnologiyangiz xavfsiz qo'llarda ekanligiga ishonch hosil qiling.</p>
+            </div>
         </div>
-        <div class="stat-box">
-            <img src="https://dern-support-frontend.vercel.app/assets/wallpaper1-Drjb85IK.jpg" alt="Virus Removal"
-                 style="width:100%; border-radius: 10px 10px 0 0;"/>
-            <h3 style="margin-top: 1rem;">Virus Removal</h3>
-            <p>High-quality virus removal services to meet your needs. We ensure your technology is in safe hands.</p>
+        <div class="service-card">
+            <img src="images/img_2.png" alt="Virus Tozalash"/>
+            <div class="service-content">
+                <h3>Virus Tozalash</h3>
+                <p>Professional virus tozalash xizmatlari. Kompyuteringizni zararli dasturlardan himoya qilish va tizimni tiklash.</p>
+            </div>
         </div>
-        <div class="stat-box">
-            <img src="https://dern-support-frontend.vercel.app/assets/wallpaper2-DOspWXkl.jpg" alt="Data Recovery"
-                 style="width:100%; border-radius: 10px 10px 0 0;"/>
-            <h3 style="margin-top: 1rem;">Data Recovery</h3>
-            <p>High-quality data recovery services to meet your needs. We ensure your technology is in safe hands.</p>
+        <div class="service-card">
+            <img src="images/img_3.png" alt="Ma'lumot Tiklash"/>
+            <div class="service-content">
+                <h3>Ma'lumot Tiklash</h3>
+                <p>Yo'qolgan ma'lumotlarni tiklash xizmatlari. Muhim fayllaringizni qayta tiklash uchun ilg'or texnologiyalardan foydalanamiz.</p>
+            </div>
         </div>
     </div>
 </section>
+
 <section id="our_services" class="services-section">
-    <div class="service-card">
-        <div class="service-text">
-            <h3>Software Issues</h3>
+    <div class="featured-service">
+        <div class="featured-content">
+            <h3>Dasturiy Ta'minot Muammolari</h3>
             <p>
-                At Dern-Support, we provide comprehensive support for printers, computers, and Wi-Fi networks.
-                Our services include diagnosing and fixing software issues, setting up and configuring software,
-                and ensuring seamless connectivity. We pride ourselves on efficient problem-solving and personalized
-                assistance.
+                Dern-Support da biz printer, kompyuter va Wi-Fi tarmoqlari uchun keng qamrovli yordam ko'rsatamiz.
+                Bizning xizmatlarimiz dasturiy ta'minot muammolarini aniqlash va hal qilish, dasturiy ta'minotni o'rnatish
+                va sozlash, hamda uzluksiz ulanishni ta'minlashni o'z ichiga oladi. Biz samarali muammo yechish va
+                shaxsiy yondashuvimiz bilan faxrlanamiz.
             </p>
         </div>
-        <div class="service-image">
-            <img src="https://dern-support-frontend.vercel.app/assets/3-CyCpy-jJ.jpg" alt="Software Issues">
+        <div class="featured-image">
+            <img src="images/img_4.png" alt="Dasturiy Ta'minot Muammolari">
         </div>
     </div>
-
 </section>
 
-<section id="faq" style="background-color: #f4f5f7; padding: 2.5rem 1rem;">
-    <h2 class="section-title">FAQ</h2>
-    <div style="margin: 0 auto 1rem; width: 70px; height: 4px; background-color: #222; border-radius: 10px;"></div>
-    <p class="section-subtitle" style="font-size: 1.1rem; max-width: 600px; margin: 0 auto 3rem;">
-        Find answers to the most common questions about our services and<br>
-        how we can assist you.
+<section id="faq">
+    <h2 class="section-title">Tez-tez So'raladigan Savollar</h2>
+    <p class="section-subtitle">
+        Bizning xizmatlarimiz va sizga qanday yordam bera olishimiz haqida eng ko'p so'raladigan savollarga javoblar toping.
     </p>
     <div class="faq-container">
         <div class="faq-item">
-            <button class="faq-question">What types of support does Dern-Support offer?<span>+</span></button>
-            <div class="faq-answer">We offer computer repair, virus removal, data recovery, and more tailored support
-                services.
+            <button class="faq-question">
+                Dern-Support qanday xizmatlarni taklif qiladi?
+                <div class="icon">
+                    <i class="fas fa-plus"></i>
+                </div>
+            </button>
+            <div class="faq-answer">
+                Biz kompyuter ta'mirlash, virus tozalash, ma'lumot tiklash va boshqa moslashtirilgan yordam xizmatlarini taklif qilamiz.
             </div>
         </div>
         <div class="faq-item">
-            <button class="faq-question">How do I submit a support request?<span>+</span></button>
-            <div class="faq-answer">You can use our contact form or call our hotline to request assistance.</div>
-        </div>
-        <div class="faq-item">
-            <button class="faq-question">What should I do if I need additional services beyond the original
-                request?<span>+</span></button>
-            <div class="faq-answer">Contact our support team and we will update your service plan accordingly.</div>
-        </div>
-        <div class="faq-item">
-            <button class="faq-question">Can I get remote support for my computer issues?<span>+</span></button>
-            <div class="faq-answer">Yes, we offer secure remote sessions to fix issues without visiting our office.
+            <button class="faq-question">
+                Yordam so'rovini qanday yuboraman?
+                <div class="icon">
+                    <i class="fas fa-plus"></i>
+                </div>
+            </button>
+            <div class="faq-answer">
+                Siz bizning aloqa formamizdan foydalanishingiz yoki yordam olish uchun issiq liniyamizga qo'ng'iroq qilishingiz mumkin.
             </div>
         </div>
         <div class="faq-item">
-            <button class="faq-question">How can I manage my customer account with Dern-Support?<span>+</span></button>
-            <div class="faq-answer">You can log in to your client dashboard to manage your profile, billing, and
-                tickets.
+            <button class="faq-question">
+                Dastlabki so'rovdan tashqari qo'shimcha xizmatlar kerak bo'lsa nima qilishim kerak?
+                <div class="icon">
+                    <i class="fas fa-plus"></i>
+                </div>
+            </button>
+            <div class="faq-answer">
+                Bizning yordam jamoamizga murojaat qiling va biz sizning xizmat rejangizni mos ravishda yangilaymiz.
+            </div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-question">
+                Kompyuter muammolarim uchun masofaviy yordam olsam bo'ladimi?
+                <div class="icon">
+                    <i class="fas fa-plus"></i>
+                </div>
+            </button>
+            <div class="faq-answer">
+                Ha, biz ofisimizga tashrif buyurmasdan muammolarni hal qilish uchun xavfsiz masofaviy seanslarni taklif qilamiz.
+            </div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-question">
+                Dern-Support bilan mijoz hisobimni qanday boshqaraman?
+                <div class="icon">
+                    <i class="fas fa-plus"></i>
+                </div>
+            </button>
+            <div class="faq-answer">
+                Siz o'z profilingiz, to'lovlar va so'rovlaringizni boshqarish uchun mijoz paneliga kirishingiz mumkin.
             </div>
         </div>
     </div>
 </section>
+
 <footer>
-    <p>&copy; 2025 Dern Support. All rights reserved.</p>
-    <p>
-        <a href="#">Privacy Policy</a> |
-        <a href="#">Terms of Service</a> |
-        <a href="#">Contact</a>
-    </p>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>Dern Support</h3>
+            <p>Professional texnik yordam xizmatlari. Sizning texnologik ehtiyojlaringiz uchun ishonchli hamkor.</p>
+        </div>
+        <div class="footer-section">
+            <h3>Xizmatlar</h3>
+            <a href="#services">Kompyuter Ta'mirlash</a>
+            <a href="#services">Virus Tozalash</a>
+            <a href="#services">Ma'lumot Tiklash</a>
+            <a href="#services">Dasturiy Ta'minot Yordami</a>
+        </div>
+        <div class="footer-section">
+            <h3>Aloqa</h3>
+            <p><i class="fas fa-phone"></i> +998 (90) 123-45-67</p>
+            <p><i class="fas fa-envelope"></i> info@dernsupport.uz</p>
+            <p><i class="fas fa-map-marker-alt"></i> Toshkent, O'zbekiston</p>
+        </div>
+        <div class="footer-section">
+            <h3>Ijtimoiy Tarmoqlar</h3>
+            <a href="#"><i class="fab fa-facebook"></i> Facebook</a>
+            <a href="#"><i class="fab fa-telegram"></i> Telegram</a>
+            <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2025 Dern Support. Barcha huquqlar himoyalangan.</p>
+        <p>
+            <a href="#">Maxfiylik Siyosati</a> |
+            <a href="#">Xizmat Shartlari</a> |
+            <a href="#">Aloqa</a>
+        </p>
+    </div>
 </footer>
 
 <script>
     function sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
+
     async function checkUserRole() {
         const uid = localStorage.getItem('uid');
-        if (!uid) return;
-        requestAnimationFrame(() => {
-            const loadingScreen = document.createElement('div');
-            loadingScreen.style.position = 'fixed';
-            loadingScreen.style.top = '0';
-            loadingScreen.style.left = '0';
-            loadingScreen.style.width = '100vw';
-            loadingScreen.style.height = '100vh';
-            loadingScreen.style.background = 'rgba(0, 0, 0, 0.75)';
-            loadingScreen.style.display = 'flex';
-            loadingScreen.style.flexDirection = 'column';
-            loadingScreen.style.justifyContent = 'center';
-            loadingScreen.style.alignItems = 'center';
-            loadingScreen.style.zIndex = '9999';
+        const token = localStorage.getItem('token');
 
-            const spinner = document.createElement('div');
-            spinner.style.border = '6px solid #f3f3f3';
-            spinner.style.borderTop = '6px solid #FFB703';
-            spinner.style.borderRadius = '50%';
-            spinner.style.width = '60px';
-            spinner.style.height = '60px';
-            spinner.style.animation = 'spin 1s linear infinite';
-            spinner.style.marginBottom = '20px';
+        if (!uid || !token) return;
 
-            const loadingText = document.createElement('p');
-            loadingText.innerText = 'Checking access...';
-            loadingText.style.color = '#fff';
-            loadingText.style.fontSize = '1.2rem';
-            loadingText.style.fontFamily = 'Poppins, sans-serif';
+        // Create loading screen
+        const loadingScreen = document.createElement('div');
+        loadingScreen.className = 'loading-screen';
+        loadingScreen.innerHTML = `
+            <div class="spinner"></div>
+            <div class="loading-text">Kirish huquqini tekshirmoqda...</div>
+        `;
+        document.body.appendChild(loadingScreen);
 
-            loadingScreen.appendChild(spinner);
-            loadingScreen.appendChild(loadingText);
-            document.body.appendChild(loadingScreen);
-
-            if (!document.getElementById('spin-style')) {
-                const styleSheet = document.createElement("style");
-                styleSheet.id = "spin-style";
-                styleSheet.type = "text/css";
-                styleSheet.innerText = `
-                    @keyframes spin {
-                        0% { transform: rotate(0deg); }
-                        100% { transform: rotate(360deg); }
-                    }
-                `;
-                document.head.appendChild(styleSheet);
-            }
-        });
         try {
-            await sleep(1000);
-            const res = await fetch(`http://localhost:4000/isAdmin?uid=${uid}`);
-            const data = await res.json();
-            document.body.querySelectorAll('#spin-style, div[style*="z-index: 9999"]').forEach(el => el.remove());
+            await sleep(800);
+            const res = await fetch(`http://localhost:4000/isAdmin?uid=${uid}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
 
-            if (data.isAdmin) {
-                window.location.href = '../dern-support-frontend/admin/dashboard.html';
+            const data = await res.json();
+            document.body.removeChild(loadingScreen);
+
+            if (res.ok && data.isAdmin) {
+                window.location.href = './admin/dashboard.html';
             } else {
-                window.location.href = '../dern-support-frontend/user/home.html';
+                window.location.href = './user/home.html';
             }
         } catch (err) {
             console.error('Xatolik:', err);
-            alert("Foydalanuvchi holati aniqlanmadi.");
-            document.body.querySelectorAll('#spin-style, div[style*="z-index: 9999"]').forEach(el => el.remove());
+            document.body.removeChild(loadingScreen);
+            showNotification("Foydalanuvchi holati aniqlanmadi.", 'error');
         }
     }
 
-    window.onload = checkUserRole;
+    function startService() {
+        const uid = localStorage.getItem('uid');
+        const token = localStorage.getItem('token');
+
+        if (uid && token) {
+            checkUserRole();
+        } else {
+            window.location.href = "auth/login/login.html";
+        }
+    }
+
+    function scrollToServices() {
+        document.getElementById('services').scrollIntoView({
+            behavior: 'smooth'
+        });
+    }
+
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${type === 'error' ? '#ef4444' : '#10b981'};
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10000;
+            font-weight: 500;
+            max-width: 400px;
+        `;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.parentElement.removeChild(notification);
+            }
+        }, 5000);
+    }
+
+    // Initialize page
     window.addEventListener('DOMContentLoaded', () => {
+        // Check user role on page load
+        checkUserRole();
+
+        // Intersection Observer for animations
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('show');
                 }
             });
-        }, {threshold: 0.2});
+        }, { threshold: 0.2 });
 
         document.querySelectorAll('section').forEach(sec => observer.observe(sec));
 
+        // FAQ functionality
         document.querySelectorAll('.faq-question').forEach(button => {
             button.addEventListener('click', () => {
                 const item = button.parentElement;
+                const isOpen = item.classList.contains('open');
+
+                // Close all other items
+                document.querySelectorAll('.faq-item').forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.classList.remove('open');
+                    }
+                });
+
+                // Toggle current item
                 item.classList.toggle('open');
             });
         });
 
+        // Get started button
         const btn = document.querySelector(".get-started-btn");
         if (btn) {
-            btn.addEventListener("click", () => {
-                window.location.href = "auth/login/login.html";
-            });
+            btn.addEventListener("click", startService);
         }
 
-        setTimeout(checkUserRole, 100);
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    });
+
+    // Header scroll effect
+    window.addEventListener('scroll', () => {
+        const header = document.querySelector('header');
+        if (window.scrollY > 100) {
+            header.style.background = 'rgba(255, 255, 255, 0.98)';
+        } else {
+            header.style.background = 'rgba(255, 255, 255, 0.95)';
+        }
     });
 </script>
 

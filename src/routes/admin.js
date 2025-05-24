@@ -1,122 +1,223 @@
 const express = require('express');
 const router = express.Router();
-const adminController = require('../controllers/adminController');
+const { authenticate, requireAdmin } = require('../middlewares/authMiddleware');
+
+const {
+    listUsers,
+    deleteUser,
+    notifyOtherRequestByEmail,
+    updateRequest,
+    listAllRequests
+} = require('../controllers/adminController');
 
 /**
  * @swagger
  * tags:
- *   name: Admin
- *   description: Admin management and request control
+ *   - name: Admin
+ *     description: Admin so'rovlari
  */
 
 /**
  * @swagger
  * /admin/users:
  *   get:
+ *     security:
+ *       - bearerAuth: []
  *     tags: [Admin]
- *     summary: Get all users
+ *     summary: Foydalanuvchilar ro'yxatini oling (isAdmin false)
  *     responses:
  *       200:
- *         description: Returns a list of all users
+ *         description: Foydalanuvchilar ro'yxati
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   email:
+ *                     type: string
+ *                   isAdmin:
+ *                     type: boolean
+ *                   name:
+ *                     type: string
+ *       503:
+ *         description: Xizmat vaqtiinchalik mavjud emas
  */
-router.get('/users', adminController.listUsers);
+router.get('/users', authenticate, requireAdmin, listUsers);
 
 /**
  * @swagger
- * /admin/users:
+ * /admin/user:
  *   delete:
+ *     security:
+ *       - bearerAuth: []
  *     tags: [Admin]
- *     summary: Delete a user and all their requests
+ *     summary: Foydalanuvchini o‘chirish (Auth + Firestore + so‘rovlar)
  *     parameters:
  *       - in: query
  *         name: uid
  *         required: true
  *         schema:
  *           type: string
- *         description: User UID
+ *         description: Foydalanuvchi identifikatori
  *     responses:
  *       200:
- *         description: User and their requests deleted
+ *         description: Foydalanuvchi muvaffaqiyatli o‘chirildi
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *       400:
+ *         description: UID talab qilinadi
+ *       404:
+ *         description: Foydalanuvchi topilmadi
+ *       500:
+ *         description: Ichki xato
  */
-router.delete('/users', adminController.deleteUser);
+router.delete('/user', authenticate, requireAdmin, deleteUser);
+
+/**
+ * @swagger
+ * /admin/notify-other/{id}:
+ *   post:
+ *     security:
+ *       - bearerAuth: []
+ *     tags: [Admin]
+ *     summary: “other” turdagi so‘rov uchun narx yuborish va status→PENDING
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: RepairRequest hujjat IDsi
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - price
+ *               - adminMessage
+ *             properties:
+ *               price:
+ *                 type: number
+ *               adminMessage:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Narx yuborildi va notified=true qaytarildi
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 notified:
+ *                   type: boolean
+ *       400:
+ *         description: Xato parametr yoki noto‘g‘ri holat
+ *       404:
+ *         description: So‘rov yoki foydalanuvchi topilmadi
+ *       500:
+ *         description: Ichki xato
+ */
+router.post('/notify-other/:id', authenticate, requireAdmin, notifyOtherRequestByEmail);
+
+/**
+ * @swagger
+ * /admin/request/{id}:
+ *   patch:
+ *     security:
+ *       - bearerAuth: []
+ *     tags: [Admin]
+ *     summary: So‘rov holatini yangilash (faqat status)
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: RepairRequest hujjat IDsi
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - status
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 description: Yangi status (masalan, CONFIRMED yoki DONE)
+ *     responses:
+ *       200:
+ *         description: Status muvaffaqiyatli yangilandi
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *       400:
+ *         description: Xato parametr yoki noto‘g‘ri holat
+ *       404:
+ *         description: So‘rov topilmadi
+ *       500:
+ *         description: Ichki xato
+ */
+router.patch('/request/:id', authenticate, requireAdmin, updateRequest);
 
 /**
  * @swagger
  * /admin/requests:
  *   get:
+ *     security:
+ *       - bearerAuth: []
  *     tags: [Admin]
- *     summary: Get all repair requests (optional filter by status)
+ *     summary: Barcha RepairRequests ro'yxatini oling (status bo'yicha filtrlash mumkin)
  *     parameters:
  *       - in: query
  *         name: status
  *         schema:
  *           type: string
- *         description: Filter requests by status
+ *         description: Filtrlash uchun status (PENDING, WAITING, CONFIRMED, DONE)
  *     responses:
  *       200:
- *         description: Returns all requests
+ *         description: So‘rovlar ro‘yxati
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   uid:
+ *                     type: string
+ *                   problemType:
+ *                     type: string
+ *                   status:
+ *                     type: string
+ *                   price:
+ *                     type: number
+ *                   createdAt:
+ *                     type: string
+ *                     format: date-time
+ *       500:
+ *         description: Ichki xato yoki indeks muammosi
  */
-router.get('/requests', adminController.listAllRequests);
-
-/**
- * @swagger
- * /admin/requests/{id}:
- *   put:
- *     tags: [Admin]
- *     summary: Update a repair request
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               status:
- *                 type: string
- *               price:
- *                 type: number
- *               adminMessage:
- *                 type: string
- *     responses:
- *       200:
- *         description: Request updated
- */
-router.put('/requests/:id', adminController.updateRequest);
-
-/**
- * @swagger
- * /admin/requests/{id}/notify:
- *   post:
- *     tags: [Admin]
- *     summary: Notify user about "other" request price and admin message
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               price:
- *                 type: number
- *               adminMessage:
- *                 type: string
- *     responses:
- *       200:
- *         description: User notified via email
- */
-router.post('/requests/:id/notify', adminController.notifyOtherRequestByEmail);
+router.get('/requests', authenticate, requireAdmin, listAllRequests);
 
 module.exports = router;
-

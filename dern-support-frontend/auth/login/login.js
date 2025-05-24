@@ -20,27 +20,22 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('http://localhost:4000/login', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': '*/*'
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ email, password })
             });
 
             const data = await response.json();
 
-            if (!response.ok) {
+            if (!response.ok || !data.token) {
                 hideLoading();
                 showError(data.error || 'Login failed. Please check your credentials.');
                 return;
             }
 
-            if (data.uid) {
-                localStorage.setItem('uid', data.uid);
-                await checkUserRole(data.uid); // wait for redirection
-            } else {
-                hideLoading();
-                showError('Login successful, but UID not returned.');
-            }
+            localStorage.setItem('token', data.token); // 🟢 Save JWT
+            localStorage.setItem('uid', data.uid); // 🟢 Save JWT
+            await checkUserRole(data.token); // 🟢 Pass token to check role
 
         } catch (err) {
             console.error('Login error:', err);
@@ -49,10 +44,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    async function checkUserRole(uid) {
+    async function checkUserRole(token) {
         try {
-            const res = await fetch(`http://localhost:4000/isAdmin?uid=${uid}`);
+            const res = await fetch(`http://localhost:4000/isAdmin`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
             const data = await res.json();
+
+            hideLoading();
+
             if (res.ok && data.isAdmin) {
                 window.location.href = '../../admin/dashboard.html';
             } else {
@@ -60,6 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('Role check error:', error);
+            hideLoading();
             window.location.href = '../../index.html';
         }
     }
@@ -81,8 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
         errorDiv.style.textAlign = 'center';
         errorDiv.style.fontWeight = '500';
 
-        const formBox = document.querySelector('.login-box');
-        formBox.appendChild(errorDiv);
+        form.appendChild(errorDiv);
     }
 
     function showLoading(text = 'Please wait...') {

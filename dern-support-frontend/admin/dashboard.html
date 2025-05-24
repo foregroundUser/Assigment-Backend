@@ -2,9 +2,2376 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dern Support - Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --sidebar-width: 280px;
+            --primary-color: #dc2626;
+            --primary-dark: #b91c1c;
+            --secondary-color: #FFB703;
+            --sidebar-bg: #ffffff;
+            --sidebar-hover: #f1f5f9;
+            --sidebar-active: #dc2626;
+            --sidebar-border: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --bg-light: #f8fafc;
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Toast Notification Styles */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+        }
+
+        .toast-notification {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 100%;
+            word-wrap: break-word;
+        }
+
+        .toast-notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .toast-notification.success {
+            border-left-color: #10b981;
+        }
+
+        .toast-notification.error {
+            border-left-color: #ef4444;
+        }
+
+        .toast-notification.warning {
+            border-left-color: #f59e0b;
+        }
+
+        .toast-notification.info {
+            border-left-color: #3b82f6;
+        }
+
+        .toast-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .toast-notification.success .toast-icon {
+            background: #10b981;
+        }
+
+        .toast-notification.error .toast-icon {
+            background: #ef4444;
+        }
+
+        .toast-notification.warning .toast-icon {
+            background: #f59e0b;
+        }
+
+        .toast-notification.info .toast-icon {
+            background: #3b82f6;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 2px;
+            color: var(--text-primary);
+        }
+
+        .toast-message {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .toast-close:hover {
+            background: #f3f4f6;
+            color: var(--text-primary);
+        }
+
+        .toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 12px 12px;
+            overflow: hidden;
+        }
+
+        .toast-progress-bar {
+            height: 100%;
+            background: currentColor;
+            transition: width linear;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .toast-notification.success .toast-progress-bar {
+            background: #10b981;
+        }
+
+        .toast-notification.error .toast-progress-bar {
+            background: #ef4444;
+        }
+
+        .toast-notification.warning .toast-progress-bar {
+            background: #f59e0b;
+        }
+
+        .toast-notification.info .toast-progress-bar {
+            background: #3b82f6;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--sidebar-bg);
+            color: var(--text-primary);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--sidebar-border);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transform: translateX(0);
+        }
+
+        body.sidebar-hidden .sidebar {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-header {
+            padding: 1.5rem 1rem;
+            border-bottom: 1px solid var(--sidebar-border);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-height: 80px;
+            position: relative;
+        }
+
+        .sidebar-logo {
+            width: 32px;
+            height: 32px;
+            background: var(--primary-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+            color: white;
+        }
+
+        .sidebar-title {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .sidebar-title h2 {
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-primary);
+        }
+
+        .sidebar-title p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .sidebar-toggle {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .sidebar-toggle:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .sidebar-content {
+            flex: 1;
+            padding: 1rem 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .sidebar-group {
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-group-label {
+            padding: 0 1rem;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu-item {
+            position: relative;
+            margin: 0 0.5rem;
+        }
+
+        .sidebar-menu-button {
+            width: calc(100% - 1rem);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .sidebar-menu-button:hover {
+            background: var(--sidebar-hover);
+            color: var(--text-primary);
+        }
+
+        .sidebar-menu-button.active {
+            background: var(--sidebar-active);
+            color: white;
+        }
+
+        .sidebar-menu-button i {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 16px;
+        }
+
+        .sidebar-menu-text {
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        /* Profile Section */
+        .sidebar-footer {
+            padding: 1rem;
+            border-top: 1px solid var(--sidebar-border);
+        }
+
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .profile-section:hover {
+            background: var(--sidebar-hover);
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-color);
+            flex-shrink: 0;
+        }
+
+        .profile-info {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .profile-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .profile-email {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 50%;
+            right: 0.75rem;
+            transform: translateY(-50%);
+            background: #dc2626;
+            border: none;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            opacity: 0;
+        }
+
+        .profile-section:hover .logout-btn {
+            opacity: 1;
+        }
+
+        .logout-btn:hover {
+            background: #b91c1c;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body.sidebar-hidden .main-content {
+            margin-left: 0;
+        }
+
+        .main-header {
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            box-shadow: var(--shadow);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .auth-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .auth-status {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .auth-status.connected {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .auth-status.disconnected {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .main-body {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        /* Welcome Banner */
+        .welcome-banner {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .banner-content h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .banner-content p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            max-width: 500px;
+        }
+
+        .banner-icon {
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .stat-icon.users {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .stat-icon.requests {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .stat-icon.pending {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .stat-icon.completed {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .stat-icon.revenue {
+            background: #f3e8ff;
+            color: #7c3aed;
+        }
+
+        .stat-info h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--text-primary);
+        }
+
+        .stat-info p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table th {
+            background: var(--bg-light);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .data-table tr:hover {
+            background: var(--bg-light);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 14px;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .btn-success {
+            background: #16a34a;
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        .btn-success:hover {
+            background: #15803d;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        /* Status Badges */
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .badge-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-progress {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-resolved {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-confirmed {
+            background: #e0f2fe;
+            color: #0891b2;
+        }
+
+        .badge-cancelled {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .badge-admin {
+            background: #f3e8ff;
+            color: #7c3aed;
+        }
+
+        .badge-user {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        /* Page System */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .page-title p {
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        /* Loading Animation */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        /* Alert */
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .alert-danger {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+
+        .d-none {
+            display: none !important;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .quick-action-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .quick-action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color);
+        }
+
+        .quick-action-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin: 0 auto 1rem auto;
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .quick-action-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .quick-action-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .welcome-banner {
+                flex-direction: column;
+                text-align: center;
+                gap: 2rem;
+            }
+
+            .banner-content h1 {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .toast-container {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+
+            .toast-notification {
+                max-width: 100%;
+            }
+
+            .data-table {
+                font-size: 14px;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 0.5rem;
+            }
+        }
+    </style>
 </head>
-<body>
-Hello Admin
+<body class="">
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="sidebar-logo">A</div>
+        <div class="sidebar-title">
+            <h2>Dern Support</h2>
+            <p>Admin Panel</p>
+        </div>
+    </div>
+
+    <div class="sidebar-content">
+        <div class="sidebar-group">
+            <div class="sidebar-group-label">Navigation</div>
+            <ul class="sidebar-menu">
+                <li class="sidebar-menu-item">
+                    <button class="sidebar-menu-button active" data-page="dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span class="sidebar-menu-text">Dashboard</span>
+                    </button>
+                </li>
+                <li class="sidebar-menu-item">
+                    <button class="sidebar-menu-button" data-page="users">
+                        <i class="fas fa-users"></i>
+                        <span class="sidebar-menu-text">Foydalanuvchilar</span>
+                    </button>
+                </li>
+                <li class="sidebar-menu-item">
+                    <button class="sidebar-menu-button" data-page="requests">
+                        <i class="fas fa-file-text"></i>
+                        <span class="sidebar-menu-text">So'rovlar</span>
+                    </button>
+                </li>
+                <li class="sidebar-menu-item">
+                    <button class="sidebar-menu-button" data-page="feedback">
+                        <i class="fas fa-star"></i>
+                        <span class="sidebar-menu-text">Feedback</span>
+                    </button>
+                </li>
+                <li class="sidebar-menu-item">
+                    <button class="sidebar-menu-button" data-page="analytics">
+                        <i class="fas fa-chart-bar"></i>
+                        <span class="sidebar-menu-text">Analitika</span>
+                    </button>
+                </li>
+                <li class="sidebar-menu-item">
+                    <button class="sidebar-menu-button" data-page="settings">
+                        <i class="fas fa-cog"></i>
+                        <span class="sidebar-menu-text">Sozlamalar</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="sidebar-footer">
+        <div class="profile-section">
+            <img src="https://www.mona.uwi.edu/modlang/sites/default/files/modlang/male-avatar-placeholder.png" alt="Profile" class="profile-avatar" id="profileAvatar">
+            <div class="profile-info">
+                <p class="profile-name" id="profileName">Admin</p>
+                <p class="profile-email" id="profileEmail">admin@dernsupport.uz</p>
+            </div>
+            <button class="logout-btn" onclick="handleLogout()" title="Chiqish">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <div class="main-header">
+        <div class="header-left">
+            <button class="sidebar-toggle" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1>Admin Dashboard</h1>
+        </div>
+        <div class="auth-section">
+            <div class="auth-status" id="authStatus">
+                <i class="fas fa-wifi"></i>
+                Ulanmoqda...
+            </div>
+        </div>
+    </div>
+
+    <div class="main-body">
+        <!-- Dashboard Page -->
+        <div id="page-dashboard" class="page active">
+            <div class="page-header">
+                <div class="page-title">
+                    <h2>Dashboard</h2>
+                    <p>Tizim umumiy ko'rinishi</p>
+                </div>
+            </div>
+
+            <!-- Welcome Banner -->
+            <div class="welcome-banner">
+                <div class="banner-content">
+                    <h1 id="welcomeText">Xush kelibsiz, Admin!</h1>
+                    <p>Tizimni boshqarish va nazorat qilish uchun admin paneli. Bu yerda barcha ma'lumotlar va statistikalarni ko'rishingiz mumkin.</p>
+                </div>
+                <div class="banner-icon">
+                    👨‍💼
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <div class="quick-action-card" onclick="switchPage('users')">
+                    <div class="quick-action-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="quick-action-title">Foydalanuvchilar</div>
+                    <div class="quick-action-desc">Barcha foydalanuvchilarni boshqarish</div>
+                </div>
+                <div class="quick-action-card" onclick="switchPage('requests')">
+                    <div class="quick-action-icon">
+                        <i class="fas fa-file-text"></i>
+                    </div>
+                    <div class="quick-action-title">So'rovlar</div>
+                    <div class="quick-action-desc">Barcha so'rovlarni ko'rish va boshqarish</div>
+                </div>
+                <div class="quick-action-card" onclick="switchPage('feedback')">
+                    <div class="quick-action-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="quick-action-title">Feedback</div>
+                    <div class="quick-action-desc">Mijozlar fikr-mulohazalari</div>
+                </div>
+                <div class="quick-action-card" onclick="switchPage('analytics')">
+                    <div class="quick-action-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="quick-action-title">Analitika</div>
+                    <div class="quick-action-desc">Tizim statistikalari</div>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-icon users">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalUsers">0</h3>
+                            <p>Jami foydalanuvchilar</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-icon requests">
+                            <i class="fas fa-file-text"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalRequests">0</h3>
+                            <p>Jami so'rovlar</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-icon pending">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="pendingRequests">0</h3>
+                            <p>Kutilayotgan so'rovlar</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-icon completed">
+                            <i class="fas fa-check-double"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="completedRequests">0</h3>
+                            <p>Tugallangan so'rovlar</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-icon revenue">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalRevenue">$0</h3>
+                            <p>Jami daromad</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Requests -->
+            <div class="content-section">
+                <div class="section-header">
+                    <div>
+                        <h2>So'nggi so'rovlar</h2>
+                        <p>Eng yangi kelgan so'rovlar</p>
+                    </div>
+                    <button class="btn-primary" onclick="switchPage('requests')">
+                        <i class="fas fa-eye"></i>
+                        Barchasini ko'rish
+                    </button>
+                </div>
+
+                <div class="loading-spinner" id="recentRequestsSpinner" style="display: none;">
+                    <div class="spinner"></div>
+                </div>
+
+                <div id="recentRequestsContainer">
+                    <!-- Recent requests will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Page -->
+        <div id="page-users" class="page">
+            <div class="page-header">
+                <div class="page-title">
+                    <h2>Foydalanuvchilar</h2>
+                    <p>Barcha tizim foydalanuvchilarini boshqarish</p>
+                </div>
+                <button class="btn-primary" onclick="openAddUserModal()">
+                    <i class="fas fa-plus"></i>
+                    Yangi foydalanuvchi
+                </button>
+            </div>
+
+            <div class="content-section">
+                <div class="loading-spinner" id="usersSpinner" style="display: none;">
+                    <div class="spinner"></div>
+                </div>
+
+                <div id="usersContainer">
+                    <!-- Users table will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Requests Page -->
+        <div id="page-requests" class="page">
+            <div class="page-header">
+                <div class="page-title">
+                    <h2>So'rovlar</h2>
+                    <p>Barcha foydalanuvchi so'rovlarini boshqarish</p>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="loading-spinner" id="requestsSpinner" style="display: none;">
+                    <div class="spinner"></div>
+                </div>
+
+                <div id="requestsContainer">
+                    <!-- Requests table will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Feedback Page -->
+        <div id="page-feedback" class="page">
+            <div class="page-header">
+                <div class="page-title">
+                    <h2>Feedback</h2>
+                    <p>Mijozlar fikr-mulohazalari</p>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="loading-spinner" id="feedbackSpinner" style="display: none;">
+                    <div class="spinner"></div>
+                </div>
+
+                <div id="feedbackContainer">
+                    <!-- Feedback will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Page -->
+        <div id="page-analytics" class="page">
+            <div class="page-header">
+                <div class="page-title">
+                    <h2>Analitika</h2>
+                    <p>Tizim statistikalari va hisobotlar</p>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <div>
+                        <h2>Tizim statistikalari</h2>
+                        <p>Umumiy ko'rsatkichlar</p>
+                    </div>
+                </div>
+
+                <div id="analyticsContainer">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <div class="stat-icon users">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="newUsersToday">0</h3>
+                                    <p>Bugun yangi foydalanuvchilar</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <div class="stat-icon requests">
+                                    <i class="fas fa-plus-circle"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="newRequestsToday">0</h3>
+                                    <p>Bugun yangi so'rovlar</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <div class="stat-icon completed">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="completedToday">0</h3>
+                                    <p>Bugun tugallangan</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <div class="stat-icon revenue">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="revenueToday">$0</h3>
+                                    <p>Bugungi daromad</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div id="page-settings" class="page">
+            <div class="page-header">
+                <div class="page-title">
+                    <h2>Sozlamalar</h2>
+                    <p>Tizim sozlamalari</p>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <div>
+                        <h2>Tizim sozlamalari</h2>
+                        <p>Asosiy tizim parametrlari</p>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    Sozlamalar sahifasi ishlab chiqilmoqda...
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add User Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Yangi foydalanuvchi qo'shish</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="addUserForm">
+                <div id="addUserFeedback" class="alert alert-danger d-none"></div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Foydalanuvchi nomi *</label>
+                        <input type="text" class="form-control" id="newUsername" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email *</label>
+                        <input type="email" class="form-control" id="newEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Parol *</label>
+                        <input type="password" class="form-control" id="newPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Rol</label>
+                        <select class="form-select" id="newUserRole">
+                            <option value="false">Oddiy foydalanuvchi</option>
+                            <option value="true">Admin</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary">Qo'shish</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Send Mail Modal -->
+<div class="modal fade" id="sendMailModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Xabar yuborish</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="sendMailForm">
+                <div id="sendMailFeedback" class="alert alert-danger d-none"></div>
+                <div class="modal-body">
+                    <input type="hidden" id="mailRequestId">
+                    <div class="mb-3">
+                        <label class="form-label">Xabar matni *</label>
+                        <textarea class="form-control" id="mailText" rows="4" required placeholder="Foydalanuvchiga yuborilacak xabar..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Narx (agar kerak bo'lsa)</label>
+                        <input type="number" class="form-control" id="mailPrice" placeholder="Masalan: 50">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary">Yuborish</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Logout Confirmation Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chiqish</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Haqiqatan ham tizimdan chiqmoqchimisiz?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                <button type="button" class="btn btn-danger" onclick="confirmLogout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Chiqish
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Global variables
+    let currentUsers = [];
+    let currentRequests = [];
+    let currentFeedbacks = [];
+    let currentAdmin = null;
+    let API_BASE_URL = 'http://localhost:4000';
+
+    // Toast Notification System
+    class ToastManager {
+        constructor() {
+            this.container = document.getElementById('toastContainer');
+            this.toasts = [];
+        }
+
+        show(message, type = 'info', title = '', duration = 5000) {
+            const toast = this.createToast(message, type, title, duration);
+            this.container.appendChild(toast);
+            this.toasts.push(toast);
+
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+
+            if (duration > 0) {
+                setTimeout(() => {
+                    this.remove(toast);
+                }, duration);
+            }
+
+            return toast;
+        }
+
+        createToast(message, type, title, duration) {
+            const toast = document.createElement('div');
+            toast.className = `toast-notification ${type}`;
+
+            const icons = {
+                success: 'fas fa-check',
+                error: 'fas fa-times',
+                warning: 'fas fa-exclamation',
+                info: 'fas fa-info'
+            };
+
+            const titles = {
+                success: title || 'Muvaffaqiyat!',
+                error: title || 'Xatolik!',
+                warning: title || 'Ogohlantirish!',
+                info: 'Ma\'lumot'
+            };
+
+            toast.innerHTML = `
+                <div class="toast-icon">
+                    <i class="${icons[type]}"></i>
+                </div>
+                <div class="toast-content">
+                    <div class="toast-title">${titles[type]}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close" onclick="toastManager.remove(this.parentElement)">
+                    <i class="fas fa-times"></i>
+                </button>
+                ${duration > 0 ? `
+                    <div class="toast-progress">
+                        <div class="toast-progress-bar" style="width: 100%; transition-duration: ${duration}ms;"></div>
+                    </div>
+                ` : ''}
+            `;
+
+            if (duration > 0) {
+                setTimeout(() => {
+                    const progressBar = toast.querySelector('.toast-progress-bar');
+                    if (progressBar) {
+                        progressBar.style.width = '0%';
+                    }
+                }, 100);
+            }
+
+            return toast;
+        }
+
+        remove(toast) {
+            if (toast && toast.parentElement) {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        toast.parentElement.removeChild(toast);
+                    }
+                    this.toasts = this.toasts.filter(t => t !== toast);
+                }, 300);
+            }
+        }
+
+        success(message, title = '', duration = 5000) {
+            return this.show(message, 'success', title, duration);
+        }
+
+        error(message, title = '', duration = 7000) {
+            return this.show(message, 'error', title, duration);
+        }
+
+        warning(message, title = '', duration = 6000) {
+            return this.show(message, 'warning', title, duration);
+        }
+
+        info(message, title = '', duration = 5000) {
+            return this.show(message, 'info', title, duration);
+        }
+    }
+
+    // Initialize toast manager
+    const toastManager = new ToastManager();
+
+    // Initialize app
+    document.addEventListener('DOMContentLoaded', () => {
+        initNavigation();
+        initModals();
+        loadSidebarState();
+        initApp();
+    });
+
+    function initApp() {
+        testConnection();
+        fetchAdminProfile();
+        loadDashboardData();
+    }
+
+    // API helper function
+    async function apiRequest(endpoint, options = {}) {
+        const token = localStorage.getItem('token');
+        const defaultOptions = {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        };
+
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+            ...defaultOptions,
+            ...options
+        });
+
+        return response;
+    }
+
+    async function testConnection() {
+        const uid = localStorage.getItem('uid');
+        const token = localStorage.getItem('token');
+        const authStatus = document.getElementById('authStatus');
+
+        if (!uid || !token) {
+            authStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Token/UID mavjud emas';
+            authStatus.className = 'auth-status disconnected';
+            toastManager.error('Token yoki UID mavjud emas', 'Autentifikatsiya xatosi');
+            return false;
+        }
+
+        try {
+            authStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Tekshirilmoqda...';
+            authStatus.className = 'auth-status';
+
+            const response = await apiRequest(`/isAdmin?uid=${uid}`);
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.isAdmin) {
+                    authStatus.innerHTML = '<i class="fas fa-check-circle"></i> Admin ulangan';
+                    authStatus.className = 'auth-status connected';
+                    toastManager.success('Admin panelga muvaffaqiyatli ulandingiz');
+                    return true;
+                } else {
+                    throw new Error('Admin huquqi yo\'q');
+                }
+            } else {
+                throw new Error('Authentication failed');
+            }
+        } catch (err) {
+            console.error('Connection test failed:', err);
+            authStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Ulanmagan';
+            authStatus.className = 'auth-status disconnected';
+            toastManager.error('Admin huquqi yo\'q yoki serverga ulanishda xatolik');
+
+            // Redirect to login if not admin
+            setTimeout(() => {
+                window.location.href = '../index.html';
+            }, 3000);
+            return false;
+        }
+    }
+
+    // Sidebar toggle
+    function toggleSidebar() {
+        document.body.classList.toggle('sidebar-hidden');
+        localStorage.setItem('sidebarHidden', document.body.classList.contains('sidebar-hidden'));
+    }
+
+    function loadSidebarState() {
+        const sidebarPreference = localStorage.getItem('sidebarHidden');
+        if (sidebarPreference === 'true') {
+            document.body.classList.add('sidebar-hidden');
+        }
+    }
+
+    // Navigation system
+    function initNavigation() {
+        const navButtons = document.querySelectorAll('.sidebar-menu-button[data-page]');
+        const pages = document.querySelectorAll('.page');
+
+        navButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const pageId = this.dataset.page;
+                switchPage(pageId);
+            });
+        });
+
+        window.switchPage = function(pageId) {
+            navButtons.forEach(btn => btn.classList.remove('active'));
+            const targetButton = document.querySelector(`[data-page="${pageId}"]`);
+            if (targetButton) {
+                targetButton.classList.add('active');
+            }
+
+            pages.forEach(page => page.classList.remove('active'));
+            document.getElementById(`page-${pageId}`).classList.add('active');
+
+            switch(pageId) {
+                case 'dashboard':
+                    loadDashboardData();
+                    break;
+                case 'users':
+                    loadUsers();
+                    break;
+                case 'requests':
+                    loadRequests();
+                    break;
+                case 'feedback':
+                    loadFeedbacks();
+                    break;
+                case 'analytics':
+                    loadAnalytics();
+                    break;
+                case 'settings':
+                    // Settings page
+                    break;
+            }
+        }
+    }
+
+    // Load dashboard data
+    async function loadDashboardData() {
+        try {
+            const [usersRes, requestsRes] = await Promise.all([
+                apiRequest('/admin/users'),
+                apiRequest('/admin/requests')
+            ]);
+
+            if (usersRes.ok && requestsRes.ok) {
+                const users = await usersRes.json();
+                const requests = await requestsRes.json();
+
+                currentUsers = users;
+                currentRequests = requests;
+
+                updateDashboardStats(users, requests);
+                loadRecentRequests(requests.slice(0, 10));
+            }
+        } catch (err) {
+            console.error('Error loading dashboard data:', err);
+            toastManager.error('Dashboard ma\'lumotlarini yuklashda xatolik');
+        }
+    }
+
+    function updateDashboardStats(users, requests) {
+        const totalUsers = users.length;
+        const totalRequests = requests.length;
+        const pendingRequests = requests.filter(r => r.status === 'PENDING' || r.status === 'WAITING').length;
+        const completedRequests = requests.filter(r => r.status === 'DONE').length;
+        const totalRevenue = requests
+            .filter(r => r.status === 'DONE' && r.price)
+            .reduce((sum, r) => sum + (parseFloat(r.price) || 0), 0);
+
+        document.getElementById('totalUsers').textContent = totalUsers;
+        document.getElementById('totalRequests').textContent = totalRequests;
+        document.getElementById('pendingRequests').textContent = pendingRequests;
+        document.getElementById('completedRequests').textContent = completedRequests;
+        document.getElementById('totalRevenue').textContent = `$${totalRevenue.toFixed(2)}`;
+    }
+
+    function loadRecentRequests(requests) {
+        const container = document.getElementById('recentRequestsContainer');
+
+        if (!requests || requests.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-file-text"></i>
+                    <h3>Hozircha so'rovlar yo'q</h3>
+                    <p>Yangi so'rovlar kelganda bu yerda ko'rsatiladi</p>
+                </div>
+            `;
+            return;
+        }
+
+        const tableHTML = `
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Foydalanuvchi</th>
+                        <th>Muammo</th>
+                        <th>Turi</th>
+                        <th>Status</th>
+                        <th>Narx</th>
+                        <th>Sana</th>
+                        <th>Amallar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${requests.map(req => `
+                        <tr>
+                            <td>#${req.id.slice(-6)}</td>
+                            <td>${req.uid || 'Noma\'lum'}</td>
+                            <td>${req.issueName || 'Noma\'lum'}</td>
+                            <td>${req.problemType || '—'}</td>
+                            <td>${getStatusBadge(req.status)}</td>
+                            <td>${req.price ? `$${req.price}` : '—'}</td>
+                            <td>${formatDate(req.createdAt)}</td>
+                            <td>
+                                <button class="btn-secondary" onclick="openSendMailModal('${req.id}')">
+                                    <i class="fas fa-envelope"></i>
+                                </button>
+                                <button class="btn-success" onclick="updateRequestStatus('${req.id}', 'DONE')">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                <button class="btn-danger" onclick="updateRequestStatus('${req.id}', 'CANCELLED')">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+
+        container.innerHTML = tableHTML;
+    }
+
+    // Load users
+    async function loadUsers() {
+        const spinner = document.getElementById('usersSpinner');
+        const container = document.getElementById('usersContainer');
+
+        if (spinner) spinner.style.display = 'flex';
+
+        try {
+            const response = await apiRequest('/admin/users');
+
+            if (!response.ok) throw new Error('Failed to load users');
+
+            const users = await response.json();
+            currentUsers = users;
+
+            if (!users || users.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-users"></i>
+                        <h3>Hozircha foydalanuvchilar yo'q</h3>
+                        <p>Yangi foydalanuvchi qo'shish uchun yuqoridagi tugmani bosing</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const tableHTML = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>UID</th>
+                            <th>Foydalanuvchi nomi</th>
+                            <th>Email</th>
+                            <th>Rol</th>
+                            <th>Ro'yxatdan o'tgan</th>
+                            <th>Amallar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${users.map(user => `
+                            <tr>
+                                <td>${user.uid || 'Noma\'lum'}</td>
+                                <td>${user.username || 'Noma\'lum'}</td>
+                                <td>${user.email || 'Noma\'lum'}</td>
+                                <td>${user.isAdmin ? '<span class="badge-admin">Admin</span>' : '<span class="badge-user">Foydalanuvchi</span>'}</td>
+                                <td>${formatDate(user.createdAt)}</td>
+                                <td>
+                                    <button class="btn-secondary" onclick="editUser('${user.uid}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-danger" onclick="deleteUser('${user.uid}')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = tableHTML;
+
+        } catch (err) {
+            console.error('Error loading users:', err);
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Foydalanuvchilarni yuklashda xatolik</h3>
+                    <p>Iltimos, qaytadan urinib ko'ring</p>
+                </div>
+            `;
+            toastManager.error('Foydalanuvchilarni yuklashda xatolik yuz berdi');
+        } finally {
+            if (spinner) spinner.style.display = 'none';
+        }
+    }
+
+    // Load requests
+    async function loadRequests() {
+        const spinner = document.getElementById('requestsSpinner');
+        const container = document.getElementById('requestsContainer');
+
+        if (spinner) spinner.style.display = 'flex';
+
+        try {
+            const response = await apiRequest('/admin/requests');
+
+            if (!response.ok) throw new Error('Failed to load requests');
+
+            const requests = await response.json();
+            currentRequests = requests;
+
+            if (!requests || requests.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-file-text"></i>
+                        <h3>Hozircha so'rovlar yo'q</h3>
+                        <p>Foydalanuvchilar so'rov yuborgan vaqtda bu yerda ko'rsatiladi</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const tableHTML = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Foydalanuvchi</th>
+                            <th>Muammo</th>
+                            <th>Tavsif</th>
+                            <th>Turi</th>
+                            <th>Status</th>
+                            <th>Narx</th>
+                            <th>Joylashuv</th>
+                            <th>Sana</th>
+                            <th>Amallar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${requests.map(req => `
+                            <tr>
+                                <td>#${req.id.slice(-6)}</td>
+                                <td>${req.uid || 'Noma\'lum'}</td>
+                                <td>${req.issueName || 'Noma\'lum'}</td>
+                                <td title="${req.description || ''}">${(req.description || '').substring(0, 50)}${(req.description || '').length > 50 ? '...' : ''}</td>
+                                <td>${req.problemType || '—'}</td>
+                                <td>${getStatusBadge(req.status)}</td>
+                                <td>${req.price ? `$${req.price}` : '—'}</td>
+                                <td>${req.location || '—'}</td>
+                                <td>${formatDate(req.createdAt)}</td>
+                                <td>
+                                    <button class="btn-secondary" onclick="openSendMailModal('${req.id}')" title="Xabar yuborish">
+                                        <i class="fas fa-envelope"></i>
+                                    </button>
+                                    <button class="btn-success" onclick="updateRequestStatus('${req.id}', 'IN_PROGRESS')" title="Jarayonga o'tkazish">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                    <button class="btn-success" onclick="updateRequestStatus('${req.id}', 'DONE')" title="Tugallash">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                    <button class="btn-danger" onclick="updateRequestStatus('${req.id}', 'CANCELLED')" title="Bekor qilish">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = tableHTML;
+
+        } catch (err) {
+            console.error('Error loading requests:', err);
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>So'rovlarni yuklashda xatolik</h3>
+                    <p>Iltimos, qaytadan urinib ko'ring</p>
+                </div>
+            `;
+            toastManager.error('So\'rovlarni yuklashda xatolik yuz berdi');
+        } finally {
+            if (spinner) spinner.style.display = 'none';
+        }
+    }
+
+    // Load feedbacks
+    async function loadFeedbacks() {
+        const spinner = document.getElementById('feedbackSpinner');
+        const container = document.getElementById('feedbackContainer');
+
+        if (spinner) spinner.style.display = 'flex';
+
+        try {
+            const response = await apiRequest('/admin/feedback');
+
+            if (!response.ok) throw new Error('Failed to load feedbacks');
+
+            const data = await response.json();
+            const feedbacks = Array.isArray(data.feedbacks) ? data.feedbacks : [];
+            currentFeedbacks = feedbacks;
+
+            if (!feedbacks || feedbacks.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-star"></i>
+                        <h3>Hozircha feedback yo'q</h3>
+                        <p>Mijozlar feedback qoldirgan vaqtda bu yerda ko'rsatiladi</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const tableHTML = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Foydalanuvchi</th>
+                            <th>So'rov ID</th>
+                            <th>Reyting</th>
+                            <th>Izoh</th>
+                            <th>Sana</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${feedbacks.map(feedback => `
+                            <tr>
+                                <td>${feedback.uid || 'Noma\'lum'}</td>
+                                <td>#${(feedback.requestId || '').slice(-6)}</td>
+                                <td>${generateStars(feedback.rating || 0)}</td>
+                                <td title="${feedback.comment || ''}">${(feedback.comment || '').substring(0, 100)}${(feedback.comment || '').length > 100 ? '...' : ''}</td>
+                                <td>${formatDate(feedback.createdAt)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = tableHTML;
+
+        } catch (err) {
+            console.error('Error loading feedbacks:', err);
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Feedbacklarni yuklashda xatolik</h3>
+                    <p>Iltimos, qaytadan urinib ko'ring</p>
+                </div>
+            `;
+            toastManager.error('Feedbacklarni yuklashda xatolik yuz berdi');
+        } finally {
+            if (spinner) spinner.style.display = 'none';
+        }
+    }
+
+    // Load analytics
+    function loadAnalytics() {
+        const today = new Date();
+        const todayStr = today.toISOString().split('T')[0];
+
+        const newUsersToday = currentUsers.filter(user => {
+            const userDate = new Date(user.createdAt).toISOString().split('T')[0];
+            return userDate === todayStr;
+        }).length;
+
+        const newRequestsToday = currentRequests.filter(req => {
+            const reqDate = new Date(req.createdAt).toISOString().split('T')[0];
+            return reqDate === todayStr;
+        }).length;
+
+        const completedToday = currentRequests.filter(req => {
+            const reqDate = new Date(req.updatedAt || req.createdAt).toISOString().split('T')[0];
+            return reqDate === todayStr && req.status === 'DONE';
+        }).length;
+
+        const revenueToday = currentRequests
+            .filter(req => {
+                const reqDate = new Date(req.updatedAt || req.createdAt).toISOString().split('T')[0];
+                return reqDate === todayStr && req.status === 'DONE' && req.price;
+            })
+            .reduce((sum, req) => sum + (parseFloat(req.price) || 0), 0);
+
+        document.getElementById('newUsersToday').textContent = newUsersToday;
+        document.getElementById('newRequestsToday').textContent = newRequestsToday;
+        document.getElementById('completedToday').textContent = completedToday;
+        document.getElementById('revenueToday').textContent = `$${revenueToday.toFixed(2)}`;
+    }
+
+    // Fetch admin profile
+    async function fetchAdminProfile() {
+        const uid = localStorage.getItem('uid');
+
+        if (!uid) return;
+
+        try {
+            const response = await apiRequest(`/user/profile/${uid}`);
+
+            if (!response.ok) throw new Error("Admin ma'lumotlarini olishda xatolik");
+
+            const admin = await response.json();
+            currentAdmin = admin;
+
+            const profileImg = document.getElementById('profileAvatar');
+            const profileName = document.getElementById('profileName');
+            const profileEmail = document.getElementById('profileEmail');
+
+            if (profileImg && admin.profileImage) {
+                profileImg.src = admin.profileImage;
+            }
+
+            if (profileName && admin.username) {
+                profileName.textContent = admin.username;
+            }
+
+            if (profileEmail && admin.email) {
+                profileEmail.textContent = admin.email;
+            }
+
+        } catch (err) {
+            console.error("Admin ma'lumotlari topilmadi:", err);
+        }
+    }
+
+    // Initialize modals
+    function initModals() {
+        initAddUserModal();
+        initSendMailModal();
+    }
+
+    function initAddUserModal() {
+        const form = document.getElementById('addUserForm');
+        const feedback = document.getElementById('addUserFeedback');
+
+        function showError(msg) {
+            feedback.textContent = msg;
+            feedback.classList.remove('d-none');
+        }
+
+        function clearError() {
+            feedback.textContent = '';
+            feedback.classList.add('d-none');
+        }
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            clearError();
+
+            const username = document.getElementById('newUsername').value.trim();
+            const email = document.getElementById('newEmail').value.trim();
+            const password = document.getElementById('newPassword').value;
+            const isAdmin = document.getElementById('newUserRole').value === 'true';
+
+            if (!username || !email || !password) {
+                return showError('Barcha maydonlarni to\'ldiring.');
+            }
+
+            try {
+                const response = await apiRequest('/admin/users', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        username,
+                        email,
+                        password,
+                        isAdmin
+                    })
+                });
+
+                if (response.ok) {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
+                    modal.hide();
+                    form.reset();
+                    toastManager.success('Yangi foydalanuvchi muvaffaqiyatli qo\'shildi!');
+                    loadUsers();
+                    loadDashboardData();
+                } else {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Foydalanuvchi qo\'shishda xatolik');
+                }
+            } catch (err) {
+                console.error('Error adding user:', err);
+                showError(err.message || 'Foydalanuvchi qo\'shishda xatolik yuz berdi.');
+                toastManager.error('Foydalanuvchi qo\'shishda xatolik yuz berdi');
+            }
+        });
+    }
+
+    function initSendMailModal() {
+        const form = document.getElementById('sendMailForm');
+        const feedback = document.getElementById('sendMailFeedback');
+
+        function showError(msg) {
+            feedback.textContent = msg;
+            feedback.classList.remove('d-none');
+        }
+
+        function clearError() {
+            feedback.textContent = '';
+            feedback.classList.add('d-none');
+        }
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            clearError();
+
+            const requestId = document.getElementById('mailRequestId').value;
+            const mailText = document.getElementById('mailText').value.trim();
+            const price = document.getElementById('mailPrice').value;
+
+            if (!mailText) {
+                return showError('Xabar matnini kiriting.');
+            }
+
+            try {
+                const body = {
+                    id: requestId,
+                    mailText: mailText
+                };
+
+                if (price) {
+                    body.price = parseFloat(price);
+                }
+
+                const response = await apiRequest('/admin/send-mail', {
+                    method: 'POST',
+                    body: JSON.stringify(body)
+                });
+
+                if (response.ok) {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('sendMailModal'));
+                    modal.hide();
+                    form.reset();
+                    toastManager.success('Xabar muvaffaqiyatli yuborildi!');
+                } else {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Xabar yuborishda xatolik');
+                }
+            } catch (err) {
+                console.error('Error sending mail:', err);
+                showError(err.message || 'Xabar yuborishda xatolik yuz berdi.');
+                toastManager.error('Xabar yuborishda xatolik yuz berdi');
+            }
+        });
+    }
+
+    // Modal functions
+    function openAddUserModal() {
+        const modal = new bootstrap.Modal(document.getElementById('addUserModal'));
+        modal.show();
+    }
+
+    function openSendMailModal(requestId) {
+        document.getElementById('mailRequestId').value = requestId;
+        const modal = new bootstrap.Modal(document.getElementById('sendMailModal'));
+        modal.show();
+    }
+
+    function handleLogout() {
+        const modal = new bootstrap.Modal(document.getElementById('logoutModal'));
+        modal.show();
+    }
+
+    function confirmLogout() {
+        try {
+            localStorage.removeItem('token');
+            localStorage.removeItem('uid');
+            localStorage.removeItem('sidebarHidden');
+
+            currentAdmin = null;
+            currentUsers = [];
+            currentRequests = [];
+            currentFeedbacks = [];
+
+            toastManager.success('Tizimdan muvaffaqiyatli chiqdingiz');
+
+            const modal = bootstrap.Modal.getInstance(document.getElementById('logoutModal'));
+            modal.hide();
+
+            setTimeout(() => {
+                window.location.href = '../index.html';
+            }, 1500);
+
+        } catch (err) {
+            console.error('Logout error:', err);
+            toastManager.error('Chiqishda xatolik yuz berdi');
+        }
+    }
+
+    // Action functions
+    async function updateRequestStatus(requestId, newStatus) {
+        try {
+            const response = await apiRequest(`/admin/requests/${requestId}/status`, {
+                method: 'PUT',
+                body: JSON.stringify({ status: newStatus })
+            });
+
+            if (response.ok) {
+                toastManager.success(`So'rov holati ${newStatus} ga o'zgartirildi!`);
+                loadRequests();
+                loadDashboardData();
+            } else {
+                throw new Error('Failed to update status');
+            }
+        } catch (err) {
+            console.error('Error updating request status:', err);
+            toastManager.error('So\'rov holatini o\'zgartirishda xatolik yuz berdi');
+        }
+    }
+
+    async function deleteUser(uid) {
+        if (!confirm('Haqiqatan ham bu foydalanuvchini o\'chirmoqchimisiz?')) return;
+
+        try {
+            const response = await apiRequest(`/admin/users/${uid}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                toastManager.success('Foydalanuvchi muvaffaqiyatli o\'chirildi!');
+                loadUsers();
+                loadDashboardData();
+            } else {
+                throw new Error('Failed to delete user');
+            }
+        } catch (err) {
+            console.error('Error deleting user:', err);
+            toastManager.error('Foydalanuvchini o\'chirishda xatolik yuz berdi');
+        }
+    }
+
+    function editUser(uid) {
+        toastManager.info('Foydalanuvchini tahrirlash funksiyasi ishlab chiqilmoqda...');
+    }
+
+    // Utility functions
+    function getStatusBadge(status) {
+        switch (status) {
+            case 'WAITING':
+                return '<span class="badge-pending">Kutilmoqda</span>';
+            case 'PENDING':
+                return '<span class="badge-pending">Pending</span>';
+            case 'IN_PROGRESS':
+                return '<span class="badge-progress">Jarayonda</span>';
+            case 'CONFIRMED':
+                return '<span class="badge-confirmed">Tasdiqlangan</span>';
+            case 'CANCELLED':
+                return '<span class="badge-cancelled">Bekor qilingan</span>';
+            case 'DONE':
+                return '<span class="badge-resolved">Tugallangan</span>';
+            default:
+                return `<span class="badge-pending">${status}</span>`;
+        }
+    }
+
+    function generateStars(rating) {
+        let stars = '';
+        for (let i = 1; i <= 5; i++) {
+            if (i <= rating) {
+                stars += '<i class="fas fa-star" style="color: #fbbf24;"></i>';
+            } else {
+                stars += '<i class="fas fa-star" style="color: #d1d5db;"></i>';
+            }
+        }
+        return stars;
+    }
+
+    function formatDate(dateString) {
+        if (!dateString) return '—';
+        try {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return '—';
+            return date.toLocaleDateString('uz-UZ', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+        } catch (err) {
+            return '—';
+        }
+    }
+
+    // Mobile responsiveness
+    function handleResize() {
+        const sidebar = document.getElementById('sidebar');
+        if (window.innerWidth <= 768) {
+            sidebar.classList.add('hidden');
+        }
+    }
+
+    window.addEventListener('resize', handleResize);
+    handleResize();
+</script>
+
 </body>
 </html>
