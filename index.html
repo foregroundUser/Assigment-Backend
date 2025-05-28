@@ -4,6 +4,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Dern Support - Texnik Yordam Xizmati</title>
+
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
@@ -647,7 +648,7 @@
 
 <header>
     <div class="logo-section">
-        <img src="dern-support-frontend/images/logo.png" alt="Dern Support Logo"/>
+        <img src="./images/logo.png" alt="Dern Support Logo"/>
         <div class="logo-text">
             <h2>Dern Support</h2>
             <p>Texnik Yordam</p>
@@ -718,21 +719,21 @@
     </p>
     <div class="services-grid">
         <div class="service-card">
-            <img src="dern-support-frontend/images/img_1.png" alt="Kompyuter Ta'mirlash"/>
+            <img src="./images/img_1.png" alt="Kompyuter Ta'mirlash"/>
             <div class="service-content">
                 <h3>Kompyuter Ta'mirlash</h3>
                 <p>Yuqori sifatli kompyuter ta'mirlash xizmatlari. Sizning texnologiyangiz xavfsiz qo'llarda ekanligiga ishonch hosil qiling.</p>
             </div>
         </div>
         <div class="service-card">
-            <img src="dern-support-frontend/images/img_2.png" alt="Virus Tozalash"/>
+            <img src="./images/img_2.png" alt="Virus Tozalash"/>
             <div class="service-content">
                 <h3>Virus Tozalash</h3>
                 <p>Professional virus tozalash xizmatlari. Kompyuteringizni zararli dasturlardan himoya qilish va tizimni tiklash.</p>
             </div>
         </div>
         <div class="service-card">
-            <img src="dern-support-frontend/images/img_3.png" alt="Ma'lumot Tiklash"/>
+            <img src="./images/img_3.png" alt="Ma'lumot Tiklash"/>
             <div class="service-content">
                 <h3>Ma'lumot Tiklash</h3>
                 <p>Yo'qolgan ma'lumotlarni tiklash xizmatlari. Muhim fayllaringizni qayta tiklash uchun ilg'or texnologiyalardan foydalanamiz.</p>
@@ -753,7 +754,7 @@
             </p>
         </div>
         <div class="featured-image">
-            <img src="dern-support-frontend/images/img_4.png" alt="Dasturiy Ta'minot Muammolari">
+            <img src="./images/img_4.png" alt="Dasturiy Ta'minot Muammolari">
         </div>
     </div>
 </section>
@@ -890,9 +891,9 @@
             document.body.removeChild(loadingScreen);
 
             if (res.ok && data.isAdmin) {
-                window.location.href = 'dern-support-frontend/admin/dashboard.html';
+                window.location.href = './admin/dashboard.html';
             } else {
-                window.location.href = 'dern-support-frontend/user/home.html';
+                window.location.href = './user/home.html';
             }
         } catch (err) {
             console.error('Xatolik:', err);
@@ -908,7 +909,7 @@
         if (uid && token) {
             checkUserRole();
         } else {
-            window.location.href = "dern-support-frontend/auth/login/login.html";
+            window.location.href = "./auth/login/login.html";
         }
     }
 

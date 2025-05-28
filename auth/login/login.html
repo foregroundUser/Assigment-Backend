@@ -1,0 +1,207 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .login-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .login-box {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-box h2 {
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #111827;
+        }
+
+        .login-box label {
+            display: block;
+            margin: 0.8rem 0 0.3rem;
+            font-weight: 500;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        .login-actions {
+            text-align: right;
+            margin: 0.5rem 0;
+        }
+
+        .forgot-link {
+            font-size: 0.85rem;
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+
+        .login-box button {
+            width: 100%;
+            background-color: #2563eb;
+            color: #fff;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .login-box button:hover {
+            background-color: #1d4ed8;
+        }
+
+        .register-link {
+            text-align: center;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        .register-link a {
+            color: #f59e0b;
+            text-decoration: none;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            background-color: #111827;
+            color: #e5e7eb;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+
+        .footer-container {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .footer-brand {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand img {
+            height: 28px;
+            width: 28px;
+        }
+
+        .footer-brand span {
+            font-weight: bold;
+            font-size: 1rem;
+            color: #fbbf24;
+        }
+
+        .footer-links {
+            margin-bottom: 1rem;
+        }
+
+        .footer-links a {
+            color: #9ca3af;
+            margin: 0 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+            color: #fbbf24;
+        }
+
+        .footer p {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            margin: 0;
+        }
+
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <form class="login-box">
+        <h2>Login</h2>
+        <label for="email">Email:</label>
+        <input type="email" id="email" placeholder="Enter your Email" required>
+
+        <label for="password">Password:</label>
+        <div class="password-wrapper">
+            <input type="password" id="password" placeholder="Enter your Password" required>
+        </div>
+
+        <div class="login-actions">
+            <a href="../forget-password/forget-password.html" class="forgot-link">Forgot password?</a>
+        </div>
+
+        <button type="submit">Login</button>
+
+        <p class="register-link">Don't have an account? <a href="../register/register.html">Register</a></p>
+    </form>
+</div>
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-brand">
+            <img src="../../images/logo_small.png" alt="Dern Support" style="width: 60px; "/>
+            <span>Dern Support</span>
+        </div>
+        <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Contact</a>
+        </div>
+        <p class="copyright">© 2025 Dern Support. All rights reserved.</p>
+    </div>
+</footer>
+
+<script src="login.js"></script>
+</body>
+</html>
