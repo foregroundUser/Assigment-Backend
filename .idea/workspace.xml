@@ -6,12 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2f5fe288-b22e-4e9f-a6f3-f64c1f7385b9" name="Changes" comment="Project ready to deploy">
       <change afterPath="$PROJECT_DIR$/serviceAccountKey.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dern-support-frontend/admin/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/dern-support-frontend/admin/dashboard.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dern-support-frontend/auth/forget-password/forget-password.js" beforeDir="false" afterPath="$PROJECT_DIR$/dern-support-frontend/auth/forget-password/forget-password.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dern-support-frontend/auth/login/login.js" beforeDir="false" afterPath="$PROJECT_DIR$/dern-support-frontend/auth/login/login.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dern-support-frontend/auth/register/register.js" beforeDir="false" afterPath="$PROJECT_DIR$/dern-support-frontend/auth/register/register.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dern-support-frontend/user/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/dern-support-frontend/user/home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,7 +57,7 @@
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;22.15.0&quot;,
     &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;22.15.18&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Assigment-Nurbek/Assigment-Chat&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/azamo/WebstormProjects/Assigment-Backend&quot;,
     &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -122,7 +117,8 @@
       <workItem from="1748164955657" duration="3466000" />
       <workItem from="1748245745975" duration="5867000" />
       <workItem from="1748329627954" duration="84000" />
-      <workItem from="1748340760612" duration="16101000" />
+      <workItem from="1748340760612" duration="17379000" />
+      <workItem from="1748461864319" duration="307000" />
     </task>
     <task id="LOCAL-00001" summary="Backend ready for beta">
       <option name="closed" value="true" />
@@ -204,7 +200,23 @@
       <option name="project" value="LOCAL" />
       <updated>1748456232900</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Project ready to deploy">
+      <option name="closed" value="true" />
+      <created>1748459302742</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1748459302742</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Project ready to deploy">
+      <option name="closed" value="true" />
+      <created>1748459932339</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1748459932339</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

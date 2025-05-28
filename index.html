@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Dern Support - Texnik Yordam Xizmati</title>
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="./images/logo.png">
+    <link rel="apple-touch-icon" href="./images/logo.png">
+
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
@@ -515,7 +519,7 @@
             color: #9ca3af;
         }
 
-        /* Loading Screen */
+        /* Optimized Loading Screen */
         .loading-screen {
             position: fixed;
             top: 0;
@@ -529,27 +533,69 @@
             align-items: center;
             z-index: 9999;
             backdrop-filter: blur(5px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .loading-screen.show {
+            opacity: 1;
+            visibility: visible;
         }
 
         .spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top: 4px solid var(--secondary-color);
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid var(--secondary-color);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 2rem;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 1.5rem;
         }
 
         .loading-text {
             color: white;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 500;
         }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10000;
+            font-weight: 500;
+            max-width: 400px;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: #10b981;
+            color: white;
+        }
+
+        .notification.error {
+            background: #ef4444;
+            color: white;
+        }
+
+        .notification.info {
+            background: #3b82f6;
+            color: white;
         }
 
         /* Responsive Design */
@@ -860,45 +906,135 @@
 </footer>
 
 <script>
+    // Global variables
+    let isCheckingAuth = false;
+    let loadingScreen = null;
+
+    // Utility functions
     function sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    async function checkUserRole() {
-        const uid = localStorage.getItem('uid');
-        const token = localStorage.getItem('token');
+    function createLoadingScreen() {
+        if (loadingScreen) return loadingScreen;
 
-        if (!uid || !token) return;
-
-        // Create loading screen
-        const loadingScreen = document.createElement('div');
+        loadingScreen = document.createElement('div');
         loadingScreen.className = 'loading-screen';
         loadingScreen.innerHTML = `
             <div class="spinner"></div>
-            <div class="loading-text">Kirish huquqini tekshirmoqda...</div>
+            <div class="loading-text">Yuklanmoqda...</div>
         `;
         document.body.appendChild(loadingScreen);
+        return loadingScreen;
+    }
+
+    function showLoadingScreen(text = 'Yuklanmoqda...') {
+        const screen = createLoadingScreen();
+        screen.querySelector('.loading-text').textContent = text;
+        screen.classList.add('show');
+    }
+
+    function hideLoadingScreen() {
+        if (loadingScreen) {
+            loadingScreen.classList.remove('show');
+            setTimeout(() => {
+                if (loadingScreen && loadingScreen.parentElement) {
+                    loadingScreen.parentElement.removeChild(loadingScreen);
+                    loadingScreen = null;
+                }
+            }, 300);
+        }
+    }
+
+    function showNotification(message, type = 'info') {
+        // Remove existing notifications
+        const existingNotifications = document.querySelectorAll('.notification');
+        existingNotifications.forEach(notif => notif.remove());
+
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        // Show notification
+        setTimeout(() => notification.classList.add('show'), 100);
+
+        // Hide notification after 4 seconds
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.parentElement.removeChild(notification);
+                }
+            }, 300);
+        }, 4000);
+    }
+
+    // Optimized auth checking
+    async function checkUserRole() {
+        if (isCheckingAuth) return;
+
+        const uid = localStorage.getItem('uid');
+        const token = localStorage.getItem('token');
+
+        if (!uid || !token) {
+            showNotification("Tizimga kirish uchun login qiling", 'info');
+            setTimeout(() => {
+                window.location.href = "./auth/login/login.html";
+            }, 1500);
+            return;
+        }
+
+        isCheckingAuth = true;
+        showLoadingScreen('Foydalanuvchi huquqini tekshirmoqda...');
 
         try {
-            await sleep(800);
+            // Reduced timeout for better UX
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 8000);
+
             const res = await fetch(`https://backend.azamov.me/isAdmin?uid=${uid}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
-                }
+                },
+                signal: controller.signal
             });
 
-            const data = await res.json();
-            document.body.removeChild(loadingScreen);
+            clearTimeout(timeoutId);
 
-            if (res.ok && data.isAdmin) {
-                window.location.href = './admin/dashboard.html';
+            if (!res.ok) {
+                throw new Error(`Server xatosi: ${res.status}`);
+            }
+
+            const data = await res.json();
+
+            // Small delay for smooth transition
+            await sleep(500);
+
+            hideLoadingScreen();
+
+            if (data.isAdmin) {
+                showNotification("Admin sifatida kirilmoqda...", 'success');
+                setTimeout(() => {
+                    window.location.href = './admin/dashboard.html';
+                }, 1000);
             } else {
-                window.location.href = './user/home.html';
+                showNotification("Foydalanuvchi paneliga o'tilmoqda...", 'success');
+                setTimeout(() => {
+                    window.location.href = './user/home.html';
+                }, 1000);
             }
         } catch (err) {
-            console.error('Xatolik:', err);
-            document.body.removeChild(loadingScreen);
-            showNotification("Foydalanuvchi holati aniqlanmadi.", 'error');
+            console.error('Auth check error:', err);
+            hideLoadingScreen();
+
+            if (err.name === 'AbortError') {
+                showNotification("Ulanish vaqti tugadi. Qayta urinib ko'ring.", 'error');
+            } else {
+                showNotification("Xatolik yuz berdi. Qayta urinib ko'ring.", 'error');
+            }
+        } finally {
+            isCheckingAuth = false;
         }
     }
 
@@ -909,7 +1045,10 @@
         if (uid && token) {
             checkUserRole();
         } else {
-            window.location.href = "./auth/login/login.html";
+            showNotification("Avval tizimga kiring", 'info');
+            setTimeout(() => {
+                window.location.href = "./auth/login/login.html";
+            }, 1500);
         }
     }
 
@@ -919,35 +1058,10 @@
         });
     }
 
-    function showNotification(message, type = 'info') {
-        const notification = document.createElement('div');
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: ${type === 'error' ? '#ef4444' : '#10b981'};
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 10000;
-            font-weight: 500;
-            max-width: 400px;
-        `;
-        notification.textContent = message;
-        document.body.appendChild(notification);
-
-        setTimeout(() => {
-            if (notification.parentElement) {
-                notification.parentElement.removeChild(notification);
-            }
-        }, 5000);
-    }
-
     // Initialize page
     window.addEventListener('DOMContentLoaded', () => {
-        // Check user role on page load
-        checkUserRole();
+        // Only check auth when user explicitly requests it
+        // Remove automatic auth check on page load
 
         // Intersection Observer for animations
         const observer = new IntersectionObserver((entries) => {
@@ -997,6 +1111,11 @@
                 }
             });
         });
+
+        // Show page loaded notification
+        setTimeout(() => {
+            showNotification("Sahifa muvaffaqiyatli yuklandi!", 'success');
+        }, 500);
     });
 
     // Header scroll effect
@@ -1006,6 +1125,14 @@
             header.style.background = 'rgba(255, 255, 255, 0.98)';
         } else {
             header.style.background = 'rgba(255, 255, 255, 0.95)';
+        }
+    });
+
+    // Handle page visibility change to prevent unnecessary loading
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden && loadingScreen) {
+            hideLoadingScreen();
+            isCheckingAuth = false;
         }
     });
 </script>
