@@ -811,7 +811,6 @@
             background: #b91c1c;
         }
 
-        /* Confirmed Items Section */
         .confirmed-section {
             background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
             border-radius: 12px;
@@ -1331,10 +1330,8 @@
 </head>
 <body class="">
 
-<!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
 
-<!-- Sidebar -->
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <div class="sidebar-logo">D</div>
@@ -1402,11 +1399,9 @@
     </div>
 </div>
 
-<!-- Main Content -->
 <div class="main-content">
     <div class="main-header">
         <div class="header-left">
-            <!-- Sidebar Toggle Button moved to header -->
             <button class="sidebar-toggle" onclick="toggleSidebar()">
                 <i class="fas fa-bars"></i>
             </button>
@@ -1421,7 +1416,6 @@
     </div>
 
     <div class="main-body">
-        <!-- Dashboard Page -->
         <div id="page-dashboard" class="page active">
             <div class="page-header">
                 <div class="page-title">
@@ -1434,7 +1428,6 @@
                 </button>
             </div>
 
-            <!-- Welcome Banner -->
             <div class="welcome-banner">
                 <div class="banner-content">
                     <h1 id="welcomeText">Salom!</h1>
@@ -1449,7 +1442,6 @@
                 </div>
             </div>
 
-            <!-- Quick Actions -->
             <div class="quick-actions">
                 <div class="quick-action-card" onclick="openNewRequestModal()">
                     <div class="quick-action-icon">
@@ -1481,18 +1473,15 @@
                 </div>
             </div>
 
-            <!-- Confirmed Items Section -->
             <div class="confirmed-section" id="confirmedSection" style="display: none;">
                 <h3>
                     <i class="fas fa-check-circle"></i>
                     Tasdiqlangan so'rovlar
                 </h3>
                 <div id="confirmedItems">
-                    <!-- Confirmed items will be rendered here -->
                 </div>
             </div>
 
-            <!-- Stats Grid -->
             <div class="stats-grid" id="statsGrid">
                 <div class="stat-card">
                     <div class="stat-content">
@@ -1551,7 +1540,6 @@
                 </div>
             </div>
 
-            <!-- Recent Requests -->
             <div class="requests-section">
                 <div class="section-header">
                     <div>
@@ -1565,12 +1553,10 @@
                 </div>
 
                 <div class="mail-box" id="requestsContainer">
-                    <!-- Requests will be loaded here -->
                 </div>
             </div>
         </div>
 
-        <!-- Inbox Page -->
         <div id="page-inbox" class="page">
             <div class="requests-section">
                 <div class="section-header">
@@ -1585,12 +1571,10 @@
                 </div>
 
                 <div id="inboxContainer">
-                    <!-- Inbox messages will be loaded here -->
                 </div>
             </div>
         </div>
 
-        <!-- Enhanced Requests Page -->
         <div id="page-requests" class="page">
             <div class="page-header">
                 <div class="page-title">
@@ -1615,12 +1599,10 @@
                     <div class="spinner"></div>
                 </div>
                 <div id="allRequestsContainer">
-                    <!-- All requests will be loaded here -->
                 </div>
             </div>
         </div>
 
-        <!-- New Feedback Page -->
         <div id="page-feedback" class="page">
             <div class="page-header">
                 <div class="page-title">
@@ -1637,12 +1619,10 @@
                     <div class="spinner"></div>
                 </div>
                 <div id="feedbackContainer">
-                    <!-- Feedback will be loaded here -->
                 </div>
             </div>
         </div>
 
-        <!-- Profile Page -->
         <div id="page-profile" class="page">
             <div class="requests-section">
                 <div class="section-header">
@@ -1652,12 +1632,10 @@
                     </div>
                 </div>
                 <div id="profileContainer">
-                    <!-- Profile info will be loaded here -->
                 </div>
             </div>
         </div>
 
-        <!-- History Page -->
         <div id="page-history" class="page">
             <div class="requests-section">
                 <div class="section-header">
@@ -1672,14 +1650,12 @@
                 </div>
 
                 <div id="historyContainer">
-                    <!-- History will be loaded here -->
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Bootstrap Modal for New Request -->
 <div class="modal fade" id="newRequestModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -1744,7 +1720,6 @@
     </div>
 </div>
 
-<!-- Enhanced Feedback Modal -->
 <div class="modal fade" id="feedbackModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -1786,7 +1761,6 @@
     </div>
 </div>
 
-<!-- Edit Profile Modal -->
 <div class="modal fade" id="editProfileModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -1809,7 +1783,6 @@
                         <input type="text" class="form-control" id="editUsername" required>
                     </div>
 
-                    <!-- Progress Bar qo'shish -->
                     <div class="progress mt-3" id="profileUploadProgress" style="display: none;">
                         <div class="progress-bar" role="progressbar" style="width: 0%" id="profileProgressBar">0%</div>
                     </div>
@@ -1828,7 +1801,6 @@
     </div>
 </div>
 
-<!-- Logout Confirmation Modal -->
 <div class="modal fade" id="logoutModal" tabindex="-1">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
@@ -1852,14 +1824,12 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Global variables
     let currentRequests = [];
     let currentMails = [];
     let currentFeedbacks = [];
     let currentUser = null;
     let API_BASE_URL = 'http://localhost:4000';
 
-    // Toast Notification System
     class ToastManager {
         constructor() {
             this.container = document.getElementById('toastContainer');
@@ -1871,12 +1841,10 @@
             this.container.appendChild(toast);
             this.toasts.push(toast);
 
-            // Trigger animation
             setTimeout(() => {
                 toast.classList.add('show');
             }, 100);
 
-            // Auto remove
             if (duration > 0) {
                 setTimeout(() => {
                     this.remove(toast);
@@ -1922,7 +1890,6 @@
                 ` : ''}
             `;
 
-            // Start progress animation
             if (duration > 0) {
                 setTimeout(() => {
                     const progressBar = toast.querySelector('.toast-progress-bar');
@@ -1964,10 +1931,8 @@
         }
     }
 
-    // Initialize toast manager
     const toastManager = new ToastManager();
 
-    // Initialize app
     document.addEventListener('DOMContentLoaded', () => {
         initNavigation();
         initNewRequestModal();
@@ -1981,10 +1946,8 @@
         testConnection();
         fetchUserProfile();
         loadRequests();
-        // loadRecentActivity();
     }
 
-    // API helper function
     async function apiRequest(endpoint, options = {}) {
         const token = localStorage.getItem('token');
         const defaultOptions = {
@@ -2038,28 +2001,18 @@
         }
     }
 
-    // Enhanced sidebar toggle - Hide/Show
     function toggleSidebar() {
         document.body.classList.toggle('sidebar-hidden');
-
-        // Save state to localStorage
         localStorage.setItem('sidebarHidden', document.body.classList.contains('sidebar-hidden'));
     }
 
-    // Load sidebar state on page load
     function loadSidebarState() {
-        // Check if user has previously set a preference
         const sidebarPreference = localStorage.getItem('sidebarHidden');
-
-        // If no preference exists, default to open (don't add sidebar-hidden class)
-        // If preference exists and is 'true', hide the sidebar
         if (sidebarPreference === 'true') {
             document.body.classList.add('sidebar-hidden');
         }
-        // If sidebarPreference is 'false' or null, sidebar stays open (default)
     }
 
-    // Navigation system
     function initNavigation() {
         const navButtons = document.querySelectorAll('.sidebar-menu-button[data-page]');
         const pages = document.querySelectorAll('.page');
@@ -2072,22 +2025,18 @@
         });
 
         window.switchPage = function(pageId) {
-            // Update active nav
             navButtons.forEach(btn => btn.classList.remove('active'));
             const targetButton = document.querySelector(`[data-page="${pageId}"]`);
             if (targetButton) {
                 targetButton.classList.add('active');
             }
 
-            // Show page
             pages.forEach(page => page.classList.remove('active'));
             document.getElementById(`page-${pageId}`).classList.add('active');
 
-            // Load page-specific data
             switch(pageId) {
                 case 'dashboard':
                     loadRequests();
-                    // loadRecentActivity();
                     break;
                 case 'inbox':
                     loadInbox();
@@ -2109,7 +2058,124 @@
         }
     }
 
-    // Initialize request filters
+    // History function implementation
+    async function loadHistory() {
+        const uid = localStorage.getItem('uid');
+        if (!uid) return;
+
+        const spinner = document.getElementById('historySpinner');
+        const container = document.getElementById('historyContainer');
+
+        if (spinner) spinner.style.display = 'flex';
+
+        try {
+            // Load all requests for history
+            const response = await apiRequest(`/user/requests/${uid}`);
+            if (response.ok) {
+                const requests = await response.json();
+
+                // Sort by date (newest first) and show all completed/cancelled requests
+                const historyRequests = requests
+                    .filter(req => req.status === 'DONE' || req.status === 'CANCELLED')
+                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+                displayHistory(historyRequests);
+            }
+        } catch (err) {
+            console.error('Error loading history:', err);
+            container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Tarixni yuklashda xatolik</h3>
+                <p>Iltimos, qaytadan urinib ko'ring</p>
+            </div>
+        `;
+            toastManager.error('Tarixni yuklashda xatolik');
+        } finally {
+            if (spinner) spinner.style.display = 'none';
+        }
+    }
+
+    function displayHistory(requests) {
+        const container = document.getElementById('historyContainer');
+
+        if (!requests || requests.length === 0) {
+            container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-history"></i>
+                <h3>Hozircha tarix yo'q</h3>
+                <p>Tugallangan yoki bekor qilingan so'rovlar bu yerda ko'rsatiladi</p>
+            </div>
+        `;
+            return;
+        }
+
+        // Group requests by month for better organization
+        const groupedRequests = groupRequestsByMonth(requests);
+
+        container.innerHTML = Object.keys(groupedRequests).map(month => `
+        <div class="activity-timeline">
+            <h3 style="margin-bottom: 1.5rem; color: var(--text-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                <i class="fas fa-calendar-alt"></i> ${month}
+            </h3>
+            ${groupedRequests[month].map(req => {
+            const imageUrl = req.images && req.images.length > 0 ? req.images[0] : '/placeholder.svg?height=60&width=60&query=request';
+            const isCompleted = req.status === 'DONE';
+
+            return `
+                    <div class="timeline-item">
+                        <div class="timeline-icon ${isCompleted ? 'success' : 'warning'}">
+                            <i class="fas ${isCompleted ? 'fa-check' : 'fa-times'}"></i>
+                        </div>
+                        <div class="timeline-content" style="flex: 1;">
+                            <div style="display: flex; gap: 1rem; align-items: flex-start;">
+                                <img src="${imageUrl}" alt="Request" style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover; flex-shrink: 0;" onerror="this.src='/placeholder.svg?height=60&width=60&query=request'">
+                                <div style="flex: 1;">
+                                    <h4>${req.issueName}</h4>
+                                    <p style="margin: 0.25rem 0;">${req.description}</p>
+                                    <div style="display: flex; gap: 1rem; margin-top: 0.5rem; font-size: 13px; color: var(--text-secondary);">
+                                        <span><i class="fas fa-map-marker-alt"></i> ${req.location}</span>
+                                        <span><i class="fas fa-tag"></i> ${req.problemType}</span>
+                                        ${req.price ? `<span style="color: #16a34a; font-weight: 600;"><i class="fas fa-dollar-sign"></i> $${req.price}</span>` : ''}
+                                    </div>
+                                    ${req.adminMessage ? `
+                                        <div style="background: #f8fafc; border-left: 4px solid var(--primary-color); border-radius: 0.375rem; padding: 0.75rem; margin-top: 0.75rem;">
+                                            <strong style="color: var(--primary-color);">Admin xabari:</strong><br>
+                                            ${req.adminMessage}
+                                        </div>
+                                    ` : ''}
+                                    <div style="margin-top: 0.75rem;">
+                                        ${getStatusBadge(req.status)}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="timeline-time">${formatDate(req.createdAt)}</div>
+                        </div>
+                    </div>
+                `;
+        }).join('')}
+        </div>
+    `).join('');
+    }
+
+    function groupRequestsByMonth(requests) {
+        const grouped = {};
+
+        requests.forEach(req => {
+            const date = new Date(req.createdAt);
+            const monthYear = date.toLocaleDateString('uz-UZ', {
+                year: 'numeric',
+                month: 'long'
+            });
+
+            if (!grouped[monthYear]) {
+                grouped[monthYear] = [];
+            }
+            grouped[monthYear].push(req);
+        });
+
+        return grouped;
+    }
     function initRequestFilters() {
         const filterTabs = document.querySelectorAll('.filter-tab');
         filterTabs.forEach(tab => {
@@ -2130,7 +2196,6 @@
         if (filter === 'all') {
             requests = currentRequests;
         } else if (filter === 'PENDING') {
-            // PENDING va WAITING statuslarni birga ko'rsatish
             requests = currentRequests.filter(req => req.status === 'PENDING' || req.status === 'WAITING');
         } else {
             requests = currentRequests.filter(req => req.status === filter);
@@ -2147,14 +2212,12 @@
             return;
         }
 
-        // Create mail map for filtered requests
         const mailMap = {};
         currentMails.forEach(m => mailMap[m.id] = m.mailText || '—');
 
         renderLatestRequests(requests, mailMap, 'allRequestsContainer');
     }
 
-    // Load requests for dashboard
     async function loadRequests() {
         const uid = localStorage.getItem('uid');
         const spinner = document.getElementById('loadingSpinner');
@@ -2190,16 +2253,12 @@
         }
     }
 
-    // Load recent activity
     async function loadRecentActivity() {
         const container = document.getElementById('activityContainer');
-
         try {
-            // Generate sample activity data based on current requests
             const activities = [];
 
             if (currentRequests && currentRequests.length > 0) {
-                // Add recent request activities
                 currentRequests.slice(0, 5).forEach(req => {
                     activities.push({
                         type: 'request',
@@ -2211,7 +2270,6 @@
                     });
                 });
 
-                // Add status change activities
                 const completedRequests = currentRequests.filter(req => req.status === 'DONE');
                 completedRequests.slice(0, 3).forEach(req => {
                     activities.push({
@@ -2225,7 +2283,6 @@
                 });
             }
 
-            // Add system activities
             activities.push({
                 type: 'login',
                 title: 'Tizimga kirish',
@@ -2235,7 +2292,6 @@
                 iconClass: 'info'
             });
 
-            // Sort by time (newest first)
             activities.sort((a, b) => new Date(b.time) - new Date(a.time));
 
             if (activities.length === 0) {
@@ -2274,7 +2330,6 @@
         }
     }
 
-    // Load feedbacks
     async function loadFeedbacks() {
         const spinner = document.getElementById('feedbackSpinner');
         const container = document.getElementById('feedbackContainer');
@@ -2287,7 +2342,7 @@
             if (!response.ok) throw new Error('Failed to load feedbacks');
 
             const data = await response.json();
-            const feedbacks = Array.isArray(data.feedbacks) ? data.feedbacks : []; // fallback to empty array
+            const feedbacks = Array.isArray(data.feedbacks) ? data.feedbacks : [];
             currentFeedbacks = feedbacks;
 
             if (!feedbacks || feedbacks.length === 0) {
@@ -2338,7 +2393,6 @@
         }
     }
 
-    // Update statistics
     function updateStats(requests) {
         const stats = {
             pending: 0,
@@ -2373,7 +2427,6 @@
         document.getElementById('totalCount').textContent = stats.total;
     }
 
-    // Render confirmed items section
     function renderConfirmedItems(requests) {
         const confirmedSection = document.getElementById('confirmedSection');
         const confirmedContainer = document.getElementById('confirmedItems');
@@ -2409,7 +2462,6 @@
         }).join('');
     }
 
-    // Enhanced render requests function
     function renderLatestRequests(requests, mailMap, containerId = 'requestsContainer') {
         const container = document.getElementById(containerId);
         if (!container) return;
@@ -2604,7 +2656,6 @@
         }
     }
 
-    // Load all requests - FIXED to include mail data
     async function loadAllRequests() {
         const uid = localStorage.getItem('uid');
         const spinner = document.getElementById('allRequestsSpinner');
@@ -2613,7 +2664,6 @@
         if (spinner) spinner.style.display = 'flex';
 
         try {
-            // Load both requests and mails data
             const [reqRes, mailRes] = await Promise.all([
                 apiRequest(`/user/requests/${uid}`),
                 apiRequest(`/user/mymails/${uid}`)
@@ -2639,7 +2689,6 @@
                 return;
             }
 
-            // Create mail map for all requests
             const mailMap = {};
             mails.forEach(m => mailMap[m.id] = m.mailText || '—');
 
@@ -2659,8 +2708,33 @@
             if (spinner) spinner.style.display = 'none';
         }
     }
+    function formatDate(dateInput) {
+        if (!dateInput) return '—';
+        try {
+            if (dateInput && typeof dateInput === 'object' && '_seconds' in dateInput) {
+                const milliseconds = dateInput._seconds * 1000 + Math.floor(dateInput._nanoseconds / 1000000);
+                const date = new Date(milliseconds);
+                if (isNaN(date.getTime())) return '—';
+                return date.toLocaleDateString('uz-UZ', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                });
+            }
+            const date = new Date(dateInput);
+            if (isNaN(date.getTime())) return '—';
+            return date.toLocaleDateString('uz-UZ', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+        } catch (err) {
+            console.error('Error formatting date:', err);
+            return '—';
+        }
+    }
 
-    // Load profile using User model structure
+
     async function loadProfile() {
         const uid = localStorage.getItem('uid');
         const container = document.getElementById('profileContainer');
@@ -2674,60 +2748,60 @@
             currentUser = user;
 
             container.innerHTML = `
-            <div class="profile-card">
-                <div class="profile-header">
-                    <div class="profile-avatar-section">
-                        <img src="${user.profileImage || 'https://www.mona.uwi.edu/modlang/sites/default/files/modlang/male-avatar-placeholder.png'}"
-                             alt="Profile" class="profile-avatar-large" id="currentProfileImage">
-                        <div class="profile-main-info">
-                            <h3 class="profile-display-name" id="currentDisplayName">${user.username || 'Foydalanuvchi'}</h3>
-                            <p class="profile-email-display">${user.email || 'user@example.com'}</p>
-                            <span class="badge-status ${user.isAdmin ? 'badge-confirmed' : 'badge-pending'}">
-                                ${user.isAdmin ? 'Admin' : 'Oddiy foydalanuvchi'}
-                            </span>
-                        </div>
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar-section">
+                    <img src="${user.profileImage || 'https://www.mona.uwi.edu/modlang/sites/default/files/modlang/male-avatar-placeholder.png'}"
+                         alt="Profile" class="profile-avatar-large" id="currentProfileImage">
+                    <div class="profile-main-info">
+                        <h3 class="profile-display-name" id="currentDisplayName">${user.username || 'Foydalanuvchi'}</h3>
+                        <p class="profile-email-display">${user.email || 'user@example.com'}</p>
+                        <span class="badge-status ${user.isAdmin ? 'badge-confirmed' : 'badge-pending'}">
+                            ${user.isAdmin ? 'Admin' : 'Oddiy foydalanuvchi'}
+                        </span>
                     </div>
-                    <button class="btn-primary" onclick="openEditProfileModal()">
-                        <i class="fas fa-edit"></i>
-                        Profilni tahrirlash
-                    </button>
                 </div>
+                <button class="btn-primary" onclick="openEditProfileModal()">
+                    <i class="fas fa-edit"></i>
+                    Profilni tahrirlash
+                </button>
+            </div>
 
-                <div class="profile-details">
-                    <div class="profile-detail-grid">
-                        <div class="profile-detail-item">
-                            <label class="profile-detail-label">UID</label>
-                            <p class="profile-detail-value">${user.uid || 'Mavjud emas'}</p>
-                        </div>
-                        <div class="profile-detail-item">
-                            <label class="profile-detail-label">Ro'yxatdan o'tgan sana</label>
-                            <p class="profile-detail-value">${formatDate(user.createdAt)}</p>
-                        </div>
-                        <div class="profile-detail-item">
-                            <label class="profile-detail-label">So'nggi faollik</label>
-                            <p class="profile-detail-value">Bugun</p>
-                        </div>
-                        <div class="profile-detail-item">
-                            <label class="profile-detail-label">Status</label>
-                            <span class="badge-status badge-confirmed">Faol</span>
-                        </div>
+            <div class="profile-details">
+                <div class="profile-detail-grid">
+                    <div class="profile-detail-item">
+                        <label class="profile-detail-label">UID</label>
+                        <p class="profile-detail-value">${user.uid || 'Mavjud emas'}</p>
+                    </div>
+                    <div class="profile-detail-item">
+                        <label class="profile-detail-label">Ro'yxatdan o'tgan sana</label>
+                        <p class="profile-detail-value">${formatDate(user.createdAt)}</p>
+                    </div>
+                    <div class="profile-detail-item">
+                        <label class="profile-detail-label">So'nggi faollik</label>
+                        <p class="profile-detail-value">Bugun</p>
+                    </div>
+                    <div class="profile-detail-item">
+                        <label class="profile-detail-label">Status</label>
+                        <span class="badge-status badge-confirmed">Faol</span>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Recent Activity Timeline moved to Profile -->
-            <div class="activity-timeline" style="margin-top: 2rem;">
-                <div class="section-header">
-                    <div>
-                        <h2>So'nggi faollik</h2>
-                        <p>Sizning oxirgi harakatlaringiz</p>
-                    </div>
-                </div>
-                <div id="profileActivityContainer">
-                    <!-- Activity timeline will be loaded here -->
+        <!-- Recent Activity Timeline moved to Profile -->
+        <div class="activity-timeline" style="margin-top: 2rem;">
+            <div class="section-header">
+                <div>
+                    <h2>So'nggi faollik</h2>
+                    <p>Sizning oxirgi harakatlaringiz</p>
                 </div>
             </div>
-        `;
+            <div id="profileActivityContainer">
+                <!-- Activity timeline will be loaded here -->
+            </div>
+        </div>
+    `;
 
             // Load recent activity for profile page
             await loadRecentActivityForProfile();
@@ -2735,16 +2809,15 @@
         } catch (err) {
             console.error('Error loading profile:', err);
             container.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-user"></i>
-                <h3>Profil ma'lumotlari yuklanmadi</h3>
-                <p>Iltimos, qaytadan urinib ko'ring</p>
-            </div>
-        `;
+        <div class="empty-state">
+            <i class="fas fa-user"></i>
+            <h3>Profil ma'lumotlari yuklanmadi</h3>
+            <p>Iltimos, qaytadan urinib ko'ring</p>
+        </div>
+    `;
             toastManager.error('Profil ma\'lumotlarini yuklashda xatolik yuz berdi');
         }
     }
-
     // Load recent activity for profile page
     async function loadRecentActivityForProfile() {
         const container = document.getElementById('profileActivityContainer');
@@ -3487,20 +3560,6 @@
     window.addEventListener('resize', handleResize);
     handleResize(); // Initial check
 
-    function formatDate(dateString) {
-        if (!dateString) return '—';
-        try {
-            const date = new Date(dateString);
-            if (isNaN(date.getTime())) return '—';
-            return date.toLocaleDateString('uz-UZ', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit'
-            });
-        } catch (err) {
-            return '—';
-        }
-    }
 </script>
 
 </body>

@@ -1628,10 +1628,7 @@
                     <h2>Foydalanuvchilar</h2>
                     <p>Barcha tizim foydalanuvchilarini boshqarish va nazorat qilish</p>
                 </div>
-                <button class="btn-primary" onclick="openAddUserModal()">
-                    <i class="fas fa-plus"></i>
-                    Yangi foydalanuvchi
-                </button>
+
             </div>
 
             <div class="content-section">
@@ -1661,7 +1658,7 @@
                 </div>
                 <select class="filter-select" id="requestStatusFilter" onchange="filterRequests()">
                     <option value="all">Barcha holatlar</option>
-                    <option value="PENDING">Kutilmoqda</option>
+                    <option value="PENDING">Hal Bo`lmagan</option>
                     <option value="WAITING">Kutilmoqda</option>
                     <option value="IN_PROGRESS">Jarayonda</option>
                     <option value="CONFIRMED">Tasdiqlangan</option>
@@ -1710,45 +1707,6 @@
     </div>
 </div>
 
-<!-- Add User Modal -->
-<div class="modal fade" id="addUserModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Yangi foydalanuvchi qo'shish</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <form id="addUserForm">
-                <div id="addUserFeedback" class="alert alert-danger d-none"></div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Foydalanuvchi nomi *</label>
-                        <input type="text" class="form-control" id="newUsername" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Email *</label>
-                        <input type="email" class="form-control" id="newEmail" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Parol *</label>
-                        <input type="password" class="form-control" id="newPassword" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Rol</label>
-                        <select class="form-select" id="newUserRole">
-                            <option value="false">Oddiy foydalanuvchi</option>
-                            <option value="true">Admin</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
-                    <button type="submit" class="btn btn-primary">Qo'shish</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 <!-- Send Mail Modal -->
 <div class="modal fade" id="sendMailModal" tabindex="-1">
@@ -2558,67 +2516,8 @@
         }
     }
 
-    // Initialize modals
     function initModals() {
-        initAddUserModal();
         initSendMailModal();
-    }
-
-    function initAddUserModal() {
-        const form = document.getElementById('addUserForm');
-        const feedback = document.getElementById('addUserFeedback');
-
-        function showError(msg) {
-            feedback.textContent = msg;
-            feedback.classList.remove('d-none');
-        }
-
-        function clearError() {
-            feedback.textContent = '';
-            feedback.classList.add('d-none');
-        }
-
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            clearError();
-
-            const username = document.getElementById('newUsername').value.trim();
-            const email = document.getElementById('newEmail').value.trim();
-            const password = document.getElementById('newPassword').value;
-            const isAdmin = document.getElementById('newUserRole').value === 'true';
-
-            if (!username || !email || !password) {
-                return showError('Barcha maydonlarni to\'ldiring.');
-            }
-
-            try {
-                const response = await apiRequest('/admin/users', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        username,
-                        email,
-                        password,
-                        isAdmin
-                    })
-                });
-
-                if (response.ok) {
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
-                    modal.hide();
-                    form.reset();
-                    toastManager.success('Yangi foydalanuvchi muvaffaqiyatli qo\'shildi!');
-                    loadUsers();
-                    loadDashboardData();
-                } else {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || 'Foydalanuvchi qo\'shishda xatolik');
-                }
-            } catch (err) {
-                console.error('Error adding user:', err);
-                showError(err.message || 'Foydalanuvchi qo\'shishda xatolik yuz berdi.');
-                toastManager.error('Foydalanuvchi qo\'shishda xatolik yuz berdi');
-            }
-        });
     }
 
     function initSendMailModal() {
@@ -2680,11 +2579,6 @@
         });
     }
 
-    // Modal functions
-    function openAddUserModal() {
-        const modal = new bootstrap.Modal(document.getElementById('addUserModal'));
-        modal.show();
-    }
 
     function openSendMailModal(requestId) {
         document.getElementById('mailRequestId').value = requestId;

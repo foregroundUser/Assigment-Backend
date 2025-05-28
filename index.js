@@ -10,14 +10,14 @@ admin.initializeApp({
 });
 
 const bucketName = admin.app().options.storageBucket;
-console.log('✅ Firebase Storage bucket:', bucketName);
+console.log('Firebase Storage bucket:', bucketName);
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-const { swaggerUi, swaggerSpec } = require('./src/swagger');
+const {swaggerUi, swaggerSpec} = require('./src/swagger');
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 const authRoutes = require('./src/routes/auth');

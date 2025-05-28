@@ -4,12 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2f5fe288-b22e-4e9f-a6f3-f64c1f7385b9" name="Changes" comment="user page done main page updated">
+    <list default="true" id="2f5fe288-b22e-4e9f-a6f3-f64c1f7385b9" name="Changes" comment="project done">
       <change afterPath="$PROJECT_DIR$/serviceAccountKey.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dern-support-frontend/admin/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/dern-support-frontend/admin/dashboard.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/adminController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/adminController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/admin.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/admin.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dern-support-frontend/user/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/dern-support-frontend/user/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,7 +60,7 @@
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;22.15.0&quot;,
     &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;22.15.18&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/azamo/WebstormProjects/Assigment-Backend&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Assigment-Nurbek/Assigment-Chat&quot;,
     &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -115,7 +115,11 @@
       <workItem from="1747984307720" duration="8326000" />
       <workItem from="1747997990771" duration="35200000" />
       <workItem from="1748104663387" duration="1791000" />
-      <workItem from="1748118503794" duration="6052000" />
+      <workItem from="1748118503794" duration="8762000" />
+      <workItem from="1748164955657" duration="3466000" />
+      <workItem from="1748245745975" duration="5867000" />
+      <workItem from="1748329627954" duration="84000" />
+      <workItem from="1748340760612" duration="13706000" />
     </task>
     <task id="LOCAL-00001" summary="Backend ready for beta">
       <option name="closed" value="true" />
@@ -173,7 +177,15 @@
       <option name="project" value="LOCAL" />
       <updated>1748098404580</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="project done">
+      <option name="closed" value="true" />
+      <created>1748126075052</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1748126075052</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -185,7 +197,8 @@
     <MESSAGE value="swagger added &amp;&amp;" />
     <MESSAGE value="auth ui done" />
     <MESSAGE value="user page done main page updated" />
-    <option name="LAST_COMMIT_MESSAGE" value="user page done main page updated" />
+    <MESSAGE value="project done" />
+    <option name="LAST_COMMIT_MESSAGE" value="project done" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -207,7 +220,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/dern-support-frontend/index.html</url>
-          <line>932</line>
+          <line>937</line>
           <option name="timeStamp" value="8" />
         </line-breakpoint>
       </breakpoints>
