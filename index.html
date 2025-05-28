@@ -880,7 +880,7 @@
 
         try {
             await sleep(800);
-            const res = await fetch(`http://localhost:4000/isAdmin?uid=${uid}`, {
+            const res = await fetch(`https://backend.azamov.me/isAdmin?uid=${uid}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showLoading('Logging in...');
 
         try {
-            const response = await fetch('http://localhost:4000/login', {
+            const response = await fetch('https://backend.azamov.me/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function checkUserRole(token) {
         try {
-            const res = await fetch(`http://localhost:4000/isAdmin`, {
+            const res = await fetch(`https://backend.azamov.me/isAdmin`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`

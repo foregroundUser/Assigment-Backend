@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showLoading('Creating account...');
 
         try {
-            const response = await fetch('http://localhost:4000/register', {
+            const response = await fetch('https://backend.azamov.me/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

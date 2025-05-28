@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showLoading('Sending reset link...');
 
         try {
-            const response = await fetch('http://localhost:4000/forgot-password', {
+            const response = await fetch('https://backend.azamov.me/forgot-password', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
