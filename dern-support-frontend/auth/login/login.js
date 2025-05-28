@@ -60,12 +60,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (res.ok && data.isAdmin) {
                 window.location.href = '../../admin/dashboard.html';
             } else {
-                window.location.href = '../../index.html';
+                window.location.href = '../../../index.html';
             }
         } catch (error) {
             console.error('Role check error:', error);
             hideLoading();
-            window.location.href = '../../index.html';
+            window.location.href = '../../../index.html';
         }
     }
 
