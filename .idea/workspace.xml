@@ -7,6 +7,7 @@
     <list default="true" id="2f5fe288-b22e-4e9f-a6f3-f64c1f7385b9" name="Changes" comment="Project ready to deploy">
       <change afterPath="$PROJECT_DIR$/serviceAccountKey.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -118,7 +119,10 @@
       <workItem from="1748245745975" duration="5867000" />
       <workItem from="1748329627954" duration="84000" />
       <workItem from="1748340760612" duration="17379000" />
-      <workItem from="1748461864319" duration="307000" />
+      <workItem from="1748461864319" duration="5506000" />
+      <workItem from="1748519259130" duration="19000" />
+      <workItem from="1748532742617" duration="631000" />
+      <workItem from="1748544949166" duration="1538000" />
     </task>
     <task id="LOCAL-00001" summary="Backend ready for beta">
       <option name="closed" value="true" />
@@ -216,11 +220,38 @@
       <option name="project" value="LOCAL" />
       <updated>1748459932339</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Project ready to deploy">
+      <option name="closed" value="true" />
+      <created>1748462203228</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1748462203228</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Project ready to deploy">
+      <option name="closed" value="true" />
+      <created>1748462361205</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1748462361205</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Backend ready for beta" />
@@ -252,7 +283,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/index.html</url>
-          <line>937</line>
+          <line>1101</line>
           <option name="timeStamp" value="8" />
         </line-breakpoint>
       </breakpoints>

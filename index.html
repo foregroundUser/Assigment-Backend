@@ -5,8 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Dern Support - Texnik Yordam Xizmati</title>
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Preload critical resources -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" as="style">
+
+    <!-- Load fonts asynchronously -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" media="print" onload="this.media='all'">
+
     <style>
         :root {
             --primary-color: #3b82f6;
@@ -29,13 +35,13 @@
 
         html, body {
             scroll-behavior: smooth;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background-color: var(--bg-light);
             color: var(--text-primary);
             line-height: 1.6;
         }
 
-        /* Header */
+        /* Optimized Header */
         header {
             position: fixed;
             top: 0;
@@ -51,6 +57,8 @@
             z-index: 1000;
             box-shadow: var(--shadow);
             border-bottom: 1px solid var(--border-color);
+            will-change: background;
+            transition: background 0.3s ease;
         }
 
         .logo-section {
@@ -98,6 +106,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            will-change: transform;
         }
 
         .get-started-btn:hover {
@@ -106,7 +115,13 @@
             box-shadow: var(--shadow-lg);
         }
 
-        /* Hero Section */
+        .get-started-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Optimized Hero Section */
         .hero {
             position: relative;
             height: 100vh;
@@ -166,10 +181,7 @@
             flex-wrap: wrap;
         }
 
-        .btn-primary {
-            background: white;
-            color: var(--primary-color);
-            border: none;
+        .btn-primary, .btn-secondary {
             padding: 1rem 2rem;
             font-weight: 600;
             font-size: 16px;
@@ -179,6 +191,13 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            border: none;
+            will-change: transform;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary-color);
         }
 
         .btn-primary:hover {
@@ -190,15 +209,6 @@
             background: transparent;
             color: white;
             border: 2px solid white;
-            padding: 1rem 2rem;
-            font-weight: 600;
-            font-size: 16px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
 
         .btn-secondary:hover {
@@ -206,7 +216,13 @@
             color: var(--primary-color);
         }
 
-        /* Sections */
+        .btn-primary:disabled, .btn-secondary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Optimized Sections */
         section {
             padding: 5rem 2rem;
             text-align: center;
@@ -254,6 +270,7 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            will-change: transform;
         }
 
         .stat-box::before {
@@ -316,6 +333,7 @@
             height: 100%;
             display: flex;
             flex-direction: column;
+            will-change: transform;
         }
 
         .service-card:hover {
@@ -327,6 +345,7 @@
             width: 100%;
             height: 250px;
             object-fit: cover;
+            loading: lazy;
         }
 
         .service-content {
@@ -395,6 +414,7 @@
             height: auto;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            loading: lazy;
         }
 
         /* FAQ Section */
@@ -515,7 +535,7 @@
             color: #9ca3af;
         }
 
-        /* Loading Screen */
+        /* Optimized Loading Screen */
         .loading-screen {
             position: fixed;
             top: 0;
@@ -529,6 +549,14 @@
             align-items: center;
             z-index: 9999;
             backdrop-filter: blur(5px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .loading-screen.show {
+            opacity: 1;
+            visibility: visible;
         }
 
         .spinner {
@@ -550,6 +578,42 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        /* Success/Error Messages */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10000;
+            font-weight: 500;
+            max-width: 400px;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: #10b981;
+            color: white;
+        }
+
+        .notification.error {
+            background: #ef4444;
+            color: white;
+        }
+
+        .notification.info {
+            background: #3b82f6;
+            color: white;
         }
 
         /* Responsive Design */
@@ -654,18 +718,24 @@
             <p>Texnik Yordam</p>
         </div>
     </div>
-    <button class="get-started-btn">
+    <button class="get-started-btn" id="main-start-btn">
         <i class="fas fa-rocket"></i>
         Boshlash
     </button>
 </header>
+
+<!-- Loading Screen -->
+<div class="loading-screen" id="loading-screen">
+    <div class="spinner"></div>
+    <div class="loading-text" id="loading-text">Kirish huquqini tekshirmoqda...</div>
+</div>
 
 <div class="hero" id="hero-section">
     <div class="hero-content">
         <h1>Dern Support ga Xush Kelibsiz</h1>
         <p>Kompyuter ta'mirlash va texnik yordam uchun eng yaxshi yechim. Bizning professional jamoamiz sizning barcha texnik muammolaringizni hal qilishga tayyor.</p>
         <div class="hero-buttons">
-            <button class="btn-primary" onclick="startService()">
+            <button class="btn-primary" id="hero-start-btn">
                 <i class="fas fa-play"></i>
                 Xizmatni Boshlash
             </button>
@@ -860,115 +930,195 @@
 </footer>
 
 <script>
-    function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+    // Performance optimized variables
+    let isCheckingRole = false;
+    let authCheckTimeout = null;
+
+    // Cache DOM elements
+    const loadingScreen = document.getElementById('loading-screen');
+    const loadingText = document.getElementById('loading-text');
+    const mainStartBtn = document.getElementById('main-start-btn');
+    const heroStartBtn = document.getElementById('hero-start-btn');
+
+    // Optimized notification system
+    function showNotification(message, type = 'info', duration = 5000) {
+        // Remove existing notifications
+        const existingNotifications = document.querySelectorAll('.notification');
+        existingNotifications.forEach(notif => notif.remove());
+
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        // Show notification with animation
+        requestAnimationFrame(() => {
+            notification.classList.add('show');
+        });
+
+        // Auto remove
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (notification.parentElement) {
+                        notification.remove();
+                    }
+                }, 300);
+            }
+        }, duration);
     }
 
+    // Optimized loading screen
+    function showLoading(text = 'Kirish huquqini tekshirmoqda...') {
+        loadingText.textContent = text;
+        loadingScreen.classList.add('show');
+
+        // Disable buttons
+        if (mainStartBtn) mainStartBtn.disabled = true;
+        if (heroStartBtn) heroStartBtn.disabled = true;
+    }
+
+    function hideLoading() {
+        loadingScreen.classList.remove('show');
+
+        // Enable buttons
+        if (mainStartBtn) mainStartBtn.disabled = false;
+        if (heroStartBtn) heroStartBtn.disabled = false;
+    }
+
+    // Optimized role checking with timeout and retry
     async function checkUserRole() {
+        if (isCheckingRole) return;
+
         const uid = localStorage.getItem('uid');
         const token = localStorage.getItem('token');
 
-        if (!uid || !token) return;
+        if (!uid || !token) {
+            showNotification("Foydalanuvchi ma'lumotlari topilmadi", 'error');
+            return;
+        }
 
-        // Create loading screen
-        const loadingScreen = document.createElement('div');
-        loadingScreen.className = 'loading-screen';
-        loadingScreen.innerHTML = `
-            <div class="spinner"></div>
-            <div class="loading-text">Kirish huquqini tekshirmoqda...</div>
-        `;
-        document.body.appendChild(loadingScreen);
+        isCheckingRole = true;
+        showLoading('Foydalanuvchi huquqini tekshirmoqda...');
+
+        // Set timeout for API call
+        const controller = new AbortController();
+        authCheckTimeout = setTimeout(() => {
+            controller.abort();
+        }, 10000); // 10 second timeout
 
         try {
-            await sleep(800);
             const res = await fetch(`https://backend.azamov.me/isAdmin?uid=${uid}`, {
                 headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                signal: controller.signal,
+                cache: 'no-cache'
             });
 
-            const data = await res.json();
-            document.body.removeChild(loadingScreen);
+            clearTimeout(authCheckTimeout);
 
-            if (res.ok && data.isAdmin) {
-                window.location.href = './admin/dashboard.html';
+            if (!res.ok) {
+                throw new Error(`Server xatosi: ${res.status}`);
+            }
+
+            const data = await res.json();
+
+            // Add small delay for better UX
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            hideLoading();
+
+            if (data.isAdmin) {
+                showNotification("Admin paneliga yo'naltirilmoqda...", 'success', 2000);
+                setTimeout(() => {
+                    window.location.href = './admin/dashboard.html';
+                }, 1000);
             } else {
-                window.location.href = './user/home.html';
+                showNotification("Foydalanuvchi paneliga yo'naltirilmoqda...", 'success', 2000);
+                setTimeout(() => {
+                    window.location.href = './user/home.html';
+                }, 1000);
             }
         } catch (err) {
-            console.error('Xatolik:', err);
-            document.body.removeChild(loadingScreen);
-            showNotification("Foydalanuvchi holati aniqlanmadi.", 'error');
+            clearTimeout(authCheckTimeout);
+            hideLoading();
+
+            if (err.name === 'AbortError') {
+                showNotification("So'rov vaqti tugadi. Iltimos, qayta urinib ko'ring.", 'error');
+            } else {
+                console.error('Xatolik:', err);
+                showNotification("Serverga ulanishda xatolik. Iltimos, qayta urinib ko'ring.", 'error');
+            }
+        } finally {
+            isCheckingRole = false;
         }
     }
 
+    // Optimized start service function
     function startService() {
+        if (isCheckingRole) return;
+
         const uid = localStorage.getItem('uid');
         const token = localStorage.getItem('token');
 
         if (uid && token) {
             checkUserRole();
         } else {
-            window.location.href = "./auth/login/login.html";
+            showNotification("Login sahifasiga yo'naltirilmoqda...", 'info', 2000);
+            setTimeout(() => {
+                window.location.href = "./auth/login/login.html";
+            }, 1000);
         }
     }
 
+    // Optimized scroll function
     function scrollToServices() {
-        document.getElementById('services').scrollIntoView({
-            behavior: 'smooth'
-        });
+        const servicesSection = document.getElementById('services');
+        if (servicesSection) {
+            servicesSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
     }
 
-    function showNotification(message, type = 'info') {
-        const notification = document.createElement('div');
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: ${type === 'error' ? '#ef4444' : '#10b981'};
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 10000;
-            font-weight: 500;
-            max-width: 400px;
-        `;
-        notification.textContent = message;
-        document.body.appendChild(notification);
-
-        setTimeout(() => {
-            if (notification.parentElement) {
-                notification.parentElement.removeChild(notification);
-            }
-        }, 5000);
-    }
-
-    // Initialize page
-    window.addEventListener('DOMContentLoaded', () => {
-        // Check user role on page load
-        checkUserRole();
-
-        // Intersection Observer for animations
+    // Optimized intersection observer
+    function initializeAnimations() {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('show');
+                    // Unobserve after animation to improve performance
+                    observer.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.2 });
+        }, {
+            threshold: 0.2,
+            rootMargin: '50px'
+        });
 
-        document.querySelectorAll('section').forEach(sec => observer.observe(sec));
+        // Observe sections
+        document.querySelectorAll('section').forEach(sec => {
+            observer.observe(sec);
+        });
+    }
 
-        // FAQ functionality
-        document.querySelectorAll('.faq-question').forEach(button => {
-            button.addEventListener('click', () => {
-                const item = button.parentElement;
+    // Optimized FAQ functionality
+    function initializeFAQ() {
+        const faqQuestions = document.querySelectorAll('.faq-question');
+
+        faqQuestions.forEach(button => {
+            button.addEventListener('click', function() {
+                const item = this.parentElement;
                 const isOpen = item.classList.contains('open');
 
-                // Close all other items
-                document.querySelectorAll('.faq-item').forEach(otherItem => {
-                    if (otherItem !== item) {
+                // Close all other items efficiently
+                faqQuestions.forEach(otherButton => {
+                    const otherItem = otherButton.parentElement;
+                    if (otherItem !== item && otherItem.classList.contains('open')) {
                         otherItem.classList.remove('open');
                     }
                 });
@@ -977,36 +1127,90 @@
                 item.classList.toggle('open');
             });
         });
+    }
 
-        // Get started button
-        const btn = document.querySelector(".get-started-btn");
-        if (btn) {
-            btn.addEventListener("click", startService);
+    // Optimized header scroll effect
+    function initializeHeaderScroll() {
+        let ticking = false;
+        const header = document.querySelector('header');
+
+        function updateHeader() {
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+            }
+            ticking = false;
         }
 
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(updateHeader);
+                ticking = true;
+            }
+        }, { passive: true });
+    }
+
+    // Optimized smooth scrolling for anchor links
+    function initializeSmoothScrolling() {
+        document.addEventListener('click', function(e) {
+            const anchor = e.target.closest('a[href^="#"]');
+            if (anchor) {
                 e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
+                const target = document.querySelector(anchor.getAttribute('href'));
                 if (target) {
                     target.scrollIntoView({
                         behavior: 'smooth',
                         block: 'start'
                     });
                 }
-            });
+            }
         });
+    }
+
+    // Initialize everything when DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize all functionality
+        initializeAnimations();
+        initializeFAQ();
+        initializeHeaderScroll();
+        initializeSmoothScrolling();
+
+        // Add event listeners to buttons
+        if (mainStartBtn) {
+            mainStartBtn.addEventListener('click', startService);
+        }
+
+        if (heroStartBtn) {
+            heroStartBtn.addEventListener('click', startService);
+        }
+
+        // Auto-check user role if already logged in (optional)
+        const uid = localStorage.getItem('uid');
+        const token = localStorage.getItem('token');
+
+        if (uid && token) {
+            // Show a subtle indicator that user is logged in
+            if (mainStartBtn) {
+                mainStartBtn.innerHTML = '<i class="fas fa-user"></i> Davom etish';
+            }
+        }
     });
 
-    // Header scroll effect
-    window.addEventListener('scroll', () => {
-        const header = document.querySelector('header');
-        if (window.scrollY > 100) {
-            header.style.background = 'rgba(255, 255, 255, 0.98)';
-        } else {
-            header.style.background = 'rgba(255, 255, 255, 0.95)';
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', function() {
+        if (authCheckTimeout) {
+            clearTimeout(authCheckTimeout);
         }
+    });
+
+    // Handle online/offline status
+    window.addEventListener('online', function() {
+        showNotification("Internet aloqasi tiklandi", 'success', 3000);
+    });
+
+    window.addEventListener('offline', function() {
+        showNotification("Internet aloqasi uzildi", 'error', 5000);
     });
 </script>
 
